@@ -1,0 +1,46 @@
+\chapter{Introduction}
+
+\section{Motivation}
+
+When the Bitcoin exchange Mt. Gox was declared bankrupt in 2014, a curious fact was reported in the \textit{New York Times}---the missing 744K BTC ``had gone unnoticed for years.'' This led the Bitcoin community to propose that exchanges undergo regular financial audits, with proposals ranging from traditional audits conducted by specialists to completely disintermediated ``crypto-audits'' done directly by the exchange to its users using cryptography. Academics quickly showed these can be done in strict zero-knowledge~\cite{provisions}, and generated a stream of research papers that continues to improve efficiency~\cite{bulletproofs,zeroledge,dapol,spp,notus,izpr} and examine the correctness of deployed proofs~\cite{broken}. Despite these efforts, exchanges are not legally required to use a proof of solvency in jurisdictions today, with some exchanges opting to do them anyways and many not. Meanwhile, many other exchanges have failed in similar ways to Mt. Gox (whether by incompetence or fraud), including higher profile cases like QuadrigaCX and FTX. We argue that proofs of solvency are not perfect but do provide meaningful barriers (or friction) to fraud and incompetence. As academics, we believe we should continue refining these proofs toward practical implementation.  
+
+% = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+\section{Contributions}
+
+A proof of solvency (or proof of reserves) is a zero-knowledge proof conducted by centralized cryptocurrency exchange (or more generally, any custodian of cryptocurrencies) to offer evidence that the exchange owns enough cryptocurrency to settle each of its users balances. The zero-knowledge component protects the exchange's proprietary information such as: number of users, balances of individual users, total balance of all users, which cryptocurrency addresses belong to the exchange, and total amount of cryptocurrency owned by the exchange. The proof itself is broken into sub-components: ($\pi_\mathsf{keys}$) a proof of knowledge of private signing keys associated with public cryptocurrency addresses (hidden in a freely-composable anonymity set of addresses not belonging to the exchange); ($\pi_\mathsf{assets}$) a summation of these assets into the total assets; ($\pi_\mathsf{user}$) an individualized proof given to each user asserting their balance as used in the overall proof; ($\pi_\mathsf{liabilities}$) a summation of these individual liabilities into the total liabilities; and ($\pi_\mathsf{solvency}$) a demonstration that the subtraction of total liabilities from the total assets is at least 0.
+
+In our paper, we examine the extent to which these sub-components can be made succinct. In particular, we are interested in constant-sized arguments\footnote{We abuse terminology and generally do not distinguish between `proofs' and `arguments,' using the term `proofs' for both. Proofs provide soundness against unbounded malicious provers, while arguments provide zero knowledge against unbounded malicious verifiers. \Sys is a hybrid.} and constant-time verification. This is possible for general arithmetic circuits in the polynomial interactive oracle proof (Poly-IOP) model using protocols like Plonk and its variants. In reference to the ``towards'' in the title of our paper, we are not able to make each sub-component fully succinct, however we make progress as follows: ($\pi_\mathsf{assets}$,$\pi_\mathsf{user}$,$\pi_\mathsf{solvency}$) are constant in size and time (once all public inputs have been interpolated into polynomials by the verifier); ($\pi_\mathsf{keys}$) is linear in the number of addresses in the anonymity set (but is pre-computation that can be re-used when proofs are issued each day); ($\pi_\mathsf{liabilities}$) is linear in the number of bits used to represent each account balance (\eg 32 bits) and is independent of the number of users (technically there is an upper-bound, but it is beyond the reasonable size of the largest exchange).
+
+Our contributions can be summarized as:
+
+\begin{itemize}
+\item \Sys:\footnote{Folklore creature revered in ancient Chinese culture for its ability to distinguish truth from deceit.} A mostly succinct protocol that covers every step of the proof, where each sub-component of the proof works with each other sub-component.
+\item A novel technique for mapping knowledge of private keys of common blockchains, such as Bitcoin and Ethereum, from their group (\secp) into a pairing-friendly group (\bls) used for succinct arguments.
+\item Practical adjustments to the protocol to account for concrete parameters, such as the maximum root of unity in \bls. 
+\item Proof of concept implementation of \Sys with performance experimentation.
+\end{itemize}
+
+% = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+\section{Limitations}
+
+We do not argue that a proof of solvency is a silver bullet that prevents all fraud and insolvency. However we do believe it can meaningfully raise the bar for incompetence and fraud within an exchange, while providing a trail of records useful during a financial audit or enforcement action. Limitations of \Sys include: 
+
+\begin{itemize}
+\item Our protocol relies on a trusted setup. However the setup is universal (shareable with other zk-SNARK systems) and is secure with one honest participant in a decentralized computation of it~\cite{tau}.
+\item $\pi_\mathsf{keys}$ assumes the public key (as opposed to only its hash) associated with every address in an anonymity set of keys is known. In Bitcoin and Ethereum, this (typically) corresponds to the address having originated at least one transaction. 
+\item $\pi_\mathsf{keys}$ assumes funds are controlled by a single public key. We do not explore how to handle multisig, wallets, Gnosis Safe, \etc However we can support tokens (\eg ERC20, ERC721,\etc) given the mapping between balances and public keys is on-chain, and we can support such assets split across layer two solutions or EVM-chains. 
+\end{itemize}
+
+Limitations of proofs of solvency in general (not specific to \Sys) include:
+
+\begin{itemize}
+\item Proofs of solvency rely on human behaviour. It needs to be unpredictable to the exchange which users will check and report inconsistencies.
+\item Proofs of solvency are a detection mechanism, not a prevention mechanism. Proofs do not help prevent hacks or exit scams. However they greatly complicate cover-ups by the exchange after fraud or a loss of funds has occured.
+\item Collusion between parties to pool assets can enable an insolvent exchange to pass a proof of solvency. However the exchange is forced in this case to proactively seek and implement collusion, which raises the chances of discovery. It also goes to motive for fraud (many bankrupt exchanges argue they were just incompetent and it is difficult to distinguish). 
+\item Trusted execution environments (TEEs) can reduce trust amongst colluders by sharing the ability to prove ownership without sharing the key itself. However we can adapt $\pi_\mathsf{keys}$ (the $\Sigma$-protocol inside it) for complete knowledge~\cite{completeknowledge}.
+\item Demonstrably holding cryptocurrencies in an address does not mean the money is unencumbered. For example, it might be in use off-chain as collateral for a loan. 
+\end{itemize}
+
+% = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
