@@ -1,9 +1,12 @@
 \documentclass[letterpaper,12pt,onecolumn,final]{report}
 
+% \bibliographystyle{plainurl}
+
 % = = = Packages
 
 \input{setup/packages}
 \input{setup/macros}
+\input{setup/alg}
 
 % = = = Layout
 
@@ -19,6 +22,9 @@
 % = = = Front Matter
 
 \begin{document}
+
+\graphicspath{{./figures/}}
+
 \pagenumbering{roman}
 
 \setstretch{1.25}
@@ -39,7 +45,7 @@
 
 \setstretch{2}
 \input{sections/04-contents} % Table of Contents/Tables/Figures
-\newpage   
+\newpage
        
 % = = = Main Body 
 
@@ -51,9 +57,12 @@
 
 \addcontentsline{toc}{chapter}{Bibliography}  %  Add Bibliography to TOC
 \singlespacing % save space in the bibliography
-\bibliographystyle{abbrv}
-\bibliography{bib/pulp}
-\nocite{*}
+
+\clearpage
+\appendix
+
+\input{sections/a1}
+% \input{sections/a2}
 
 % = = = = = = Done 
 

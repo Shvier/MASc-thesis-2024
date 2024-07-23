@@ -1,0 +1,157 @@
+% !TEX root = ../main.tex
+
+\section{Proof Sketch of Security}
+\label{app:proof}
+
+\subsection{Definitions}
+\label{app:defs}
+
+Definitions~\ref{def:1} and~\ref{def:2} are taken largely verbatim from the Provisions paper at CCS 2015~\cite{provisions}. Let $\mathcal{A}$ (exchange-controlled addresses) and $\mathcal{A}'$ (anonymity set of addresses) denote mappings $(y = g^x) \mapsto \text{bal}(y)$ where $\mathcal{A} \subseteq \mathcal{A}'$, $y$ is the public key corresponding to a Bitcoin address with private key $x$ and $\text{bal}(y)$ is the amount of currency, or assets, observably spendable by this key on the blockchain. Let $\mathcal{L}$ denote a mapping $\text{ID} \mapsto \ell$ where $\ell$ is the amount of currency, or liabilities, owed by the exchange to each user identified by the unique identity ID. A balance is a positive integer in $[0,\mathsf{MaxETH}]$ for a known upper-bound $\mathsf{MaxETH}$. The size of $\mathcal{A}'$ is known, the size of $\mathcal{A}$ is generally unknown (beyond being less than or equal to $\mathcal{A}'$), and the size of $\mathcal{L}$ is generally unknown (see Definition \ref{def:2}(4) below). 
+
+\begin{definition}[Valid Pair]
+\label{def:1}
+
+We say that $\mathcal{A}$ and $\mathcal{L}$ are a valid pair with respect to a positive integer $\mathsf{MaxETH}$ iff $\forall \text{ID} \in \mathcal{L}$,
+
+\begin{itemize}
+\item $\sum_{y \in \mathcal{A}} \mathcal{A}[y] - \sum_{\mathsf{ID} \in \mathcal{L}} \mathcal{L}[\text{ID}] \geq 0 \quad$
+\item $0 \leq \mathcal{L}[\text{ID}] \leq \mathsf{MaxETH}$
+\end{itemize}
+
+
+Consider an interactive protocol ProveSolvency run between an exchange $\mathcal{E}$ and user $\mathcal{U}$ such that
+
+\begin{itemize}
+\item $\mathsf{output}_{\mathcal{E}}^{\mathsf{ProveSolvency}}(1^k, \mathsf{MaxETH}, \mathcal{A}, \mathcal{L}, \mathcal{A}') = \emptyset$
+\item $\mathsf{output}_{\mathcal{U}}^{\mathsf{ProveSolvency}}(1^k, \mathsf{MaxETH}, \mathcal{A}', \mathsf{ID}, \ell) \in \{\text{ACCEPT}, \text{REJECT}\}$
+\end{itemize}
+   
+\end{definition}
+
+For brevity, we refer to these as $\text{out}_{\mathcal{E}}$ and $\text{out}_{\mathcal{U}}$ respectively. Next we define, with reference to the valid pair definition, a privacy-preserving proof of solvency.
+
+
+\begin{definition}[Privacy-Preserving Proof of Solvency]
+\label{def:2}
+
+A privacy-preserving proof of solvency is a probabilistic polynomial-time interactive protocol ProveSolvency, with inputs/outputs as above, such that the following properties hold:
+
+\begin{enumerate}
+\item \textit{Correctness}. If $\mathcal{A}$ and $\mathcal{L}$ are a valid pair and $\mathcal{L}[\text{ID}] = \ell$, then $\Pr[\text{out}_{\mathcal{U}} = \text{ACCEPT}] = 1$.
+\item \textit{k-Soundness}. If $\mathcal{A}$ and $\mathcal{L}$ are instead not a valid pair, or if $\mathcal{L}[\text{ID}] \neq \ell$, then $\Pr[\text{out}_{\mathcal{U}} = \text{REJECT}] \geq 1 - \mathsf{negl}(k)$.
+\item \textit{Ownership}. For all valid pairs $\mathcal{A}$ and $\mathcal{L}$, if $\Pr[\text{out}_{\mathcal{U}} = \text{ACCEPT}] = 1$, then the exchange must have ‘known’ the private keys associated with the public keys in $\mathcal{A}$; i.e., there exists an extractor that, given $\mathcal{A}$, $\mathcal{L}$, and rewindable black-box access to exchange $\mathcal{E}$, can produce $x$ for all $y \in \mathcal{A}$.
+\item \textit{Privacy}. A potentially dishonest user $\mathcal{U}'$ interacting with an honest exchange $\mathcal{E}$ cannot learn anything about a valid pair $\mathcal{A}$ and $\mathcal{L}$ beyond its validity and $\mathcal{L}[\text{ID}]$ (and possibly $|\mathcal{A}|$ and $|\mathcal{L}|$); i.e., even a cheating user cannot distinguish between an interaction using the real pair $\mathcal{A}$ and $\mathcal{L}$ and any other (equally sized) valid pair $\hat{\mathcal{A}}$ and $\hat{\mathcal{L}}$ such that $\hat{\mathcal{L}}[\text{ID}] = \mathcal{L}[\text{ID}]$.
+\end{enumerate}
+\end{definition}
+
+
+% = = = = = = = 
+
+
+\subsection{Claims}
+
+Ultimately we will prove the following theorem:
+
+\thmmaster*
+
+However before doing so, we will build up a number of claims. In Section~\ref{sec:proof}, we have proven the following two theorems.
+
+\sigmaclaim*
+
+\nizkclaim*
+
+
+% = = = = = = = 
+
+\subsubsection{The $\pi_\mathsf{keys}$ argument}
+
+\begin{claim}\label{thm:keys} $\pi_\mathsf{keys}$ is complete, sound, and zero knowledge. \end{claim}
+
+\begin{proof}[Proof (Sketch)] Recall that the $\pi_\mathsf{keys}$ argument contains the relation proven to be NIZKP in theorem~\ref{thm:nizkclaim}. It remains to be shown the rest of the protocol (outer frame in Protocol~\ref{alg:boot}) is secure. Completeness follows from Protocol~\ref{alg:boot}. The remainder of the protocol involves the prover demonstrating that the selector polynomial encodes a 1 at index $\omega^i$ iff the corresponding $i$-th run of the $\Sigma$-protocol used $s=1$, and contains a 0 otherwise. For $\pi_\mathsf{keys}$ to be sound, it requires (i) the polynomial commitment scheme (PCS) to be binding and (ii) the PCS to have a sound point-evaluation argument. These two properties are both demonstrated for KZG in the original paper~\cite{kzg}. Specifically these two properties rely on four assumptions:
+
+\begin{itemize}
+\item \textbf{KZG.A1}: The trusted setup outputs a structured reference string (SRS) with the value of $\tau$ unknown to the $\prv$. 
+\item \textbf{KZG.A2}: The value of $\tau$ cannot be extracted from the SRS which assumes the $\prv$ is computationally bounded and relies on (for us in \bls) the $t$-strong Diffie-Hellman (t-SDH) assumption.
+\item \textbf{KZG.A3}: If an adversary interpolates a polynomial through the point $(\omega^i,y)$ such that $y=P(\omega^i)$ but claims $y'=P(\omega^i)$ for some $y'\neq y$ then the probability that $\tau-y'$ evenly divides $y=P(\tau)$ is overwhelmingly low. This property can be demonstrated using the Schwartz-Zippel lemma by showing the number of $\tau$ values satisfying this property is bounded from above by $d$/$q$ where $d$ is the degree of the polynomial and $q$ is the size of the exponent group. For \bls with 255-bit exponents and 2-adicity of 32, this is close to $2^{32-255}=2^{-233}$ which is negligible.
+\end{itemize}
+
+Finally, in our protocol $\prv$ does not reveal the evaluation of the polynomial at a point, $\prv$ instead reveals a commitment to the evaluation. However this modification (see Section~\ref{sec:kzgOpenComm}) does not add any steps to KZG, it in fact just removes a step. KZG opens to a commitment first and then to opens the commitment to the evaluation at that point. Our modification just omits the last step. The commitment can be seen as a Pedersen commitment or a KZG commitment to a degree-0 polynomial through the committed value (both are equivalent, modulo the difference in the trusted setup). 
+
+For $\pi_\mathsf{keys}$ to be zero-knowledge, it requires (i) the polynomial commitment scheme (PCS) to be hiding and (ii) the PCS to have a point-evaluation argument that leaks no more than the evaluated point. In zero-knowledge (Pedersen) form, KZG commitments (like Pedersen commitments) are perfectly binding. Specifically, if $\prv$ constructs a random polynomial $\hat\phi(X)$ and publishes the polynomial commitment $\cm_\phi$ such that $\cm_\phi=\gb^{\phi(\tau)}\hb^{\hat\phi(\tau)}$, there exists a $\hat\phi(X)$ for every $\phi(\tau)$ that commits to $\cm_\phi$. Finding one is computationally difficult as it requires knowledge of the discrete logarithm between $\gb$ and $\hb$ (already assumed difficult as a corollary of KZG.A2: t-SHD). Finally, the KZG paper argues the opening protocol does not any information about the polynomial beyond the the evaluation point itself~\cite{kzg}. (In later claims, we will need to consider if the evaluation point itself leaks information about the polynomial if selected randomly). 
+
+For future claims, we encapsulate all assumptions about KGZ as a \textit{polynomial oracle}. \end{proof}
+
+% = = = = = = = 
+
+\subsubsection{The $\pi_\mathsf{assets}$ argument}
+
+\begin{claim}\label{thm:assets} $\pi_\mathsf{assets}$ is complete, sound, and zero knowledge. \end{claim}
+
+
+\begin{proof}[Proof (Sketch)] Completeness follows from Protocol~\ref{alg:poa}. For soundness, an additive accumulator protocol is utilized. Such protocols can be found in multiplicative form in Plonk~\cite{plonk}, and in both forms in many other protocols and tutorials on zk-SNARKs. They consist of two constraints which have been shown elsewhere to be sufficient for summations. One  constraint proves the starting values are the same ($\sigma(\omega^{n-1})=\delta(\omega^{n-1})\cdot\phi(\omega^{n-1})$), and the other that each successive value in the accumulative vector adds its adjacent value with the corresponding value ($\sigma(X)-\sigma(X\omega)=\delta(X)\cdot\phi(X)$). The verifier can check $\delta(X)$ directly and $\phi(X)$ is proven in Claim~\ref{thm:keys}. For zero-knowledge, we remind the reader that KZG-specific assumptions are encapsulated in the polynomial oracle assumption. To check the constraints, $\prv$ will run $\open(\sigma,\delta,\phi)$ which includes opening the polynomials a random evaluation point $\zeta$ and $\open(p_0)$ at $\zeta\omega$. 
+ Opening  at a random point is not zero-knowledge without the extra steps taken in the zero-knowledge extension $\open$. Precisely, a malicious $\vrf$ with a guess at the value of the polynomial $\phi'(X)$ for any of the polynomials can check if $\phi'(\zeta)$ matches the opened value, which will overwhelming prove $\vrf$'s guess is correct. To combat this, $\open$ adds two random points to polynomial and provides programmable access to the simulator over these points. \end{proof}
+
+% = = = = = = = 
+
+\subsubsection{The $\pi_\mathsf{liabilities}$ argument}
+
+\begin{claim}\label{thm:liabilities} $\pi_\mathsf{liabilities}$ is complete, sound, and zero knowledge. \end{claim}
+
+\begin{proof}[Proof (Sketch)] Completeness follows from Protocol~\ref{alg:pol}. Given a \textit{polynomial oracle}, $\prv$ commits to a set of integers in binary form and build a vector to accumulate the bits into the integer representation (call this the range accumulator). Soundness of this aspect follows from the soundness of the range proof~\cite{rangeproof} which uses the polynomial oracle to demonstrate three constraints: that the range accumulator starts with a 0 or 1; that the binary relationship between adjacent bits in the range accumulator are 0 or 1; and that the header of the range accumulator matches a standalone commitment to the integer (we do not use this, we just use the header values directly from $p_1(X)$). To complete soundness, $\vrf$ must check that no more than $k$ bits are used for an integer in $[0,k)$. Outside of the range proof, the $\prv$ builds a vector ($p_0(X)$) to accumulate the sum of each header value ($p_1(X)$) from the set of range accumulators for each user account. This is the same protocol as Claim~\ref{thm:assets}. For zero knowledge, it remains to consider what evaluation points are leaked by $\pi_\mathsf{liabilities}$. It opens $w_1,w_2,w_3,v_1,v_2,\dots,v_{m-1}$ to 0 which are consistent with exactly the constraints of the range accumulator and the additive accumulator. To check the constraints, $\prv$ will run $\open(p_0,p_1,p_2,\dots,p_k)$ at a random evaluation point $\zeta$ and $\open(p_0)$ at $\zeta\omega$. As in Claim~\ref{thm:assets}, opening  at a random point is not zero-knowledge without the extra steps taken in the zero-knowledge extension $\open$.\end{proof}
+
+
+
+
+
+% = = = = = = = 
+
+\subsubsection{The $\pi_\mathsf{users}$ argument}
+
+\begin{claim}\label{thm:users} $\pi_\mathsf{users}$ is complete, sound, and zero knowledge. \end{claim}
+
+\begin{proof}[Proof (Sketch)]
+Completeness follows from Protocol~\ref{alg:users}. 
+
+Soundness follows directly from the polynomial oracle which, for $\pi_\mathsf{users}$, opens two points at the same index on two polynomials---one demonstrates the user's balance and one demonstrate's the user's identification. The sufficincy of this to bind the balance to the user ID is already proven in Provisions which uses the same mechanism (for a different commitment scheme). The KZG assumptions already addressed in Claim~\ref{thm:keys} covers the rest. Zero knolwedge follows from the properties of KZG commitments---seeing a polynomial commitment and an opening at a specific evaluation point reveals no further information about any other point on the polynomial. KZG does not reveal the degree of the poiynomial, which would provide the number of users of the exchange, but an upperbound exists in the size of the SRS from the trusted setup (and if it can be assumed the prover will act efficiently, the largest root of unity). In both cases. \end{proof}
+
+% = = = = = = = 
+
+\subsubsection{The $\pi_\mathsf{solvency}$ argument}
+
+
+\begin{claim}\label{thm:solvency} $\pi_\mathsf{solvency}$ is complete, sound, and zero knowledge. \end{claim}
+
+\begin{proof}[Proof (Sketch)]
+Completeness follows from Protocol~\ref{alg:pos}. The soundness of the argument is that $\sigma(\omega^0)$ is sound under Claim~\ref{thm:assets}, $p_1(\omega^0)$ is sound under Claim~\ref{thm:liabilities}, and $\psi(\omega^0)$ is zero or positive by the soundness of the range proof (as addressed in Claim~\ref{thm:liabilities}). The overall constraint demonstrates that total assets is equal or exceeds total liabilities. Zero knowledge similarly follows from the same previous claims (\ref{thm:assets}, \ref{thm:liabilities}, and range proof).\end{proof}
+
+
+% = = = = = = = 
+
+\subsection{The main theorem}
+
+Recall the theorem:
+
+\thmmaster*
+
+\begin{proof}[Proof (Sketch)] To prove this theorem, we rely on the previous claims. There are no new insights, it is simply a matter of mapping what is proven in the claims onto what is required in the definition of a privacy-preserving proof of solvency.
+
+\begin{enumerate}
+\item \textit{Correctness}. If $\pi_\mathsf{solvency}$ is complete (Claim~\ref{thm:solvency}), then \Sys is correct according to Definition~\ref{def:2}.
+
+\item \textit{k-Soundness}. If $\mathcal{A}$ and $\mathcal{L}$ are not a valid pair and the protocol accepts with probability greater than $\mathsf{neg}(k)$, then $\pi_\mathsf{solvency}$ is not sound (contradicting Claim~\ref{thm:solvency}), where soundness is bounded by $k=\mathrm{min}[d/n,2^{-t}]$ where $d/n=2^{-233}$ (Schwartz-Zippel lemma for polynomial commitments in \bls) and $t=2^{-254}$ (challenge length for NIZKPs under Fiat-Shamir for a common challenge in \secp and \bls). If $\mathcal{L}[\text{ID}] \neq \ell$ (\ie the exchange provides the user with the wrong balance) and the protocol accepts with probability greater than $\mathsf{neg}(k)$, then $\pi_\mathsf{solvency}$ is not sound (contradicting Claim~\ref{thm:users}).
+
+\item \textit{Ownership}. Recall that ownership means that if the protocol accepts, there exists an extractor that can produce $x$ for all $y \in \mathcal{A}$. We show such an extractor in the proof of Theorem~\ref{thm:sigmaclaim}.
+
+\item \textit{Privacy}. Roughly, this means a (statically) corrupted user cannot distinguish between an interaction using the real pair $\mathcal{A}$ and $\mathcal{L}$ and any other (equally sized) valid pair $\hat{\mathcal{A}}$ and $\hat{\mathcal{L}}$ such that $\hat{\mathcal{L}}[\text{ID}] = \mathcal{L}[\text{ID}]$ (\ie the simulated pair records the same balance for all corrupted users as the real valid pair). This follows from $\pi_\mathsf{solvency}$ and $\pi_\mathsf{users}$ being zero-knowledge (Claims~\ref{thm:solvency} and \ref{thm:users}), where the former covers the case that the universally verifiable proof reveals private information, and the latter covering the supplementary user check proof. 
+\end{enumerate} 
+
+Therefore \Sys is a privacy-preserving proof of solvency.\end{proof}
+
+% = = = = = = = 
+
+%\subsection{Limitations of the proof}
+
+%The security definition is carefully crafted 
+
+
+

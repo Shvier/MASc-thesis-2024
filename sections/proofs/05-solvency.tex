@@ -1,0 +1,23 @@
+% !TEX root = ../../main.tex
+
+% = = = 
+
+\begin{Protocol*}[t!]
+\begin{framed}
+\footnotesize
+
+% = = = 
+
+\begin{enumerate}
+    \item $\prv$ computes equality $\mathsf{eq}$ as the total assets minus the total liabilities. 
+    \item $\prv$ publishes commitment to polynomial $\phi(X)$ where $\psi(\omega^0)=\mathsf{eq}$.
+    \item $\prv$ generates a range proof for $\mathsf{eq}$ in $\phi(X)$ to demonstrate it is a non-negative integer.
+    \item $\prv$ opens $\sigma(\omega^0) - p_1(\omega^0) - \psi(\omega^0)$ to the value 0.
+\end{enumerate}
+
+% = = = 
+
+\normalsize	
+\end{framed}
+\caption{The \pos proof demonstrates that the total assets exceed the total liabilities by a non-negative integer (called the equity). \label{alg:pos}}
+\end{Protocol*}

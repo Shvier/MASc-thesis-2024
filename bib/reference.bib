@@ -1,0 +1,328 @@
+%% This BibTeX bibliography file was created using BibDesk.
+%% https://bibdesk.sourceforge.io/
+
+%% Created for Jeremy Clark at 2024-05-22 14:21:12 -0400 
+
+
+%% Saved with string encoding Unicode (UTF-8) 
+
+
+
+@inproceedings{weakfsattacks,
+	abstract = {A flurry of excitement amongst researchers and practitioners has produced modern proof systems built using novel technical ideas and seeing rapid deployment, especially in cryptocurrencies. Most of these modern proof systems use the Fiat-Shamir (F-S) transformation, a seminal method of removing interaction from a protocol with a public-coin verifier. Some prior work has shown that incorrectly applying F-S (i.e., using the so-called &quot;weak&quot; F-S transformation) can lead to breaks of classic protocols like Schnorr's discrete log proof; however, little is known about the risks of applying F-S incorrectly for modern proof systems seeing deployment today.In this paper, we fill this knowledge gap via a broad theoretical and practical study of F-S in implementations of modern proof systems. We perform a survey of open-source implementations and find 30 weak F-S implementations affecting 12 different proof systems. For four of these---Bulletproofs, Plonk, Spartan, and Wesolowski's VDF---we develop novel knowledge soundness attacks accompanied by rigorous proofs of their efficacy. We perform case studies of applications that use vulnerable implementations, and demonstrate that a weak F-S vulnerability could have led to the creation of unlimited currency in a private smart contract platform. Finally, we discuss possible mitigations and takeaways for academics and practitioners.},
+	address = {Los Alamitos, CA, USA},
+	author = {Q. Dao and J. Miller and O. Wright and P. Grubbs},
+	booktitle = {2023 IEEE Symposium on Security and Privacy (SP)},
+	date-added = {2024-05-22 14:21:01 -0400},
+	date-modified = {2024-05-22 14:21:10 -0400},
+	doi = {10.1109/SP46215.2023.10179408},
+	keywords = {surveys;privacy;smart contracts;cryptocurrency;security},
+	month = {may},
+	pages = {199-216},
+	publisher = {IEEE Computer Society},
+	title = {Weak Fiat-Shamir Attacks on Modern Proof Systems},
+	url = {https://doi.ieeecomputersociety.org/10.1109/SP46215.2023.10179408},
+	year = {2023},
+	bdsk-url-1 = {https://doi.ieeecomputersociety.org/10.1109/SP46215.2023.10179408},
+	bdsk-url-2 = {https://doi.org/10.1109/SP46215.2023.10179408}}
+
+@inproceedings{weakfs,
+	abstract = {The Fiat-Shamir transformation is the most efficient construction of non-interactive zero-knowledge proofs.},
+	address = {Berlin, Heidelberg},
+	author = {Bernhard, David and Pereira, Olivier and Warinschi, Bogdan},
+	booktitle = {Advances in Cryptology -- ASIACRYPT 2012},
+	date-added = {2024-05-22 14:14:12 -0400},
+	date-modified = {2024-05-22 14:14:21 -0400},
+	editor = {Wang, Xiaoyun and Sako, Kazue},
+	isbn = {978-3-642-34961-4},
+	pages = {626--643},
+	publisher = {Springer Berlin Heidelberg},
+	title = {How Not to Prove Yourself: Pitfalls of the Fiat-Shamir Heuristic and Applications to Helios},
+	year = {2012}}
+
+@inproceedings{sigma,
+	author = {Maurer, Ueli},
+	booktitle = {International Conference on Cryptology in Africa},
+	date-added = {2024-05-22 09:48:28 -0400},
+	date-modified = {2024-05-22 09:48:31 -0400},
+	organization = {Springer},
+	pages = {272--286},
+	title = {Unifying zero-knowledge proofs of knowledge},
+	year = {2009}}
+
+@inproceedings{provisions,
+	abstract = {Bitcoin exchanges function like banks, securely holding customers' bitcoins on their behalf. Several exchanges have suffered catastrophic losses with customers permanently losing their savings. A proof of solvency demonstrates cryptographically that the exchange controls sufficient reserves to settle each customer's account. We introduce Provisions, a privacy-preserving proof of solvency whereby an exchange does not have to disclose its Bitcoin addresses; total holdings or liabilities; or any information about its customers. We also propose an extension which prevents exchanges from colluding to cover for each other's losses. We have implemented Provisions and it offers practical computation times and proof sizes even for a large Bitcoin exchange with millions of customers.},
+	address = {New York, NY, USA},
+	author = {Dagher, Gaby G. and B\"{u}nz, Benedikt and Bonneau, Joseph and Clark, Jeremy and Boneh, Dan},
+	booktitle = {Proceedings of the 22nd ACM SIGSAC Conference on Computer and Communications Security},
+	doi = {10.1145/2810103.2813674},
+	isbn = {9781450338325},
+	keywords = {bitcoin, exchange services, solvency, zero knowledge},
+	location = {Denver, Colorado, USA},
+	numpages = {12},
+	pages = {720--731},
+	publisher = {Association for Computing Machinery},
+	series = {CCS '15},
+	title = {Provisions: Privacy-preserving Proofs of Solvency for Bitcoin Exchanges},
+	url = {https://doi.org/10.1145/2810103.2813674},
+	year = {2015},
+	bdsk-url-1 = {https://doi.org/10.1145/2810103.2813674}}
+
+@inproceedings{clash,
+	author = {Kusters, Ralf and Truderung, Tomasz and Vogt, Andreas},
+	booktitle = {2012 IEEE Symposium on Security and Privacy},
+	date-added = {2024-05-21 12:46:02 -0400},
+	date-modified = {2024-05-21 12:46:06 -0400},
+	doi = {10.1109/SP.2012.32},
+	keywords = {Nominations and elections;Browsers;Electronic voting;Encryption;Educational institutions;accountability;verifiability;protocol analysis;voting},
+	pages = {395-409},
+	title = {Clash Attacks on the Verifiability of E-Voting Systems},
+	year = {2012},
+	bdsk-url-1 = {https://doi.org/10.1109/SP.2012.32}}
+
+@inproceedings{notus,
+	address = {Philadelphia, PA},
+	author = {Jiajun Xin and Arman Haghighi and Xiangan Tian and Dimitrios Papadopoulos},
+	booktitle = {33rd USENIX Security Symposium (USENIX Security 24)},
+	date-added = {2024-05-16 11:15:23 -0400},
+	date-modified = {2024-05-16 11:17:24 -0400},
+	month = aug,
+	publisher = {USENIX Association},
+	title = {Notus: Dynamic Proofs of Liabilities from Zero-knowledge {RSA} Accumulators},
+	url = {https://www.usenix.org/conference/usenixsecurity24/presentation/xin},
+	year = {2024},
+	bdsk-url-1 = {https://www.usenix.org/conference/usenixsecurity24/presentation/xin}}
+
+@inproceedings{tau,
+	abstract = {We propose several decentralized ceremonies for constructing a powers-of-tau structured reference string (SRS). Our protocols make use of a blockchain platform to run in a permissionless manner, where anyone can contribute randomness in exchange for paying the requisite transaction fees. The resulting SRS is secure as long as any single party participates honestly. We introduce several protocols optimized for different sized powers-of-tau setups and using an on-chain or off-chain data availability model to store the resulting string. We implement our most efficient protocol on top of Ethereum, demonstrating practical concrete performance.},
+	address = {Cham},
+	author = {Nikolaenko, Valeria and Ragsdale, Sam and Bonneau, Joseph and Boneh, Dan},
+	booktitle = {Applied Cryptography and Network Security},
+	date-added = {2024-05-16 10:38:27 -0400},
+	date-modified = {2024-05-16 10:38:30 -0400},
+	editor = {P{\"o}pper, Christina and Batina, Lejla},
+	isbn = {978-3-031-54776-8},
+	pages = {105--134},
+	publisher = {Springer Nature Switzerland},
+	title = {Powers-of-Tau to the People: Decentralizing Setup Ceremonies},
+	year = {2024}}
+
+@misc{completeknowledge,
+	author = {Mahimna Kelkar and Kushal Babel and Philip Daian and James Austgen and Vitalik Buterin and Ari Juels},
+	date-added = {2024-05-16 10:29:25 -0400},
+	date-modified = {2024-05-16 10:29:33 -0400},
+	howpublished = {Cryptology ePrint Archive, Paper 2023/044},
+	note = {\url{https://eprint.iacr.org/2023/044}},
+	title = {Complete Knowledge: Preventing Encumbrance of Cryptographic Secrets},
+	url = {https://eprint.iacr.org/2023/044},
+	year = {2023},
+	bdsk-url-1 = {https://eprint.iacr.org/2023/044}}
+
+@inproceedings{broken,
+	abstract = {Since the Mt. Gox Bitcoin exchange collapse in 2014, a number of custodial cryptocurrency wallets offer a form of financial solvency proofs to bolster their users' confidence. We identified that despite recent academic works that highlight potential security and privacy vulnerabilities in popular auditability protocols, a number of high-profile exchanges implement these proofs incorrectly, thus defeating their initial purpose. In this paper we provide an overview of broken liability proof systems used in production today and suggest fixes, in the hope of closing the gap between theory and practice. Surprisingly, many of these exploitable attacks are due to a) weak cryptographic operations, for instance SHA1 hashing or hash-output truncation to 8 bytes, b) lack of data binding, such as wrong Merkle tree inputs and misuse of public bulletin boards, and c) lack of user-ID uniqueness guarantees.},
+	address = {Cham},
+	author = {Chalkias, Konstantinos and Chatzigiannis, Panagiotis and Ji, Yan},
+	booktitle = {Financial Cryptography and Data Security. FC 2022 International Workshops},
+	date-added = {2024-05-16 10:27:12 -0400},
+	date-modified = {2024-05-16 10:27:19 -0400},
+	editor = {Matsuo, Shin'ichiro and Gudgeon, Lewis and Klages-Mundt, Ariah and Perez Hernandez, Daniel and Werner, Sam and Haines, Thomas and Essex, Aleksander and Bracciali, Andrea and Sala, Massimiliano},
+	isbn = {978-3-031-32415-4},
+	pages = {106--117},
+	publisher = {Springer International Publishing},
+	title = {Broken Proofs of Solvency in Blockchain Custodial Wallets and Exchanges},
+	year = {2023}}
+
+@misc{bdfg,
+	author = {Dan Boneh and Justin Drake and Ben Fisch and Ariel Gabizon},
+	howpublished = {Cryptology ePrint Archive, Paper 2020/081},
+	note = {\url{https://eprint.iacr.org/2020/081}},
+	title = {Efficient polynomial commitment schemes for multiple points and polynomials},
+	url = {https://eprint.iacr.org/2020/081},
+	year = {2020},
+	bdsk-url-1 = {https://eprint.iacr.org/2020/081}}
+
+@misc{verkle,
+	author = {John Kuszmaul},
+	howpublished = {Technical report, MIT},
+	note = {\url{https://math.mit.edu/research/highschool/primes/materials/2018/Kuszmaul.pdf}},
+	title = {Verkle trees},
+	url = {https://math.mit.edu/research/highschool/primes/materials/2018/Kuszmaul.pdf},
+	year = {2018},
+	bdsk-url-1 = {https://math.mit.edu/research/highschool/primes/materials/2018/Kuszmaul.pdf}}
+
+@misc{rangeproof,
+	author = {Dan Boneh and Ben Fisch and Ariel Gabizon and Zac Williamson},
+	date-modified = {2024-05-16 11:18:02 -0400},
+	title = {A Simple Range Proof From Polynomial Commitments},
+	url = {https://hackmd.io/@dabo/B1U4kx8XI},
+	urldate = {2023-11-17},
+	year = 2019,
+	bdsk-url-1 = {https://hackmd.io/@dabo/B1U4kx8XI}}
+
+@misc{vitaliksol,
+	author = {Vitalik Buterin},
+	date-modified = {2024-05-16 11:18:13 -0400},
+	title = {Having a safe CEX: proof of solvency and beyond},
+	url = {https://vitalik.ca/general/2022/11/19/proof_of_solvency.html#improving-privacy-and-robustness-with-zk-SNARKs},
+	urldate = {2023-11-17},
+	year = 2022,
+	bdsk-url-1 = {https://vitalik.ca/general/2022/11/19/proof_of_solvency.html#improving-privacy-and-robustness-with-zk-SNARKs}}
+
+@misc{chase22,
+	author = {Melissa Chase and Michele Orr{\`u} and Trevor Perrin and Greg Zaverucha},
+	howpublished = {Cryptology ePrint Archive, Paper 2022/1593},
+	note = {\url{https://eprint.iacr.org/2022/1593}},
+	title = {Proofs of discrete logarithm equality across groups},
+	url = {https://eprint.iacr.org/2022/1593},
+	year = {2022},
+	bdsk-url-1 = {https://eprint.iacr.org/2022/1593}}
+
+@misc{damgard10,
+	author = {Ivan Damgard},
+	title = {On $\Sigma$-protocols},
+	url = {https://www.cs.au.dk/~ivan/Sigma.pdf},
+	urldate = {2024-02-23},
+	year = 2010,
+	bdsk-url-1 = {https://www.cs.au.dk/~ivan/Sigma.pdf}}
+
+@misc{plonk,
+	author = {Ariel Gabizon and Zachary J. Williamson and Oana Ciobotaru},
+	howpublished = {Cryptology ePrint Archive, Paper 2019/953},
+	note = {\url{https://eprint.iacr.org/2019/953}},
+	title = {PLONK: Permutations over Lagrange-bases for Oecumenical Noninteractive arguments of Knowledge},
+	url = {https://eprint.iacr.org/2019/953},
+	year = {2019},
+	bdsk-url-1 = {https://eprint.iacr.org/2019/953}}
+
+@misc{fflonk,
+	author = {Ariel Gabizon and Zachary J. Williamson},
+	howpublished = {Cryptology ePrint Archive, Paper 2021/1167},
+	note = {\url{https://eprint.iacr.org/2021/1167}},
+	title = {fflonk: a Fast-Fourier inspired verifier efficient version of PlonK},
+	url = {https://eprint.iacr.org/2021/1167},
+	year = {2021},
+	bdsk-url-1 = {https://eprint.iacr.org/2021/1167}}
+
+@inproceedings{gmr,
+	address = {New York, NY, USA},
+	author = {Goldwasser, S and Micali, S and Rackoff, C},
+	booktitle = {Proceedings of the Seventeenth Annual ACM Symposium on Theory of Computing},
+	doi = {10.1145/22145.22178},
+	isbn = {0897911512},
+	location = {Providence, Rhode Island, USA},
+	numpages = {14},
+	pages = {291--304},
+	publisher = {Association for Computing Machinery},
+	series = {STOC '85},
+	title = {The knowledge complexity of interactive proof-systems},
+	url = {https://dl.acm.org/doi/10.1145/22145.22178},
+	year = {1985},
+	bdsk-url-1 = {https://dl.acm.org/doi/10.1145/22145.22178},
+	bdsk-url-2 = {https://doi.org/10.1145/22145.22178}}
+
+@misc{nam2023survey,
+	author = {Nam, Ihyun},
+	date-modified = {2024-05-16 11:18:53 -0400},
+	journal = {arXiv preprint arXiv:2306.11383},
+	title = {A Survey of Multivariate Polynomial Commitment Schmes},
+	year = {2023}}
+
+@inproceedings{pedersen,
+	address = {Berlin, Heidelberg},
+	author = {Pedersen, Torben Pryds},
+	booktitle = {Advances in Cryptology --- CRYPTO '91},
+	editor = {Feigenbaum, Joan},
+	pages = {129--140},
+	publisher = {Springer Berlin Heidelberg},
+	title = {Non-Interactive and Information-Theoretic Secure Verifiable Secret Sharing},
+	year = {1992}}
+
+@inproceedings{kzg,
+	author = {Kate, Aniket and Zaverucha, Gregory M and Goldberg, Ian},
+	booktitle = {Advances in Cryptology-ASIACRYPT 2010: 16th International Conference on the Theory and Application of Cryptology and Information Security, Singapore, December 5-9, 2010. Proceedings 16},
+	organization = {Springer},
+	pages = {177--194},
+	title = {Constant-size commitments to polynomials and their applications},
+	year = {2010}}
+
+@inproceedings{fs,
+	author = {Fiat, Amos and Shamir, Adi},
+	booktitle = {Conference on the theory and application of cryptographic techniques},
+	organization = {Springer},
+	pages = {186--194},
+	title = {How to prove yourself: Practical solutions to identification and signature problems},
+	year = {1986}}
+
+@misc{zkrp,
+	author = {Miranda Christ and Foteini Baldimtsi and Konstantinos Kryptos Chalkias and Deepak Maram and Arnab Roy and Joy Wang},
+	howpublished = {Cryptology ePrint Archive, Paper 2024/430},
+	note = {\url{https://eprint.iacr.org/2024/430}},
+	title = {SoK: Zero-Knowledge Range Proofs},
+	url = {https://eprint.iacr.org/2024/430},
+	year = {2024},
+	bdsk-url-1 = {https://eprint.iacr.org/2024/430}}
+
+@inproceedings{bulletproofs,
+	author = {B{\"u}nz, Benedikt and Bootle, Jonathan and Boneh, Dan and Poelstra, Andrew and Wuille, Pieter and Maxwell, Greg},
+	booktitle = {2018 IEEE Symposium on Security and Privacy (SP)},
+	doi = {10.1109/SP.2018.00020},
+	keywords = {Protocols;Bitcoin;Contracts;Aggregates;Privacy;Bitcoin;Blockchain;Zero Knowledge proof of knowledge;confidential transactions;privacy},
+	pages = {315-334},
+	title = {Bulletproofs: Short Proofs for Confidential Transactions and More},
+	year = {2018},
+	bdsk-url-1 = {https://doi.org/10.1109/SP.2018.00020}}
+
+@inproceedings{dapol,
+	abstract = {Proof of liabilities (PoL) allows a prover to prove his/her liabilities to a group of verifiers. This is a cryptographic primitive once used only for proving financial solvency but is also applicable to domains outside finance, including transparent and private donations, new algorithms for disapproval voting and publicly verifiable official reports such as COVID-19 daily cases. These applications share a common nature in incentives: it's not in the prover's interest to increase his/her total liabilities. We generalize PoL for these applications by attempting for the first time to standardize the goals it should achieve from security, privacy and efficiency perspectives. We also propose DAPOL+, a concrete PoL scheme extending the state-of-the-art DAPOL protocol but providing provable security and privacy, with benchmark results demonstrating its practicality. In addition, we explore techniques to provide additional features that might be desired in different applications of PoL and measure the asymptotic probability of failure.},
+	address = {New York, NY, USA},
+	author = {Ji, Yan and Chalkias, Konstantinos},
+	booktitle = {Proceedings of the 2021 ACM SIGSAC Conference on Computer and Communications Security},
+	doi = {10.1145/3460120.3484802},
+	isbn = {9781450384544},
+	keywords = {tax reporting, sparse Merkle trees, solvency, range proofs, fundraising, distributed audit, disapproval voting, credit score, blockchains, COVID-19 reporting},
+	location = {Virtual Event, Republic of Korea},
+	numpages = {22},
+	pages = {3465--3486},
+	publisher = {Association for Computing Machinery},
+	series = {CCS '21},
+	title = {Generalized Proof of Liabilities},
+	url = {https://doi-org.lib-ezproxy.concordia.ca/10.1145/3460120.3484802},
+	year = {2021},
+	bdsk-url-1 = {https://doi-org.lib-ezproxy.concordia.ca/10.1145/3460120.3484802},
+	bdsk-url-2 = {https://doi.org/10.1145/3460120.3484802}}
+
+@inproceedings{spp,
+	abstract = {In the wake of fraud scandals involving decentralized exchanges and the significant financial loss suffered by individuals, regulators are pressed to put mechanisms in place that enforce customer protections and capital requirements in decentralized ecosystems. Proof of liabilities (PoL) is such a mechanism: it allows a prover (e.g., an exchange) to prove its liability to a verifier (i.e., a customer).This paper introduces a fully privacy-preserving PoL scheme with short proofs. We store the prover's liabilities in a novel data structure, the sparse summation Verkle tree (SSVT), in which each internal node is a hiding vector commitment of its children and whose root commits to the sum of all the leaves in the tree. We leverage inner product arguments to prove that a user's liability is included in the total liabilities of the prover without leaking any information beyond the liability's inclusion. Our construction yields proofs of size Ologn N) where n is the arity of the SSVT and N is an upper bound on the number of users. Additionally, we show how to further optimize the proof size using aggregation. We benchmark our scheme using an SSVT of size 2256 and one of size 10^9 that covers the universe of all US social security numbers.},
+	address = {New York, NY, USA},
+	author = {Falzon, Francesca and Elkhiyaoui, Kaoutar and Manevich, Yacov and De Caro, Angelo},
+	booktitle = {Proceedings of the 2023 ACM SIGSAC Conference on Computer and Communications Security},
+	doi = {10.1145/3576915.3616645},
+	isbn = {9798400700507},
+	keywords = {central bank digital currency, cryptocurrency, proof of liabilities},
+	location = {<conf-loc>, <city>Copenhagen</city>, <country>Denmark</country>, </conf-loc>},
+	numpages = {15},
+	pages = {1805--1819},
+	publisher = {Association for Computing Machinery},
+	series = {CCS '23},
+	title = {Short Privacy-Preserving Proofs of Liabilities},
+	url = {https://doi-org.lib-ezproxy.concordia.ca/10.1145/3576915.3616645},
+	year = {2023},
+	bdsk-url-1 = {https://doi-org.lib-ezproxy.concordia.ca/10.1145/3576915.3616645},
+	bdsk-url-2 = {https://doi.org/10.1145/3576915.3616645}}
+
+@inproceedings{izpr,
+	author = {Trevor Conley and Nilsso Diaz and Diego Espada and Alvin Kuruvilla and Stenton Mayne and Xiang Fu},
+	booktitle = {Financial Cryptography and Data Security. FC 2024 International Workshops},
+	date-modified = {2024-05-22 08:01:14 -0400},
+	title = {IZPR: Instant Zero Knowledge Proof of Reserve},
+	url = {https://api.semanticscholar.org/CorpusID:266345810},
+	year = {2024},
+	bdsk-url-1 = {https://api.semanticscholar.org/CorpusID:266345810}}
+
+@misc{zeroledge,
+	author = {Jack Doerner and Abhi Shelat and D. Evans},
+	date-modified = {2024-05-16 11:18:33 -0400},
+	title = {ZeroLedge: Proving Solvency with Privacy},
+	url = {https://api.semanticscholar.org/CorpusID:211105655},
+	year = {2015},
+	bdsk-url-1 = {https://api.semanticscholar.org/CorpusID:211105655}}
