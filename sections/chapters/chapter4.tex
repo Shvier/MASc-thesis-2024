@@ -10,7 +10,7 @@ We adapt the security definition of a zero-knowledge proof of solvency from Prov
 
 % = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
-\subsection{Claims}
+\section{The \bootstrap Proof}
 \label{sec:claims}
 
 
@@ -43,3 +43,11 @@ A $\Sigma$-protocol for relation $\mathrm{ZKPoK} \{ (sk_i,s_i) :  [\mathsf{pk}_i
 Given the relation can proven with a ``standard'' $\Sigma$-protocol (per Thereom~\ref{thm:sigmaclaim}), we can use the well-known Fiat-Shamir heuristic to compile it to a NIZKP in the random oracle model. We do not repeat the proof for this (see~\cite{damgard10,sigma}) but stress that strong Fiat-Shamir~\cite{weakfs} needs to be used here and in the Poly-IOP components of \Sys, or practical attacks could be leveraged against the system (\cf~\cite{weakfsattacks}).\end{proof}
 
 % = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+\section{The \poa Argument}
+
+\section{The \pol Argument}
+
+\section{The \userproof Argument}
+
+\section{The \pos Argument}

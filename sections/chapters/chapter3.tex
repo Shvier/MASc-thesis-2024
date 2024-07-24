@@ -8,7 +8,7 @@ Once the \bootstrap output is provided, \poa takes it as input, along with the c
 
 % = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
-\subsection{The \bootstrap proof}
+\subsection{The \bootstrap Proof}
 \input{sections/proofs/01-bootstrap}
 
 Before presenting our \bootstrap proof, we quickly discuss a few approaches that helped us develop it. A highly relevant $\Sigma$-protocol from the literature, COPZ, proves that two commitments in two different groups (\eg \secp and \bls) commit to the same value~\cite{chase22}. The paper cites proof of assets as a use-case but does not work out a protocol. COPZ allows an exchange to `map' private keys from \secp to \bls. Two places this mapping could occur would be at the very start or the very end of the assets proof. At the end, it might look like this: an existing proof of assets protocol (\eg Provisions~\cite{provisions}) could be run to create a commitment to the total assets in \secp, then COPZ can be used to prove the same commitment in \bls, and finally this can be `glued' to a succinct proof of liabilities in \bls. However this does not leverage the fact that \bls might help make the assets proof succinct.
@@ -25,7 +25,7 @@ As this protocol is repeated for each key, it is not succinct and will be $O(\ka
 
 % = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
-\subsection{The \poa argument}
+\subsection{The \poa Argument}
 \input{sections/proofs/02-assets}
 
 The \bootstrap protocol proves that $\cm_\phi$ is a commitment to a selector polynomial $\phi(X)$ (in \bls) which marks the public keys owned by the exchange. At a given time (block number), the balances of every public key included in the anonymity set will be encoded in polynomial $\delta(X)$. The product of $\phi(X)\cdot\delta(X)$ will preserve the balance values owned by the exchange and zero-out the balance values not claimed by the exchange. The final step is produce a summation over the values in $\phi(X)\cdot\delta(X)$. The exchange will put $\phi(X)\cdot\delta(X)$ in accumulator form $\sigma(X)$ and prove its correctness. In this from, the total assets will sit at the head (first index) of $\sigma(X)$, which is $\sigma(\omega^0)$. The full details are provided in Protocol~\ref{alg:poa}.
@@ -34,7 +34,7 @@ The \bootstrap protocol proves that $\cm_\phi$ is a commitment to a selector pol
 
 \section{Proof of Liabilities}
 
-\subsection{The \pol argument}
+\subsection{The \pol Argument}
 \input{sections/proofs/03-liabilities}
 
 The exchange will commit to every user balance and produce a commitment of the total amount across all balances. Since the exchange is free to make-up additional users and include them, we want to make sure this does not help an insolvent exchange in any way. To do this, we force all balances to be zero or positive numbers. For a finite field, this means small integers that have no chance of exceeding the group order (modular reduction) when added together. In practice, we can limit ourselves to an even smaller range that is sufficient to capture what a balance in ETH (or fractions of ETH) might look like. These balances are expressed in binary and we use range proof from Section~\ref{sec:range}.
@@ -47,14 +47,14 @@ The protocol creates $k$ polynomials---the first polynomial $p_1$ for the first 
 
 % = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
-\subsection{The \userproof argument}
+\subsection{The \userproof Argument}
 \input{sections/proofs/04-user}
 
 The \userproof argument is conducted between the exchange and the user, so the user can check that their balance is correctly encoded into the polynomials used in \pol. If two users have the same balance, a malicious exchange might include only one of the balances and open up the same balance for each user. Unless if the users compared their proofs, they would not catch the exchange (\cf~\cite{broken}). This attack appears in other cryptographic protocols where users need to check things, the main one being cryptographic voting schemes. It has been studied under general definitions as a `clash attack'~\cite{clash}. The solution is to label each balance with a unique user identifier~\cite{provisions}. Labeling can be done with an additional polynomial of labels under the assumption that a user id and a balance needs to be at the same index. A user id can be the hash of the user's account name or email address.  The full protocol is given in Protocol~\ref{alg:users}.
 
 % = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
-\subsection{The \pos argument}
+\subsection{The \pos Argument}
 \input{sections/proofs/05-solvency}
 
 The final step of the proof is prove the total assets exceed the total liabilities. At the end of \poa, total assets contained in the polynomial evaluation point $\sigma(\omega^0)$; while at the end of \pol, the total liabilities are contained in $p_1(\omega^0)$. Assuming assets exceed liabilities by some amount, this amount can be added to the liability-side to provide a difference of exactly zero. The full argument is given in Protocol~\ref{alg:pos}.

@@ -1,4 +1,4 @@
-\chapter{Preliminaries}
+\chapter{Preliminaries and Related Work}
 
 \section{Accounting Terminology}
 
@@ -19,13 +19,25 @@ Circuit-based solutions are feasible but expensive for the prover---the authors 
 
 \section{Cryptographic Background}
 
+\subsection{Discrete Logarithm Assumption}
+
+\subsection{Pedersen Commitment}
+
+\subsection{Zero-Knowledge Proofs}
+
+\subsection{$\Sigma$-Protocol}
+
+\subsection{Disjunction of $\Sigma$-Protocols (OR Proof)}
+
+\subsection{Polynomial Commitment Scheme}
+
 \Sys is mostly a zero-knowledge argument that represents vectors of data as univariate polynomials, which are committed to and provided to the verifier. Properties of the vectors are demonstrated by manipulating the polynomials and opening points of the polynomials---a model called a polynomial interactive oracle proof (Poly-IOP). However before encoding the data into polynomials, the exchange will prove ownership of signing keys with a $\Sigma$-protocol.
 
 We assume our protocol works in a finite field of prime order. For simplicity, we use $\prv$ and $\vrf$ to denote the prover and the verifier in an interactive proof system respectively. We use $g_\mathfrak{g}$ to denote a generator in a group $\mathbb{G}_\mathfrak{g}$ while $h_\mathfrak{g}$ is another generator, and no one knows the relative discrete logarithm of these two generators. We use $\gs$ and $\hs$ to denote the two generators in $\mathbb{G}_s$, the \secp group; and we use $\gb$ and $\hb$ to denote the two generators in $\mathbb{G}_b$, the \bls group. If we need to distinguish which group an input to the pairing is from, we use the notations $[x]_1:=g_1^x,[x]_2:=g_2^x$, otherwise elements are  assumed to be in the first group (including $g_b$ and $h_b$). We use $e([x]_1,[x]_2)$ to denote a non-degenerate bilinear pairing. We use $\hash$ to denote a collision-resilient hash function modelled as a random oracle. We use $\ppt$ to represent probabilistic algorithms run in polynomial time.  For vectors, we use an overhead bar, like $\overline{v}$, to denote a vector and brackets to denote the elements in this vector, e.g., $\overline{v}=\tuple{v_1,v_2,\dots}$. We also use a vector at the top right of a variable to indicate this variable belongs to this vector for readability, e.g., $x^{(\overline{v})}$ means $x$ is an element of $\overline{v}$. We may use these two denotations interchangeably. When we say the summation between two vectors $\overline{a},\overline{b}$, the result is a new vector $\overline{c}$ where each element is the summation of the elements from $\overline{a}$ and $\overline{b}$ at the same row.
 
 We refer the reader to the appendix for the following cryptographic primitives: discrete logarithm assumption (Section~\ref{sec:dlp}), Pedersen commitments (Section~\ref{sec:pedersen}), $\Sigma$-protocols (conjunction and disjunction) (Section~\ref{sec:sigma}), KZG polynomial commitments (Section~\ref{sec:pcs}), and roots of unity (Section~\ref{app:rou}). We review two additional primitives here: polynomial-based range proofs and batched KZG commitments with zero-knowledge extension.
 
-\subsection{Range proof}
+\subsection{Range Proof}
 \label{sec:range}
 
 A range proof enables $\prv$ to convince $\vrf$ a value $x$ is in the range $[0,2^k)$ without revealing $x$. Zero-knowledge range proofs (ZKRPs) have three typical approaches: square decomposition, $n$-ary decomposition, and hash chains~\cite{zkrp}. We use the polynomial-based range proof from Boneh \etal~\cite{rangeproof}.
