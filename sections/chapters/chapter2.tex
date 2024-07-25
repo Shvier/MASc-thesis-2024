@@ -27,7 +27,7 @@ The discrete logarithm problem describes, given a triplet $(\mathbb{G}, p, g)$, 
 
 \subsection{Pedersen Commitment}
 \label{sec:pedersen}
-The Pedersen commitment scheme \cite{pedersen} enables $\prv$ to \textit{commit} to a value $x$ without revealing it. Pedersen commitment provides perfectly hiding and computational binding based on the discrete logarithm assumption. Additionally, Pedersen commitments are \textit{additively homomorphic}: given two commitments $C_1$ and $C_2$, the summation of their secrets $x_1$ and $x_2$ is the secret of $C_1+C_2$. We use $\textbf{C}(x)$ to denote a Pedersen commitment to the value $x$. Particularly, we use $\ps$ to denote a Pedersen commitment in \secp and $\pb$ to denote a Pedersen commitment in \bls.
+The Pedersen commitment scheme \cite{pedersen} enables $\prv$ to \textit{commit} to a value $x$ without revealing it. Pedersen commitment provides perfectly hiding and computational binding based on the discrete logarithm assumption. Additionally, Pedersen commitments are \textit{additively homomorphic}: given two commitments $\textbf{C}_1$ and $\textbf{C}_2$, the summation of their secrets $x_1$ and $x_2$ is the secret of $\textbf{C}_1+\textbf{C}_2$. We use $\textbf{C}(x)$ to denote a Pedersen commitment to the value $x$. Particularly, we use $\ps$ to denote a Pedersen commitment in \secp and $\pb$ to denote a Pedersen commitment in \bls.
 
 \subsection{Zero-Knowledge Proofs}
 Informally, a zero-knowledge proof is a cryptographic protocol allowing $\prv$ to convince $\vrf$ that the claiming statement is true without revealing additional information, except the fact that the statement's truth. A zero-knowledge proof must satisfy the following properties:
@@ -163,10 +163,19 @@ A range proof enables $\prv$ to convince $\vrf$ a value $x$ is in a specified ra
         \item $\vrf$ \textit{checks}
         \begin{enumerate}
             \item $w(\zeta)=q(\zeta)\cdot(\zeta^n-1)$
-            \item $f(\zeta),f(\zeta\omega),q(\zeta)$ \textit{are the correct evaluations}
+            \item $f(\zeta),f(\zeta\omega),q(\zeta)$ \textit{are the correct evaluations through the verifying process of KZG}
         \end{enumerate}
     \end{enumerate}
 \end{enumerate}
+
+\begin{lemma}
+The range proof from Boneh \etal~\cite{rangeproof} is complete and sound.
+\end{lemma}
+
+\begin{proof}
+Completeness is clear by following the protocol. \\
+For soundness, to make the equation $w(\zeta)=q(\zeta)\cdot(\zeta^n-1)$ hold, $q(X)$ must exist (it is a rational function). That means $w(X)$ is vanishing on $H$, i.e., $w_1,w_2$, and $w_3$ are vanishing on $H$. Thus, if $f(X)$ does not satisfy any of the equations $w_1,w_2$, and $w_3$, $\vrf$ will detect the equation does not hold. By the binding property of KZG commitment, we know that the evaluations $f(\zeta),f(\zeta\omega)$, and $q(\zeta)$ are correct with high probability to pass the KZG verifying.
+\end{proof}
 
 \subsection{Batched Opening with Zero-Knowledge Extension ($\open$)}
 \label{sec:kgzzkp}
