@@ -38,41 +38,46 @@ Informally, a zero-knowledge proof is a cryptographic protocol allowing $\prv$ t
 \end{enumerate}
 
 \subsection{$\Sigma$-Protocol}
+
+The $\Sigma-$protocol is a three-move interactive proof system. We define the $\Sigma-$protocol similarly to \cite{damgard10}.
+\begin{definition} 
 \label{sec:sigma}
-The $\Sigma-$protocol is a three-move interactive proof system. We define the $\Sigma-$protocol similarly to \cite{damgard10}. \\
-\textbf{Definition 1.} \textit{Let $R$ be a binary relation between the statement $x$ and the witness $w$. Given common input $x$ to }$\prv$\textit{ and }$\vrf$\textit{, and private input $(x,w)$ such that $(x,w)\in{R}$ to }$\prv$\textit{, they run the following protocol:}
+Let $R$ be a binary relation between the statement $x$ and the witness $w$. Given common input $x$ to $\prv$\ and $\vrf$, and private input $(x,w)$ such that $(x,w)\in{R}$ to $\prv$, they run the following protocol:
 \begin{enumerate}
-    \item $\prv$ \textit{computes a message $m$ from $(x,w)$ and sends $m$.}
-    \item $\vrf$ \textit{sends a random challenge $c$.}
-    \item $\prv$ \textit{replies with $z$.}
+    \item $\prv$ computes a message $m$ from $(x,w)$ and sends $m$.
+    \item $\vrf$ sends a random challenge $c$.
+    \item $\prv$ replies with $z$.
 \end{enumerate}
-\textit{At the end of the protocol }$\vrf$ \textit{has the data $(x,m,c,z)$}. \textit{He decides to output }\textbf{acc}\textit{ or }\textbf{rej}\textit{; such that}
+At the end of the protocol $\vrf$ has the data $(x,m,c,z)$. He decides to output \textbf{acc} or \textbf{rej}; such that
 \begin{itemize}
-    \item \textbf{\textit{Completeness}:} \textit{A $\Sigma-$protocol is complete if} $\prv$ \textit{follows the protocol to generate the message $(m,c,z)$,} $\vrf$ \textit{always accepts.}
-    \item \textbf{\textit{Special soundness}:} \textit{A $\Sigma-$protocol is special sound if there exists a $\ppt$ extractor $\mathcal{E}$, given any input $x$ and any two accepting $(m,c,z),(m,c^\prime,z^\prime)$ where $c\ne{c^\prime}$, $\mathcal{E}$ can compute $w$ where $(x,w)\in{R}$.}
-    \item \textbf{\textit{Honest verifier zero-knowledge}:} \textit{A $\Sigma-$protocol is honest verifier zero-knowledge if there exists a $\ppt$ simulator $\mathcal{S}$, such that the transcript produced by $\mathcal{S}$ is indistinguishable from the messages between }$\prv$\textit{ and }$\vrf$\textit{.}
+    \item \textbf{Completeness}: A $\Sigma-$protocol is complete if $\prv$ follows the protocol to generate the message $(m,c,z)$, $\vrf$ always accepts.
+    \item \textbf{Special soundness}: A $\Sigma-$protocol is special sound if there exists a $\ppt$ extractor $\mathcal{E}$, given any input $x$ and any two accepting $(m,c,z),(m,c^\prime,z^\prime)$ where $c\ne{c^\prime}$, $\mathcal{E}$ can compute $w$ where $(x,w)\in{R}$.
+    \item \textbf{Honest verifier zero-knowledge}: A $\Sigma-$protocol is honest verifier zero-knowledge if there exists a $\ppt$ simulator $\mathcal{S}$, such that the transcript produced by $\mathcal{S}$ is indistinguishable from the messages between $\prv$ and $\vrf$.
 \end{itemize}
+\end{definition}
 A commonly well-known way to convert a $\Sigma-$protocol into non-interactive is using the Fiat-Shamir transform \cite{fs}. But we still use the standard interactive $\Sigma-$protocol to demonstrate our work for comprehension.
 
 \subsection{Disjunction of $\Sigma$-Protocols (OR Proof)}
-The disjunction of $\Sigma$-protocols (OR proof) allows $\prv$ to prove the claimed $x$ is $x_1$ or $x_2$ through a $\Sigma$-protocol. Specifically, given two inputs $x_1,x_2$, $\prv$ proves he knows a $w$ such that $(x_1,w)\in{R_1}$ or $(x_2,w)\in{R_2}$, but $\vrf$ cannot learn which one $\prv$ knows. We use the same definition as \cite{damgard10}. \\
-\textbf{Definition 2.} \textit{The OR proof is a $\Sigma-$protocol that given two inputs $x_1,x_2$,} $\prv$ and $\vrf$ \textit{run the following protocol:}
+The disjunction of $\Sigma$-protocols (OR proof) allows $\prv$ to prove the claimed $x$ is $x_1$ or $x_2$ through a $\Sigma$-protocol. Specifically, given two inputs $x_1,x_2$, $\prv$ proves he knows a $w$ such that $(x_1,w)\in{R_1}$ or $(x_2,w)\in{R_2}$, but $\vrf$ cannot learn which one $\prv$ knows. We use the same definition as \cite{damgard10}.
+\begin{definition}
+The OR proof is a $\Sigma-$protocol that given two inputs $x_1,x_2$, $\prv$ and $\vrf$ run the following protocol:
 \begin{enumerate}
-    \item $\prv$ \textit{computes the message $m_1$ using $(x_1,w)$ as input.} \\
-    $\prv$ \textit{randomly generates $c_2$ as the challenge for $x_2$ and runs the simulator $\mathcal{S}(x_2,c_2)$ to produce $(m_2,z_2)$.}
-    \item $\prv$ \textit{sends $m_1$ and $m_2$.}
-    \item $\vrf$ \textit{sends a master challenge $c$.}
-    \item $\prv$ \textit{computes $c_1=c\oplus{c_2}$ and $z_1$ on inputs $(x_1,c_1,m_1,w)$.} \\
-    $\prv$ \textit{sends $(c_1,c_2,z_1,z_2)$.}
+    \item $\prv$ computes the message $m_1$ using $(x_1,w)$ as input. \\
+    $\prv$ randomly generates $c_2$ as the challenge for $x_2$ and runs the simulator $\mathcal{S}(x_2,c_2)$ to produce $(m_2,z_2)$.
+    \item $\prv$ sends $m_1$ and $m_2$.
+    \item $\vrf$ sends a master challenge $c$.
+    \item $\prv$ computes $c_1=c\oplus{c_2}$ and $z_1$ on inputs $(x_1,c_1,m_1,w)$. \\
+    $\prv$ sends $(c_1,c_2,z_1,z_2)$.
 \end{enumerate}
-\textit{At the end of the protocol} $\vrf$ \textit{verifies $c=c_1\oplus{c_2}$ and both $(m_1,c_1,z_2)$ and $(m_2,c_2,z_2)$ are valid to output} \textbf{acc} \textit{or} \textbf{rej}\textit{; such that}
+At the end of the protocol $\vrf$ verifies $c=c_1\oplus{c_2}$ and both $(m_1,c_1,z_2)$ and $(m_2,c_2,z_2)$ are valid to output \textbf{acc} or \textbf{rej}; such that
 \begin{itemize}
-    \item \textit{\textbf{Completeness:} The case of $c_2$ is always accepted by} $\vrf$ \textit{as the definition of a simulator; on the other side, the case of $c_1$ has no difference from the standard $\Sigma-$protocol. Therefore, the OR proof is complete.}
-    \item \textit{\textbf{Special soundness:} Let} $\prv$ \textit{execute the protocol twice. Two accepting transcripts} 
+    \item \textbf{Completeness:} The case of $c_2$ is always accepted by $\vrf$ as the definition of a simulator; on the other side, the case of $c_1$ has no difference from the standard $\Sigma-$protocol. Therefore, the OR proof is complete.
+    \item \textbf{Special soundness:} Let $\prv$ execute the protocol twice. Two accepting transcripts
     \[ (x_1,x_2,c,c_1,c_2,z_1,z_2),(x_1,x_2,c^\prime,c_1^\prime,c_2^\prime,z_1^\prime,z_2^\prime),c\ne{c^\prime} \] 
-    \textit{are given. It is clear that for some $s=1$ or $2$, the witness $w$ such that $(x_s,w)\in{R}$ can be extracted through an extractor $\mathcal{E}$ by the special soundness of $\Sigma$-protocol.}
-    \item \textit{\textbf{Honest verifier zero-knowledge}: Given a master challenge $c$, choose $c_1$ or $c_2$ randomly and the other will be determined. Let the simulator run twice: $\mathcal{S}(x_1,c_1),\mathcal{S}(x_2,c_2)$. }
+    are given. It is clear that for some $s=1$ or $2$, the witness $w$ such that $(x_s,w)\in{R}$ can be extracted through an extractor $\mathcal{E}$ by the special soundness of $\Sigma$-protocol.
+    \item \textbf{Honest verifier zero-knowledge}: Given a master challenge $c$, choose $c_1$ or $c_2$ randomly and the other will be determined. Let the simulator run twice: $\mathcal{S}(x_1,c_1),\mathcal{S}(x_2,c_2)$.
 \end{itemize}
+\end{definition}
 We use $x={x_1\orproof{x_2}}$ to denote $x$ is $x_1$ or $x_2$.
 
 \subsection{Roots of Unity}
@@ -95,43 +100,46 @@ For terminology, we say \(\omega\) is a generator with multiplicative order \(\k
 For practical purposes, \(\kappa\) represents the length of the longest vector of data we can use in our protocol. Where does \(\kappa\) come from? Different elements of \(Z_q\) will have different multiplicative orders but every order must be a divisor of \(q-1\). Thus \(\kappa\) is the largest divisor of the exact value of \(q\) used in an elliptic curve standard. The value of $q$ in \bls has \(\kappa=2^{32}\) (for terminology, this called a \(2\)-adicity of \(32\)).
 
 \subsection{Polynomial Commitment Scheme}
-A polynomial commitment scheme (PCS) allows $\prv$ to commit to a polynomial to convince $\vrf$ that claimed evaluations are of the committed polynomial. Particularly, our protocol requires the scheme uses an extra random polynomial to achieve unconditionally binding, i.e., the KZG commitment in Pedersen form. We define the following scheme based on \cite{kzg,plonk,bdfg}. \\
-\textbf{Definition 3.} \textit{A polynomial commitment scheme consists of three moves:} \textbf{gen}\textit{,} \textbf{com}\textit{, and} \textbf{open} \textit{such that}
+A polynomial commitment scheme (PCS) allows $\prv$ to commit to a polynomial to convince $\vrf$ that claimed evaluations are of the committed polynomial. Particularly, our protocol requires the scheme uses an extra random polynomial to achieve unconditionally binding, i.e., the KZG commitment in Pedersen form. We define the following scheme based on \cite{kzg,plonk,bdfg}.
+\begin{definition}
+\label{def:pcs}
+A polynomial commitment scheme consists of three moves: \textbf{gen}, \textbf{com}, and \textbf{open} such that
 \begin{enumerate}
-    \item \textbf{gen}$(d)$ \textit{is an algorithm that given a random number $\tau\in\mathbb{F}$ and a positive integer d, outputs a structured reference string (SRS)} \textbf{srs} \textit{such that} 
+    \item \textbf{gen}$(d)$ is an algorithm that given a random number $\tau\in\mathbb{F}$ and a positive integer d, outputs a structured reference string (SRS) \textbf{srs} such that
     \[ \textbf{srs}=\tuple{g,g^\tau,\dots,g^{\tau^d},h,h^\tau,\dots,h^{\tau^d}} \]
-    \item \textbf{com}(\textit{f}, \textbf{srs}) \textit{outputs a commitment} $\cm=g^{f(\tau)}h^{\hat{f}(\tau)}$ \textit{to f, where $\hat{f}$ is a random polynomial of degree $d$, and $f$ is a polynomial of degree $d$ or less.}
-    \item \textbf{open} \textit{is a protocol that} $\prv$ \textit{is given input f}, \textit{and} $\prv$ \textit{and} $\vrf$ are both given
+    \item \textbf{com}($f$, \textbf{srs}) outputs a commitment $\cm=g^{f(\tau)}h^{\hat{f}(\tau)}$ to $f$, where $\hat{f}$ is a random polynomial of degree $d$, and $f$ is a polynomial of degree $d$ or less.
+    \item \textbf{open} is a protocol that $\prv$ is given input f, and $\prv$ and $\vrf$ are both given
     \begin{itemize}
         \item \textbf{srs}
-        \item $\cm$ - \textit{the commitment to $f$}
-        \item $a$ - \textit{an evaluation point of $f$}
-        \item $b$ - \textit{the evaluation of $f(a)$}
-        \item $\hat{b}$ - \textit{the evaluation of $\hat{f}(a)$}
+        \item $\cm$ - the commitment to $f$
+        \item $a$ - an evaluation point of $f$
+        \item $b$ - the evaluation of $f(a)$
+        \item $\hat{b}$ - the evaluation of $\hat{f}(a)$
     \end{itemize}
     \textit{They run the protocol as follows:}
     \begin{enumerate}
-        \item $\prv$ \textit{computes the witness $w$ for $(a,b,\hat{b})$ such that}
+        \item $\prv$ computes the witness $w$ for $(a,b,\hat{b})$ such that
         \[ w=g^{\psi(\tau)}h^{\hat\psi(\tau)} \]
-        \textit{where $\psi(x)=\frac{f(X)-f(a)}{X-a}$, and $\hat\psi(x)=\frac{\hat{f}(X)-\hat{f}(a)}{X-a}$}
-        \item $\vrf$ \textit{outputs} \textbf{acc} \textit{if and only if}
+        where $\psi(x)=\frac{f(X)-f(a)}{X-a}$, and $\hat\psi(x)=\frac{\hat{f}(X)-\hat{f}(a)}{X-a}$
+        \item $\vrf$ outputs \textbf{acc} if and only if
         \[ e(\cm/(g^bh^{\hat{b}}),[1]_2)=e(w,[\tau-a]_2) \]
     \end{enumerate}
 \end{enumerate}
 \begin{itemize}
-    \item \textit{\textbf{Completeness}: It is clear that $w$ exists if and only if $f(a)=b$ and $\hat{f}(a)=\hat{b}$, which means $\vrf$ always accepts the proof if $\prv$ follows the protocol.}
-    \item \textit{\textbf{Knowledge soundness in the algebraic group model}: For any algebraic adversary $\mathcal{A}$ in an interactive protocol of PCS, there exists a $\ppt$ extractor $\mathcal{E}$ given access to $\mathcal{A}$'s messages during the protocol, and $\mathcal{A}$ can win the following game with negligible probability:}
+    \item \textbf{Completeness}: It is clear that $w$ exists if and only if $f(a)=b$ and $\hat{f}(a)=\hat{b}$, which means $\vrf$ always accepts the proof if $\prv$ follows the protocol.
+    \item \textbf{Knowledge soundness in the algebraic group model}: For any algebraic adversary $\mathcal{A}$ in an interactive protocol of PCS, there exists a $\ppt$ extractor $\mathcal{E}$ given access to $\mathcal{A}$'s messages during the protocol, and $\mathcal{A}$ can win the following game with negligible probability:
     \begin{enumerate}
-        \item \textit{Given the inputs that} $\prv$ \textit{can access, $\mathcal{A}$ outputs} $\cm$.
-        \item \textit{$\mathcal{E}$ outputs $f\in\mathbb{F}_{<d}[X]$ from $\mathcal{A}$'s output.}
-        \item \textit{$\mathcal{A}$ generates $w$ and $b^\prime$ at the evaluation point $a$.}
-        \item \textit{$\mathcal{A}$ wins if}
+        \item Given the inputs that $\prv$ \textit{can access, $\mathcal{A}$ outputs} $\cm$.
+        \item $\mathcal{E}$ outputs $f\in\mathbb{F}_{<d}[X]$ from $\mathcal{A}$'s output.
+        \item $\mathcal{A}$ generates $w$ and $b^\prime$ at the evaluation point $a$.
+        \item $\mathcal{A}$ wins if
         \begin{itemize}
-            \item $\vrf$ \textit{accepts the proof at the end of the protocol.}
+            \item $\vrf$ accepts the proof at the end of the protocol.
             \item $b^\prime\ne{b}$.
         \end{itemize}
     \end{enumerate}
 \end{itemize}
+\end{definition}
 Our work uses PCS with the roots of unity. We use $\omega$ to denote the roots of unity. We use $\cm_f$ to denote a polynomial commitment to $f$ in Pedersen form.
 
 \subsection{Range Proof}
@@ -178,10 +186,32 @@ Completeness is clear by following the protocol. \\
 For soundness, to make the equation $w(\zeta)=q(\zeta)\cdot(\zeta^n-1)$ hold, $q(X)$ must exist (it is a rational function). That means $w(X)$ is vanishing on $H$, i.e., $w_1,w_2$, and $w_3$ are vanishing on $H$. Thus, if $f(X)$ does not satisfy any of the equations $w_1,w_2$, and $w_3$, $\vrf$ will detect the equation does not hold. By the binding property of KZG commitment, we know that the evaluations $f(\zeta),f(\zeta\omega)$, and $q(\zeta)$ are correct with high probability to pass the KZG verifying.
 \end{proof}
 
+\subsection{Open KZG with Committed Value}
+By \textbf{Definition~\ref{def:pcs}}, to prove $b$ is the evaluation of $f(a)$, $\prv$ reveals the pair $(a,b)$ to let $\vrf$ validate the proof through pairings. However, this leaks the evaluation at the point $a$. \bootstrap uses the variaint of this opening techinque. Here we describe the new opening scheme.
+\begin{lemma}
+\label{sec:kzgOpenComm}
+\textbf{openToCommit} is a protocol that $\prv$ is given input $f$ and $b$. $\prv$ and $\vrf$ are both given
+\begin{itemize}
+    \item \textbf{srs}
+    \item $\cm$ - the commitment to $f$
+    \item $a$ - an evaluation point of $f$
+    \item $\textbf{C}(b)$ - the committed evaluation of $f(a)$, $g^{f(a)}h^{\hat{f}(a)}$
+\end{itemize}
+\textit{They run the protocol as follows:}
+\begin{enumerate}
+    \item $\prv$ computes the witness $w$ for $(a,b,\hat{b})$ such that
+    \[ w=g^{\psi(\tau)}h^{\hat\psi(\tau)} \]
+    where $\psi(x)=\frac{f(X)-f(a)}{X-a}$, and $\hat\psi(x)=\frac{\hat{f}(X)-\hat{f}(a)}{X-a}$
+    \item $\vrf$ outputs \textbf{acc} if and only if
+    \[ e(\cm/\textbf{C}(b),[1]_2)=e(w,[\tau-a]_2) \]
+\end{enumerate}
+\end{lemma}
+This does not violate the soundness of the original KZG commitment scheme. Note $\textbf{C}(b)$ is a Pedersen commitment. Recall the computational binding property of Pedersen commitment, that means it is infeasible for $\prv$ to compute a $b^*$ such that $f(a)\ne{b^*},\textbf{C}(b)=\textbf{C}(b^*)$ based on discrete logarithm assumption. Since only \bootstrap requires opening KZG evaluation with committed value, we implicitly refer to this variaint opening scheme in the context of \bootstrap.
+
 \subsection{Batched Opening with Zero-Knowledge Extension ($\open$)}
 \label{sec:kgzzkp}
 
-To efficiently prove several polynomials are vanishing at several points, there are some batched KZG opening schemes such as the schemes in \cite{plonk,bdfg,fflonk}. Although a PCS does not reveal the committed polynomial directly, it leaks the information of the opening evaluation point. In our scenario, each evaluation is privacy-sensitive so we want to hide the polynomial evaluations. We use the opening scheme from \cite{plonk} and the protocol from \cite{rangeproof} with a zero-knowledge extension to explain how to prove the range-proof polynomials are vanishing efficiently and in zero-knowledge. \\
+To efficiently prove several polynomials are vanishing at several points, there are some batched KZG opening schemes such as the schemes in \cite{plonk,bdfg,fflonk}. Although we can use the above KZG opening scheme with committed value to hide the opening evaluation, the scheme is not zero-knowledge because we cannot simulate the transcript between $\prv$ and $\vrf$. Here, we use the opening scheme from \cite{plonk} with a zero-knowledge extension to explain how to prove the range-proof polynomials are vanishing efficiently and in zero-knowledge. \\
 \textit{Assume $\prv$ is given $x$ and $\vrf$ is given $[x]_1$, $\prv$ wants to prove $x$ is in $[0,2^k)$:}
 \begin{enumerate}
     \item $\prv$ \textit{interpolates the polynomial $f$ using the above range proof}
