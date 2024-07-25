@@ -169,6 +169,7 @@ A range proof enables $\prv$ to convince $\vrf$ a value $x$ is in a specified ra
 \end{enumerate}
 
 \begin{lemma}
+\label{lemma:range}
 The range proof from Boneh \etal~\cite{rangeproof} is complete and sound.
 \end{lemma}
 
@@ -179,7 +180,6 @@ For soundness, to make the equation $w(\zeta)=q(\zeta)\cdot(\zeta^n-1)$ hold, $q
 
 \subsection{Batched Opening with Zero-Knowledge Extension ($\open$)}
 \label{sec:kgzzkp}
-
 
 To efficiently prove several polynomials are vanishing at several points, there are some batched KZG opening schemes such as the schemes in \cite{plonk,bdfg,fflonk}. Although a PCS does not reveal the committed polynomial directly, it leaks the information of the opening evaluation point. In our scenario, each evaluation is privacy-sensitive so we want to hide the polynomial evaluations. We use the opening scheme from \cite{plonk} and the protocol from \cite{rangeproof} with a zero-knowledge extension to explain how to prove the range-proof polynomials are vanishing efficiently and in zero-knowledge. \\
 \textit{Assume $\prv$ is given $x$ and $\vrf$ is given $[x]_1$, $\prv$ wants to prove $x$ is in $[0,2^k)$:}
@@ -209,11 +209,17 @@ To efficiently prove several polynomials are vanishing at several points, there 
     \end{enumerate}
 \end{enumerate}
 
-We prove the protocol has zero knowledge. \\
-\textit{Let $\mathcal{S}$ generate $\{\omega^{*^\prime},\omega^{*^{\prime\prime}},\alpha^*,\beta^*\}$, and interpolate $f^*$ such that}
+\begin{theorem}
+The batched KZG opening scheme with zero-knowledge extension is complete, sound, and zero-knowledge.
+\end{theorem}
+\begin{proof}
+Completeness is clear by following the protocol. Soundness can be verified by \textbf{Lemma~\ref{lemma:range}} and~\cite{plonk}. \\
+To verify zero knowledge, we construct a simulator $\mathcal{S}$. Let $\mathcal{S}$ generate $\{\omega^{*^\prime},\omega^{*^{\prime\prime}},\alpha^*,\beta^*\}$, and interpolate $f^*$ such that
 \[ f^*(\omega^{*^\prime})=\alpha^* \]
 \[ f^*(\omega^{*^{\prime\prime}})=\beta^* \]
 \[ f^*(x)=0,x\in{H} \]
-\textit{Note} $\vrf$ \textit{can interact with $\mathcal{S}$ to execute the protocol and accept the proof from $\mathcal{S}$. Given $\{\omega^{*^\prime},\omega^{*^{\prime\prime}},\alpha^*,\beta^*\}$ are chosen uniformly at random each time,} $\vrf$ \textit{cannot distinguish between the transcript from $\mathcal{S}$ and the proof from} $\prv$. \textit{Therefore, the protocol has zero knowledge. We will use} $\open$ \textit{to denote this opening technique.}
+Note $\vrf$ can interact with $\mathcal{S}$ to execute the protocol and always accept the proof from $\mathcal{S}$. Given $\{\omega^{*^\prime},\omega^{*^{\prime\prime}},\alpha^*,\beta^*\}$ are chosen uniformly at random each time, $\vrf$ cannot distinguish between the transcript from $\mathcal{S}$ and the proof from $\prv$. Therefore, the protocol has zero knowledge.
+\end{proof}
+We will use $\open$ to denote this opening technique.
 
 % = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
