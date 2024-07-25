@@ -95,34 +95,35 @@ For terminology, we say \(\omega\) is a generator with multiplicative order \(\k
 For practical purposes, \(\kappa\) represents the length of the longest vector of data we can use in our protocol. Where does \(\kappa\) come from? Different elements of \(Z_q\) will have different multiplicative orders but every order must be a divisor of \(q-1\). Thus \(\kappa\) is the largest divisor of the exact value of \(q\) used in an elliptic curve standard. The value of $q$ in \bls has \(\kappa=2^{32}\) (for terminology, this called a \(2\)-adicity of \(32\)).
 
 \subsection{Polynomial Commitment Scheme}
-A polynomial commitment scheme (PCS) allows $\prv$ to commit to a polynomial to convince $\vrf$ that claimed evaluations are of the committed polynomial \cite{kzg}. We define PCS based on \cite{kzg,plonk,bdfg}. \\
+A polynomial commitment scheme (PCS) allows $\prv$ to commit to a polynomial to convince $\vrf$ that claimed evaluations are of the committed polynomial. Particularly, our protocol requires the scheme uses an extra random polynomial to achieve unconditionally binding, i.e., the KZG commitment in Pedersen form. We define the following scheme based on \cite{kzg,plonk,bdfg}. \\
 \textbf{Definition 3.} \textit{A polynomial commitment scheme consists of three moves:} \textbf{gen}\textit{,} \textbf{com}\textit{, and} \textbf{open} \textit{such that}
 \begin{enumerate}
     \item \textbf{gen}$(d)$ \textit{is an algorithm that given a random number $\tau\in\mathbb{F}$ and a positive integer d, outputs a structured reference string (SRS)} \textbf{srs} \textit{such that} 
-    \[ \textbf{srs}=([1]_1,[\tau]_1,\dots,[\tau^{d-1}]_1,[1]_2,[\tau]_2) \]
-    \item \textbf{com}(\textit{f}, \textbf{srs}) \textit{outputs a commitment} $\cm$ \textit{to f, where f is a polynomial over $\mathbb{F}$ of degree smaller than d.}
+    \[ \textbf{srs}=\tuple{g,g^\tau,\dots,g^{\tau^d},h,h^\tau,\dots,h^{\tau^d}} \]
+    \item \textbf{com}(\textit{f}, \textbf{srs}) \textit{outputs a commitment} $\cm=g^{f(\tau)}h^{\hat{f}(\tau)}$ \textit{to f, where $\hat{f}$ is a random polynomial of degree $d$, and $f$ is a polynomial of degree $d$ or less.}
     \item \textbf{open} \textit{is a protocol that} $\prv$ \textit{is given input f}, \textit{and} $\prv$ \textit{and} $\vrf$ are both given
     \begin{itemize}
         \item \textbf{srs}
         \item $\cm$ - \textit{the commitment to $f$}
         \item $a$ - \textit{an evaluation point of $f$}
-        \item $b$ - \textit{the claimed evaluation of $f(a)$}
+        \item $b$ - \textit{the committed evaluation, $g^{f(a)}h^{\hat{f}(a)}$}
     \end{itemize}
     \textit{They run the protocol as follows:}
     \begin{enumerate}
-        \item $\prv$ \textit{reveals the proof $\pi$ for the pair $(a,b)$ where}
-        \[ \pi=[\frac{f(x)-b}{x-a}]_1 \]
+        \item $\prv$ \textit{computes the witness $w$ for the pair $(a,b)$ such that}
+        \[ w=g^{\psi(\tau)}h^{\hat\psi(\tau)} \]
+        \textit{where $\psi(x)=\frac{f(x)-f(a)}{x-a}$, and $\hat\psi(x)=\frac{\hat{f}(x)-\hat{f}(a)}{x-a}$}
         \item $\vrf$ \textit{outputs} \textbf{acc} \textit{if and only if}
-        \[ e(\cm-[b]_1,[1]_2)=e(\pi,[\tau-a]_2) \]
+        \[ e(\cm/b,[1]_2)=e(w,[\tau-a]_2) \]
     \end{enumerate}
 \end{enumerate}
 \begin{itemize}
-    \item \textit{\textbf{Completeness}: It is clear that $\pi$ exists if and only if $f(a)=b$, which means $\vrf$ always accepts the proof if $\prv$ follows the protocol.}
+    \item \textit{\textbf{Completeness}: It is clear that $w$ exists if and only if $g^{f(a)}h^{\hat{f}(a)}=b$, which means $\vrf$ always accepts the proof if $\prv$ follows the protocol.}
     \item \textit{\textbf{Knowledge soundness in the algebraic group model}: For any algebraic adversary $\mathcal{A}$ in an interactive protocol of PCS, there exists a $\ppt$ extractor $\mathcal{E}$ given access to $\mathcal{A}$'s messages during the protocol, and $\mathcal{A}$ can win the following game with negligible probability:}
     \begin{enumerate}
         \item \textit{Given the inputs that} $\prv$ \textit{can access, $\mathcal{A}$ outputs} $\cm$.
         \item \textit{$\mathcal{E}$ outputs $f\in\mathbb{F}_{<d}[X]$ from $\mathcal{A}$'s output.}
-        \item \textit{$\mathcal{A}$ generates $\pi$ and the evaluation $b^\prime$ at the evaluation point $a$.}
+        \item \textit{$\mathcal{A}$ generates $w$ and the committed evaluation $b^\prime$ at the evaluation point $a$.}
         \item \textit{$\mathcal{A}$ wins if}
         \begin{itemize}
             \item $\vrf$ \textit{accepts the proof at the end of the protocol.}
@@ -130,7 +131,7 @@ A polynomial commitment scheme (PCS) allows $\prv$ to commit to a polynomial to 
         \end{itemize}
     \end{enumerate}
 \end{itemize}
-Our work uses PCS with the root of unity. We use $\omega$ to denote the root of unity. We use $\cm_f$ to denote a commitment to $f$.
+Our work uses PCS with the roots of unity. We use $\omega$ to denote the roots of unity. We use $\cm_f$ to denote a polynomial commitment to $f$ in Pedersen form.
 
 \subsection{Range Proof}
 \label{sec:range}
