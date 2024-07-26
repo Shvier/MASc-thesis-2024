@@ -183,7 +183,7 @@ The range proof from Boneh \etal~\cite{rangeproof} is complete and sound.
 
 \begin{proof}
 Completeness is clear by following the protocol. \\
-For soundness, to make the equation $w(\zeta)=q(\zeta)\cdot(\zeta^n-1)$ hold, $q(X)$ must exist (it is a rational function). That means $w(X)$ is vanishing on $H$, i.e., $w_1,w_2$, and $w_3$ are vanishing on $H$. Thus, if $f(X)$ does not satisfy any of the equations $w_1,w_2$, and $w_3$, $\vrf$ will detect the equation does not hold. By the binding property of KZG commitment, we know that the evaluations $f(\zeta),f(\zeta\omega)$, and $q(\zeta)$ are correct with high probability to pass the KZG verifying.
+For soundness, to make the equation $w(\zeta)=q(\zeta)\cdot(\zeta^n-1)$ hold, $q(X)$ must exist (it is a rational function). That means $w(X)$ is vanishing on $H$, i.e., $w_1,w_2$, and $w_3$ are vanishing on $H$. Thus, if $f(X)$ does not satisfy any of the equations $w_1,w_2$, and $w_3$, $\vrf$ will detect the equation does not hold. By the binding property of KZG commitment, we know that the evaluations $f(\zeta),f(\zeta\omega)$, and $q(\zeta)$ are correct with high probability if the KZG verifying is passed.
 \end{proof}
 
 \subsection{Open KZG with Committed Value}
@@ -240,7 +240,7 @@ To efficiently prove several polynomials are vanishing at several points, there 
 \end{enumerate}
 
 \begin{theorem}
-The batched KZG opening scheme with zero-knowledge extension is complete, sound, and zero-knowledge.
+The batched KZG opening scheme with zero-knowledge extension is complete, sound, and honest verifier zero-knowledge.
 \end{theorem}
 \begin{proof}
 Completeness is clear by following the protocol. Soundness can be verified by Lemma~\ref{lemma:range} and~\cite{plonk}. \\
@@ -248,7 +248,7 @@ To verify zero knowledge, we construct a simulator $\mathcal{S}$. Let $\mathcal{
 \[ f^*(\omega^{*^\prime})=\alpha^* \]
 \[ f^*(\omega^{*^{\prime\prime}})=\beta^* \]
 \[ f^*(x)=0,x\in{H} \]
-Note $\vrf$ can interact with $\mathcal{S}$ to execute the protocol and always accept the proof from $\mathcal{S}$. Given $\{\omega^{*^\prime},\omega^{*^{\prime\prime}},\alpha^*,\beta^*\}$ are chosen uniformly at random each time, $\vrf$ cannot distinguish between the transcript from $\mathcal{S}$ and the proof from $\prv$. Therefore, the protocol has zero knowledge.
+We can observe when $\vrf$ interacts with $\mathcal{S}$ to execute the protocol, $\vrf$ always accepts the proof from $\mathcal{S}$. Given $\{\omega^{*^\prime},\omega^{*^{\prime\prime}},\alpha^*,\beta^*\}$ are chosen uniformly at random each time, which is excatly the same as $\prv$ interpolates $f^\prime$. It should be clear $\vrf$ cannot distinguish between the transcript from $\mathcal{S}$ and the proof from $\prv$.
 \end{proof}
 We will use $\open$ to denote this opening technique.
 
