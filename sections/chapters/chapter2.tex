@@ -187,7 +187,7 @@ For soundness, to make the equation $w(\zeta)=q(\zeta)\cdot(\zeta^n-1)$ hold, $q
 \end{proof}
 
 \subsection{Open KZG with Committed Value}
-By \textbf{Definition~\ref{def:pcs}}, to prove $b$ is the evaluation of $f(a)$, $\prv$ reveals the pair $(a,b)$ to let $\vrf$ validate the proof through pairings. However, this leaks the evaluation at the point $a$. \bootstrap uses the variaint of this opening techinque. Here we describe the new opening scheme.
+By Definition~\ref{def:pcs}, to prove $b$ is the evaluation of $f(a)$, $\prv$ reveals the pair $(a,b)$ to let $\vrf$ validate the proof through pairings. However, this leaks the evaluation at the point $a$. \bootstrap uses the variaint of this opening techinque. Here we describe the new opening scheme.
 \begin{lemma}
 \label{sec:kzgOpenComm}
 \textbf{openToCommit} is a protocol that $\prv$ is given input $f$ and $b$. $\prv$ and $\vrf$ are both given
@@ -243,7 +243,7 @@ To efficiently prove several polynomials are vanishing at several points, there 
 The batched KZG opening scheme with zero-knowledge extension is complete, sound, and zero-knowledge.
 \end{theorem}
 \begin{proof}
-Completeness is clear by following the protocol. Soundness can be verified by \textbf{Lemma~\ref{lemma:range}} and~\cite{plonk}. \\
+Completeness is clear by following the protocol. Soundness can be verified by Lemma~\ref{lemma:range} and~\cite{plonk}. \\
 To verify zero knowledge, we construct a simulator $\mathcal{S}$. Let $\mathcal{S}$ generate $\{\omega^{*^\prime},\omega^{*^{\prime\prime}},\alpha^*,\beta^*\}$, and interpolate $f^*$ such that
 \[ f^*(\omega^{*^\prime})=\alpha^* \]
 \[ f^*(\omega^{*^{\prime\prime}})=\beta^* \]
