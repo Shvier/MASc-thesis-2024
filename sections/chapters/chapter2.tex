@@ -186,9 +186,52 @@ The range proof from Boneh \etal~\cite{rangeproof} is complete and sound.
 Completeness is clear by following the protocol. \\
 For soundness, to make the equation $w(\zeta)=q(\zeta)\cdot(\zeta^n-1)$ hold, $q(X)$ must exist (it is a rational function). That means $w(X)$ is vanishing on $H$, i.e., $w_1,w_2$, and $w_3$ are vanishing on $H$. Thus, if $f(X)$ does not satisfy any of the equations $w_1,w_2$, and $w_3$, $\vrf$ will detect the equation does not hold. By the binding property of KZG commitment, we know that the evaluations $f(\zeta),f(\zeta\omega)$, and $q(\zeta)$ are correct with high probability if the KZG verifying is passed.
 \end{proof}
+We note that the above range proof is not zero-knowledge because: 1. revealing $f(X)$ and $f(X\omega)$ leaks the evaluations of $f$; 2. verifying $w_1$ requires $\vrf$ to know $x$. The solutions for these two points may seem similar but not quite the same, because the first point requires $\prv$ not to open the evaluations of $f(X)$ over $H$, and the second point means revealing the evaluation of $f(\omega^0)$ to prove $x$ is the claimed one. Boneh \etal~\cite{rangeproof} introduced a zero-knowledge extension to solve the first issue. We will describe the extension and use a variant of the opening scheme to solve the second one.
+
+\subsection{Batched Opening with Zero-Knowledge Extension ($\open$)}
+\label{sec:kgzzkp}
+To efficiently prove several polynomials are vanishing at several points, there are some batched KZG opening schemes such as the schemes in \cite{plonk,bdfg,fflonk}. Here, we use the batched opening scheme from~\cite{plonk} with the zero-knowledge extension from~\cite{rangeproof} to explain how to prove the range-proof polynomials are vanishing efficiently and in zero-knowledge. \\
+\textit{Assume $\prv$ is given $x$ and $\prv$ computes $f(X)$ using the above range proof. $\prv$ wants to prove $f(X)$ satisfies the second and the third condition, i.e., $w_2$ and $w_3$ are vanishing on $H$:}
+\begin{enumerate}
+    \item $\prv$ \textit{generates two random numbers $\omega^{\prime},\omega^{\prime\prime}\in\mathbb{F}\setminus{H}$ and another two random numbers $\alpha,\beta\in\mathbb{F}$}
+    \item $\prv$ \textit{interpolates $f^\prime$ at two more points ${\omega^{\prime},\omega^{\prime\prime}}$ such that}
+    \[ f^\prime(\omega^{\prime})=\alpha \]
+    \[ f^\prime(\omega^{\prime\prime})=\beta \]
+    \item $\prv$ \textit{computes $w_2$ and $w_3$ following the above range proof and sends the commitment to $f^\prime$,} $\cm_{f^\prime}$
+    \item $\vrf$ \textit{sends a random challenge $\gamma\in\mathbb{F}$}
+    \item $\prv$ \textit{sends the commitment to $q_w:=w/(X^n-1)$ where}
+    \[ w:=w_2+\gamma\cdot{w_3} \]
+    \item $\vrf$ \textit{sends a random evaluation point $\zeta\in\mathbb{F}\setminus{H}$}
+    \item $\prv$ \textit{sends the evaluations $f^\prime(\zeta),f^\prime(\zeta\omega),q_w(\zeta)$}
+    \item $\prv$ \textit{sends the commitments to $q_1(X),q_2(X)$, where}
+    \[ q_1(X):=\frac{f^\prime(X)-f^\prime(\zeta)}{X-\zeta}+\gamma\cdot\frac{q_w(X)-q_w(\zeta)}{X-\zeta} \]
+    \[ q_2(X):=\frac{f^\prime(X)-f^\prime(\zeta\omega)}{X-\zeta\omega} \]
+    \item $\vrf$ \textit{chooses random $r\in\mathbb{F}$}
+    \item $\vrf$ \textit{accepts the proof if and only if}
+    \begin{enumerate}
+    	\item $w_1(\zeta)+\gamma\cdot{w_2(\zeta)}=q_w(\zeta)\cdot(\zeta^n-1)$
+    	\item $e(F+\zeta\cdot\cm_{q_1}+r\zeta\omega\cdot\cm_{q_2},[1]_2)=e(\cm_{q_1}+r\cdot\cm_{q_2},[x]_2)$\textit{, where}
+    	\begin{align*}
+    		F:=&\cm_{f^\prime}-[f^\prime(\zeta)]_1+\gamma\cdot(\cm_{q_w}-[q_w(\zeta)]_1)+r\cdot(\cm_{f^\prime}-[f^\prime(\zeta\omega)]_1)
+    	\end{align*}
+    \end{enumerate}
+\end{enumerate}
+
+\begin{theorem}
+The batched KZG opening scheme with the zero-knowledge extension is complete, sound, and honest verifier zero-knowledge.
+\end{theorem}
+\begin{proof}
+Completeness is clear by following the protocol. Soundness can be verified by Lemma~\ref{lemma:range} and~\cite{plonk}. \\
+To verify zero knowledge, we construct a simulator $\mathcal{S}$. Let $\mathcal{S}$ randomly generate $\{\omega^{*^\prime},\omega^{*^{\prime\prime}},\alpha^*,\beta^*\}$ like $\prv$, and interpolate $f^*$ such that
+\[ f^*(\omega^{*^\prime})=\alpha^* \]
+\[ f^*(\omega^{*^{\prime\prime}})=\beta^* \]
+\[ f^*(x)=0,x\in{H} \]
+We can observe when $\vrf$ interacts with $\mathcal{S}$ to execute the protocol, $\vrf$ always accepts the proof from $\mathcal{S}$. Given $\{\omega^{*^\prime},\omega^{*^{\prime\prime}},\alpha^*,\beta^*\}$ are chosen uniformly at random each time, which is excatly the same as $\prv$ interpolates $f^\prime$. It should be clear $\vrf$ cannot distinguish between the transcript from $\mathcal{S}$ and the proof from $\prv$.
+\end{proof}
+We will use $\open$ to denote this opening technique.
 
 \subsection{Open KZG with Committed Value}
-By Definition~\ref{def:pcs}, to prove $b$ is the evaluation of $f(a)$, $\prv$ reveals the pair $(a,b)$ to let $\vrf$ validate the proof through pairings. However, this leaks the evaluation at the point $a$. \bootstrap uses the variaint of this opening techinque. Here we describe the new opening scheme.
+By Definition~\ref{def:pcs}, to prove $b$ is the evaluation of $f(a)$, $\prv$ reveals the pair $(a,b)$ to let $\vrf$ validate the proof through pairings. To solve the second issue in the above range proof, we describe the new opening scheme.
 \begin{lemma}
 \label{sec:kzgOpenComm}
 \textbf{openToCommit} is a protocol that $\prv$ is given input $f$ and $b$. $\prv$ and $\vrf$ are both given
@@ -215,49 +258,6 @@ This does not violate the soundness of the original KZG commitment scheme. Note 
 Completeness and soundness follow the original KZG commitment scheme. \\
 To prove the zero knowledge, let the simulator $\mathcal{S}$ take as inputs $\textbf{srs}$, $\cm_f$, $a$, and $\textbf{C}(b)$. Since $\mathcal{S}$ knows the random evaluation point $a$ in advance, $\mathcal{S}$ can easily computes a witness $w^*=\cm_f/\textbf{C}(b)/[\tau-a]_1$ that makes the pairing equation hold, i.e., $\mathcal{S}$ always outputs an accepting conversation $(\cm_f,a,w^*)$ for $\textbf{C}(b)$.
 \end{proof}
-Since only \bootstrap requires opening KZG evaluation with committed value, we implicitly refer to this variaint opening scheme in the context of \bootstrap.
-
-\subsection{Batched Opening with Zero-Knowledge Extension ($\open$)}
-\label{sec:kgzzkp}
-To efficiently prove several polynomials are vanishing at several points, there are some batched KZG opening schemes such as the schemes in \cite{plonk,bdfg,fflonk}. Although we can use the above KZG opening scheme with committed value to hide the opening evaluation, the approach does not work for the batched opening schemes because of the linear combination of commitments with random challenge, which means such simulator $\mathcal{S}$ does not exist. Here, we use the batched opening scheme from \cite{plonk} with a zero-knowledge extension to explain how to prove the range-proof polynomials are vanishing efficiently and in zero-knowledge. \\
-\textit{Assume $\prv$ is given $x$ and $\vrf$ is given $[x]_1$, $\prv$ wants to prove $x$ is in $[0,2^k)$:}
-\begin{enumerate}
-    \item $\prv$ \textit{interpolates the polynomial $f$ using the above range proof}
-    \item $\prv$ \textit{generates two random numbers $\omega^{\prime},\omega^{\prime\prime}\in\mathbb{F}\setminus{H}$ and another two random numbers $\alpha,\beta\in\mathbb{F}$}
-    \item $\prv$ \textit{interpolates $f^\prime$ at two more points ${\omega^{\prime},\omega^{\prime\prime}}$ such that}
-    \[ f^\prime(\omega^{\prime})=\alpha \]
-    \[ f^\prime(\omega^{\prime\prime})=\beta \]
-    \item $\prv$ \textit{computes $w_1,w_2,$ and $w_3$ following the above range proof and sends the commitment to $f^\prime$,} $\cm_{f^\prime}$
-    \item $\vrf$ \textit{sends a random challenge $\gamma\in\mathbb{F}$}
-    \item $\prv$ \textit{sends the commitment to $q_w:=w/(X^n-1)$ where}
-    \[ w:=w_1+\gamma\cdot{w_2}+\gamma^2\cdot{w_3} \]
-    \item $\vrf$ \textit{sends a random evaluation point $\zeta\in\mathbb{F}\setminus{H}$}
-    \item $\prv$ \textit{sends the evaluations $f^\prime(\zeta),f^\prime(\zeta\omega),q_w(\zeta)$}
-    \item $\prv$ \textit{sends the commitments to $q_1(X),q_2(X)$, where}
-    \[ q_1(X):=\frac{f^\prime(X)-f^\prime(\zeta)}{X-\zeta}+\gamma\cdot\frac{q_w(X)-q_w(\zeta)}{X-\zeta} \]
-    \[ q_2(X):=\frac{f^\prime(X)-f^\prime(\zeta\omega)}{X-\zeta\omega} \]
-    \item $\vrf$ \textit{chooses random $r\in\mathbb{F}$}
-    \item $\vrf$ \textit{accepts the proof if and only if}
-    \begin{enumerate}
-    	\item $w_1(\zeta)+\gamma\cdot{w_2(\zeta)}+\gamma^2\cdot{w_3(\zeta)}=q_w(\zeta)\cdot(\zeta^n-1)$
-    	\item $e(F+\zeta\cdot\cm_{q_1}+r\zeta\omega\cdot\cm_{q_2},[1]_2)=e(\cm_{q_1}+r\cdot\cm_{q_2},[x]_2)$\textit{, where}
-    	\begin{align*}
-    		F:=&\cm_{f^\prime}-[f^\prime(\zeta)]_1+\gamma\cdot(\cm_{q_w}-[q_w(\zeta)]_1)+r\cdot(\cm_{f^\prime}-[f^\prime(\zeta\omega)]_1)
-    	\end{align*}
-    \end{enumerate}
-\end{enumerate}
-
-\begin{theorem}
-The batched KZG opening scheme with zero-knowledge extension is complete, sound, and honest verifier zero-knowledge.
-\end{theorem}
-\begin{proof}
-Completeness is clear by following the protocol. Soundness can be verified by Lemma~\ref{lemma:range} and~\cite{plonk}. \\
-To verify zero knowledge, we construct a simulator $\mathcal{S}$. Let $\mathcal{S}$ generate $\{\omega^{*^\prime},\omega^{*^{\prime\prime}},\alpha^*,\beta^*\}$, and interpolate $f^*$ such that
-\[ f^*(\omega^{*^\prime})=\alpha^* \]
-\[ f^*(\omega^{*^{\prime\prime}})=\beta^* \]
-\[ f^*(x)=0,x\in{H} \]
-We can observe when $\vrf$ interacts with $\mathcal{S}$ to execute the protocol, $\vrf$ always accepts the proof from $\mathcal{S}$. Given $\{\omega^{*^\prime},\omega^{*^{\prime\prime}},\alpha^*,\beta^*\}$ are chosen uniformly at random each time, which is excatly the same as $\prv$ interpolates $f^\prime$. It should be clear $\vrf$ cannot distinguish between the transcript from $\mathcal{S}$ and the proof from $\prv$.
-\end{proof}
-We will use $\open$ to denote this opening technique.
+Back to the above range proof, now $\prv$ is able to prove $w_1$ is correct with \textbf{openToCommit} in zero-knowledge while using the zero-knowledge extension to prove $w_2$ and $w_3$ are correct. Together, we can prove a value $x$ is in the specified range without revealing $x$. Since only \bootstrap requires opening KZG evaluation with committed value, we implicitly refer to this variaint opening scheme in the context of \bootstrap.
 
 % = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
