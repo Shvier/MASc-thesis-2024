@@ -19,7 +19,7 @@ Circuit-based solutions are feasible but expensive for the prover---the authors 
 
 \section{Cryptographic Background}
 
-We assume our protocol works in a finite field of prime order. For simplicity, we use $\prv$ and $\vrf$ to denote the prover and the verifier in an interactive proof system respectively. We use $g_\mathfrak{g}$ to denote a generator in a group $\mathbb{G}_\mathfrak{g}$ while $h_\mathfrak{g}$ is another generator, and no one knows the relative discrete logarithm of these two generators. Particularly, we use $\gs$ and $\hs$ to denote the two generators in $\mathbb{G}_s$, the \secp group; and we use $\gb$ and $\hb$ to denote the two generators in $\mathbb{G}_b$, the \bls group. If we need to distinguish which group an input to the pairing is from, we use the notations $[x]_1:=g_1^x,[x]_2:=g_2^x$, otherwise elements are  assumed to be in the first group (including $g_s$ and $g_b$). We use $e([x]_1,[x]_2)$ to denote a non-degenerate bilinear pairing. We use $\hash$ to denote a collision-resilient hash function modelled as a random oracle. We use $\ppt$ to represent probabilistic algorithms run in polynomial time.  For vectors, we use an overhead bar to denote a vector and brackets to denote the elements in this vector, e.g., $\overline{v}=\tuple{v_1,v_2,\dots}$. We also use a vector at the top right of a variable to indicate this variable belongs to this vector for readability, e.g., $x^{(\overline{v})}$ means $x$ is an element of $\overline{v}$. When we say the summation between two vectors $\overline{a},\overline{b}$, the result is a new vector $\overline{c}$ where each element is the summation of the elements from $\overline{a}$ and $\overline{b}$ at the same row.
+We assume our protocol works on a finite field of prime order. For simplicity, we use $\prv$ and $\vrf$ to denote the prover and the verifier in an interactive proof system respectively. We use $g_\mathfrak{g}$ to denote a generator in a group $\mathbb{G}_\mathfrak{g}$ while $h_\mathfrak{g}$ is another generator, and no one knows the relative discrete logarithm of these two generators. Particularly, we use $\gs$ and $\hs$ to denote the two generators in $\mathbb{G}_s$, the \secp group; and we use $\gb$ and $\hb$ to denote the two generators in $\mathbb{G}_b$, the \bls group. If we need to distinguish which group an input to the pairing is from, we use the notations $[x]_1:=g_1^x,[x]_2:=g_2^x$, otherwise elements are  assumed to be in the first group (including $g_s$ and $g_b$). We use $e([x]_1,[x]_2)$ to denote a non-degenerate bilinear pairing. We use $\hash$ to denote a collision-resilient hash function modelled as a random oracle. We use $\ppt$ to represent probabilistic algorithms run in polynomial time.  For vectors, we use an overhead bar to denote a vector and brackets to denote the elements in this vector, e.g., $\overline{v}=\tuple{v_1,v_2,\dots}$. We also use a vector at the top right of a variable to indicate this variable belongs to this vector for readability, e.g., $x^{(\overline{v})}$ means $x$ is an element of $\overline{v}$. When we say the summation between two vectors $\overline{a},\overline{b}$, the result is a new vector $\overline{c}$ where each element is the summation of the elements from $\overline{a}$ and $\overline{b}$ at the same row.
 
 \subsection{Discrete Logarithm Assumption}
 \label{sec:dlp}
@@ -27,7 +27,7 @@ The discrete logarithm problem describes, given a triplet $(\mathbb{G}, p, g)$, 
 
 \subsection{Pedersen Commitment}
 \label{sec:pedersen}
-The Pedersen commitment scheme \cite{pedersen} enables $\prv$ to \textit{commit} to a value $x$ without revealing it. Pedersen commitment provides perfectly hiding and computational binding based on the discrete logarithm assumption. Additionally, Pedersen commitments are \textit{additively homomorphic}: given two commitments $\textbf{C}_1$ and $\textbf{C}_2$, the summation of their secrets $x_1$ and $x_2$ is the secret of $\textbf{C}_1+\textbf{C}_2$. We use $\textbf{C}(x)$ to denote a Pedersen commitment to the value $x$. Particularly, we use $\ps$ to denote a Pedersen commitment in \secp and $\pb$ to denote a Pedersen commitment in \bls.
+The Pedersen commitment scheme \cite{pedersen} enables $\prv$ to \textit{commit} to a value $x$ without revealing it. Pedersen commitment provides perfectly hiding and computational binding based on the discrete logarithm assumption. Additionally, Pedersen commitments are \textit{additively homomorphic}: given two commitments $\textbf{C}_1$ and $\textbf{C}_2$, the summation of their secrets $x_1$ and $x_2$ is the secret of $\textbf{C}_1\cdot\textbf{C}_2$. We use $\textbf{C}(x)$ to denote a Pedersen commitment to the value $x$. Particularly, we use $\ps$ to denote a Pedersen commitment in \secp and $\pb$ to denote a Pedersen commitment in \bls.
 
 \subsection{Zero-Knowledge Proofs}
 Informally, a zero-knowledge proof is a cryptographic protocol allowing $\prv$ to convince $\vrf$ that the claiming statement is true without revealing additional information, except the fact that the statement's truth. A zero-knowledge proof must satisfy the following properties:
@@ -36,6 +36,7 @@ Informally, a zero-knowledge proof is a cryptographic protocol allowing $\prv$ t
     \item \textbf{Soundness:} If the statement is false, the probability that $\vrf$ is convinced is negligible.
     \item \textbf{Zero-knowledge:} If the statement is true, $\vrf$ learns nothing except the fact that the statement is true.
 \end{enumerate}
+It is worth noting there are different definitions for the soundness (special soundness, knowledge soundness in algebraic group model) and the zero knowledge (honset verifier zero knowledge, special honest verifier zero knowledge) in the context of some protocols. We refer to~\ref{} for more detailed explanations.
 
 \subsection{$\Sigma$-Protocol}
 
@@ -89,10 +90,10 @@ We use $x={x_1\orproof{x_2}}$ to denote $x$ is $x_1$ or $x_2$.
 \caption{Small number ($\mathbb{Z}_{31}$) example of encoding a vector of integers $\tuple{3,1,1,3,7}$ into (a) the first 5 points of a polynomial, and (b) into 5th roots of unity ($\omega=3$).\label{fig:rou}}
 \end{figure}
 
-We use the approach of encoding data vectors into polynomials, committing to them using a polynomial commitment scheme (PCS), and forming zero knowledge arguments---a model called a polynomial-based interactive oracle proof (Poly-IOP). The zk-snark system Plonk popularized Poly-IOPs and has many extensions and optimizations. A one-dimensional vector of data is encoded into a univariate polynomial using 1 of 3 methods (all 3 are used at different steps of Plonk): (1) into the coefficients of the polynomial, (2) as roots of the polynomial, and (3) as the \(y\)-coordinates (\(\mathsf{data}_i=P(x_i)\)) of points on the polynomial. Plonk mostly relies on (3) and an interpolation algorithm is used to find the corresponding coefficients of the polynomial, which is
+We use the approach of encoding data vectors into polynomials, committing to them using a polynomial commitment scheme (PCS), and forming zero knowledge arguments---a model called a polynomial-based interactive oracle proof (Poly-IOP). The zk-snark system Plonk popularized Poly-IOPs and has many extensions and optimizations. A one-dimensional vector of data is encoded into a univariate polynomial using 1 of 3 methods (all 3 are used at different steps of Plonk): (1) into the coefficients of the polynomial, (2) as roots of the polynomial, and (3) as the \(y\)-coordinates (\(\mathsf{data}_i=p(x_i)\)) of points on the polynomial. Plonk mostly relies on (3) and an interpolation algorithm is used to find the corresponding coefficients of the polynomial, which is
 needed for the PCS. General interpolation algorithms are \(O(n^2)\) work for \(n\) evaluation points but this can be reduced to \(O(n\log n)\) with an optimization.
 
-The optimization enables interpolation via the fast Fourier transform (FFT). It concerns how to choose the \(x\)-coordinates, which will serve as the index for accessing the data: evaluating \(P(X)\) at \(x_i\) will reveal \(\mathsf{data}_i\). First note, \(x\)-coordinates are from the exponent group (\(Z_q\)) and the choices exceed what is feasible to use (\(2^{255}\) values in \bls). Any subset can be used and interpolated. The optimization is to chose them with a mathematical structure. Specifically, instead an additive sequence (e.g., \(0,1,2,3,\ldots\)), we use a multiplicative sequence
+The optimization enables interpolation via the fast Fourier transform (FFT). It concerns how to choose the \(x\)-coordinates, which will serve as the index for accessing the data: evaluating \(p(X)\) at \(x_i\) will reveal \(\mathsf{data}_i\). First note, \(x\)-coordinates are from the exponent group (\(Z_q\)) and the choices exceed what is feasible to use (\(2^{255}\) values in \bls). Any subset can be used and interpolated. The optimization is to chose them with a mathematical structure. Specifically, instead an additive sequence (e.g., \(0,1,2,3,\ldots\)), we use a multiplicative sequence
 \(1,\omega,\omega\cdot\omega,\omega\cdot\omega\cdot\omega,\ldots\) or equivalently: \(\omega^0,\omega^1,\omega^2,\ldots,\omega^{\kappa-1}\). Further, the sequence is closed under multiplication which means that next index after \(\omega^{\kappa-1}\) wraps back to the first index: \(\omega^{k-1} \cdot \omega = \omega^\kappa = \omega^0=1\) (this property is also useful in proving relationships between data in the vector and its neighbouring values).
 
 For terminology, we say \(\omega\) is a generator with multiplicative order \(\kappa\) in \(Z_q\). This implies \(\omega^\kappa=1\). Rearranging, \(\omega=\sqrt[\kappa]{1}\). Thus we can equivalently describe \(\omega\) as a \(\kappa\)-th root of 1. Finally, as 1 is the unity element in \(Z_q\), \(\omega\) is commonly called a \(\kappa\)-th root of unity.
@@ -106,8 +107,8 @@ A polynomial commitment scheme (PCS) allows $\prv$ to commit to a polynomial to 
 A polynomial commitment scheme consists of three moves: \textbf{gen}, \textbf{com}, and \textbf{open} such that
 \begin{enumerate}
     \item \textbf{gen}$(d)$ is an algorithm that given a random number $\tau\in\mathbb{F}$ and a positive integer d, outputs a structured reference string (SRS) \textbf{srs} such that
-    \[ \textbf{srs}=\tuple{g,g^\tau,\dots,g^{\tau^d},h,h^\tau,\dots,h^{\tau^d}} \]
-    \item \textbf{com}($f$, \textbf{srs}) outputs a commitment $\cm=g^{f(\tau)}h^{\hat{f}(\tau)}$ to $f$, where $\hat{f}$ is a random polynomial of degree $d$, and $f$ is a polynomial of degree $d$ or less.
+    \[ \textbf{srs}=\tuple{g_1,g_1^\tau,\dots,g_1^{\tau^d},h_1,h_1^\tau,\dots,h_1^{\tau^d},g_2,g_2^\tau} \]
+    \item \textbf{com}($f$, \textbf{srs}) outputs a commitment $\cm=g_1^{f(\tau)}h_1^{\hat{f}(\tau)}$ to $f$, where $\hat{f}$ is a random polynomial of degree $d$, and $f$ is a polynomial of degree $d$ or less.
     \item \textbf{open} is a protocol that $\prv$ is given input f, and $\prv$ and $\vrf$ are both given
     \begin{itemize}
         \item \textbf{srs}
@@ -119,10 +120,10 @@ A polynomial commitment scheme consists of three moves: \textbf{gen}, \textbf{co
     \textit{They run the protocol as follows:}
     \begin{enumerate}
         \item $\prv$ computes the witness $w$ for $(a,b,\hat{b})$ such that
-        \[ w=g^{\psi(\tau)}h^{\hat\psi(\tau)} \]
+        \[ w=g_1^{\psi(\tau)}h_1^{\hat\psi(\tau)} \]
         where $\psi(x)=\frac{f(X)-f(a)}{X-a}$, and $\hat\psi(x)=\frac{\hat{f}(X)-\hat{f}(a)}{X-a}$
         \item $\vrf$ outputs \textbf{acc} if and only if
-        \[ e(\cm/(g^bh^{\hat{b}}),[1]_2)=e(w,[\tau-a]_2) \]
+        \[ e(\cm/(g_1^bh_1^{\hat{b}}),[1]_2)=e(w,[\tau-a]_2) \]
     \end{enumerate}
 \end{enumerate}
 \begin{itemize}
@@ -192,15 +193,15 @@ By Definition~\ref{def:pcs}, to prove $b$ is the evaluation of $f(a)$, $\prv$ re
 \label{sec:kzgOpenComm}
 \textbf{openToCommit} is a protocol that $\prv$ is given input $f$ and $b$. $\prv$ and $\vrf$ are both given
 \begin{itemize}
-    \item \textbf{srs}
+    \item \textbf{srs} = $\tuple{g_1,g_1^\tau,\dots,g_1^{\tau^d},h_1,h_1^\tau,\dots,h_1^{\tau^d},g_2,g_2^\tau}$
     \item $\cm$ - the commitment to $f$
     \item $a$ - an evaluation point of $f$
-    \item $\textbf{C}(b)$ - the committed evaluation of $f(a)$, $g^{f(a)}h^{\hat{f}(a)}$
+    \item $\textbf{C}(b)$ - the committed evaluation of $f(a)$, $g_1^{f(a)}h_1^{\hat{f}(a)}$
 \end{itemize}
 \textit{They run the protocol as follows:}
 \begin{enumerate}
     \item $\prv$ computes the witness $w$ for $(a,b,\hat{b})$ such that
-    \[ w=g^{\psi(\tau)}h^{\hat\psi(\tau)} \]
+    \[ w=g_1^{\psi(\tau)}h_1^{\hat\psi(\tau)} \]
     where $\psi(x)=\frac{f(X)-f(a)}{X-a}$, and $\hat\psi(x)=\frac{\hat{f}(X)-\hat{f}(a)}{X-a}$
     \item $\vrf$ outputs \textbf{acc} if and only if
     \[ e(\cm/\textbf{C}(b),[1]_2)=e(w,[\tau-a]_2) \]
@@ -211,7 +212,7 @@ This does not violate the soundness of the original KZG commitment scheme. Note 
 \textbf{openToCommit} is complete, sound, and special HVZK.
 \end{theorem}
 \begin{proof}
-Complete and soundness follow the original KZG commitment scheme. \\
+Completeness and soundness follow the original KZG commitment scheme. \\
 To prove the zero knowledge, let the simulator $\mathcal{S}$ take as inputs $\textbf{srs}$, $\cm_f$, $a$, and $\textbf{C}(b)$. Since $\mathcal{S}$ knows the random evaluation point $a$ in advance, $\mathcal{S}$ can easily computes a witness $w^*=\cm_f/\textbf{C}(b)/[\tau-a]_1$ that makes the pairing equation hold, i.e., $\mathcal{S}$ always outputs an accepting conversation $(\cm_f,a,w^*)$ for $\textbf{C}(b)$.
 \end{proof}
 Since only \bootstrap requires opening KZG evaluation with committed value, we implicitly refer to this variaint opening scheme in the context of \bootstrap.
