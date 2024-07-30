@@ -15,36 +15,36 @@
 
     \item Case 1: $s_i=1$ ($\prv$ claims knowledge of $sk_i$)
     \begin{itemize}  
-    \item $\prv$ selects $e_2\stackrel{\$}{\leftarrow} \{0,1\}^t; z_3,\beta\stackrel{\$}{\leftarrow}\mathbb{Z}_b;\alpha\stackrel{\$}{\leftarrow}\mathbb{Z}_s$
+    \item $\prv$ selects $e_1\stackrel{\$}{\leftarrow} \{0,1\}^t; z_3,\beta\stackrel{\$}{\leftarrow}\mathbb{Z}_b;\alpha\stackrel{\$}{\leftarrow}\mathbb{Z}_s$
     \item $\prv$ publishes  $t_1=\gs^\alpha$
     \item $\prv$ publishes $t_2=\hb^\beta$
-    \item $\prv$ publishes  $t_3=\gb^{-e_2}\hb^{z_3-r_ie_2}$
+    \item $\prv$ publishes  $t_3=\gb^{-e_1}\hb^{z_3-r_ie_1}$
     \item $\vrf$ publishes $t$-bit challenge $e\stackrel{\$}{\leftarrow} \{0,1\}^t$ (or $\prv$ via Fiat-Shamir)
-    \item $\prv$ computes $e_1=e\oplus{e_2}$ and publishes $e_1$ and $e_2$
-    \item $\prv$ publishes $z_1=e_1\mathsf{sk}_i+\alpha$
-    \item $\prv$ publishes $z_2=e_1r_i+\beta$
+    \item $\prv$ computes $e_0=e\oplus{e_1}$ and publishes $e_0$ and $e_1$
+    \item $\prv$ publishes $z_1=e_0\mathsf{sk}_i+\alpha$
+    \item $\prv$ publishes $z_2=e_0r_i+\beta$
     \item $\prv$ publishes $z_3$
     \end{itemize}
 
     \item Case 2: $s_i=0$ ($\prv$ does not claim knowledge of $sk_i$)
     \begin{itemize}  
-    \item $\prv$ selects $e_1\stackrel{\$}{\leftarrow} \{0,1\}^t;z_1\stackrel{\$}{\leftarrow}\mathbb{Z}_s;z_2,\alpha\stackrel{\$}{\leftarrow}\mathbb{Z}_b$
-    \item $\prv$ publishes $t_1=\gs^{z_1}/\mathsf{pk}_i^{e_1}$
-    \item $\prv$ publishes $t_2=\gb^{e_1}\hb^{z_2-r_ie_1}$
+    \item $\prv$ selects $e_0\stackrel{\$}{\leftarrow} \{0,1\}^t;z_1\stackrel{\$}{\leftarrow}\mathbb{Z}_s;z_2,\alpha\stackrel{\$}{\leftarrow}\mathbb{Z}_b$
+    \item $\prv$ publishes $t_1=\gs^{z_1}/\mathsf{pk}_i^{e_0}$
+    \item $\prv$ publishes $t_2=\gb^{e_0}\hb^{z_2-r_ie_0}$
     \item $\prv$ publishes $t_3=\hb^\alpha$
     \item $\vrf$ publishes $t$-bit challenge $e\stackrel{\$}{\leftarrow} \{0,1\}^t$ (or $\prv$ via Fiat-Shamir)
-    \item $\prv$ computes $e_2=e\oplus{e_1}$ and publishes $e_1$ and $e_2$    
+    \item $\prv$ computes $e_1=e\oplus{e_0}$ and publishes $e_0$ and $e_1$    
     \item $\prv$ publishes $z_1$
     \item $\prv$ publishes $z_2$
-    \item $\prv$ publishes $z_3=e_2r_i+\alpha$
+    \item $\prv$ publishes $z_3=e_1r_i+\alpha$
     \end{itemize}
 
     \item $\vrf$ checks
     \begin{itemize}
-    \item $e=e_1\oplus{e_2}$
-    \item $\gs^{z_1}=\mathsf{pk}_i^{e_1}t_1$ 
-    \item $\gb^{e_1}\hb^{z_2}=p_i^{e_1}t_2$ 
-    \item $\hb^{z_3}=p_i^{e_2}t_3$
+    \item $e=e_0\oplus{e_1}$
+    \item $\gs^{z_1}=\mathsf{pk}_i^{e_0}t_1$ 
+    \item $\gb^{e_0}\hb^{z_2}=p_i^{e_0}t_2$ 
+    \item $\hb^{z_3}=p_i^{e_1}t_3$
     \end{itemize}  
 \end{framed}
     
