@@ -9,18 +9,21 @@
 % = = = 
 
 \begin{enumerate}
+	\item $\vrf$ processes the balance of the anonymous set
+	\begin{enumerate}
+		\item $\vrf$ queries the balance of each public key in the set $\prv$ chose, denoted by $\overline{b}=\tuple{\bal_1,\bal_2,\dots,\bal_n}$
+		\item $\vrf$ interpolates a polynomial $\delta(X)$ from $\overline{b}$
+	\end{enumerate}
+	\item $\vrf$ sends $\delta(X)$ to $\prv$
 	\item $\prv$ takes as input the selector vector of keys its shown ownership of, $\phi(X)$, from \bootstrap 
-	\item $\prv$ queries the balance of each public key in the set he chose, denoted by $\overline{b}=\tuple{\bal_1,\bal_2,\dots,\bal_n}$
-	\item $\prv$ interpolates a polynomial $\delta(X)$ from $\overline{b}$
 	\item $\prv$ constructs an accumulative polynomial $\sigma(X)$ such that:
 		\begin{enumerate}
 	\item $\sigma(X)-\sigma(X\omega)=\delta(X)\cdot\phi(X),X\ne{\omega^{n-1}}$
 	\item $\sigma(\omega^{n-1})=\delta(\omega^{n-1})\cdot\phi(\omega^{n-1})$
 		\end{enumerate}
-	\item $\prv$ runs $\open(\sigma,\delta,\phi)$
+	\item $\prv$ runs $\open(\sigma,\delta,\phi)$ and opens $\sigma(\omega^0)$ through \textbf{openToCommit}
 	\item $\vrf$ accepts the proof in and only if
 	\begin{enumerate}
-		\item The construction of $\delta$ is valid
 		\item $[\sigma(X)-\sigma(X\omega)-\delta(X)\cdot{\phi(X)}]\cdot(X-\omega^{n-1})=0$
 		\item $[\sigma(X)-\delta(X)\cdot{\phi(X)}]\cdot\frac{X^n-1}{X-\omega^{n-1}}=0$
 	\end{enumerate}
@@ -30,5 +33,5 @@
 
 \normalsize	
 \end{framed}
-\caption{The \poa proof demonstrates that the balances associated with each key in the anonymity set are included, the subset not owned by the exchange (per selector vector from \bootstrap) are zero-ed out, and remaining balances are totalled correctly in $\sigma(1)$. \label{alg:poa}}
+\caption{The \poa proof demonstrates that the balances associated with each key in the anonymity set are included, the subset not owned by the exchange (per selector vector from \bootstrap) are zero-ed out, and remaining balances are totalled correctly in $\sigma(\omega^0)$. \label{alg:poa}}
 \end{Protocol*}
