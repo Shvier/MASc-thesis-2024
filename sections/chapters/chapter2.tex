@@ -186,7 +186,7 @@ The range proof from Boneh \etal~\cite{rangeproof} is complete and sound.
 Completeness is clear by following the protocol. \\
 For soundness, to make the equation $w(\zeta)=q(\zeta)\cdot(\zeta^n-1)$ hold, $q(X)$ must exist (it is a rational function). That means $w(X)$ is vanishing on $H$, i.e., $w_1,w_2$, and $w_3$ are vanishing over $H$. Thus, if $f(X)$ does not satisfy any of the equations $w_1,w_2$, and $w_3$, $\vrf$ will detect the proof is invalid. By the binding property of KZG commitment, we know that the evaluations $f(\zeta),f(\zeta\omega)$, and $q(\zeta)$ are correct with overwhelming probability if the KZG verifying is passed.
 \end{proof}
-We note that the above range proof is not zero-knowledge because: 1. revealing $f(X)$ and $f(X\omega)$ leaks the evaluations of $f$; 2. verifying $w_1$ requires $\vrf$ to know $x$. The solutions for these two points may seem similar but not quite the same, because the first point requires $\prv$ not to open the evaluations of $f(X)$ over $H$, and the second point means $\prv$ is supposed to reveal the evaluation of $f(\omega^0)$ to prove $x$ is the claimed one. Boneh \etal~\cite{rangeproof} introduced a zero-knowledge extension to solve the first issue. We will describe the extension and manipulate a variant of the opening scheme to solve the second one.
+We note that the above range proof is not zero-knowledge because (i) revealing $f(X)$ and $f(X\omega)$ leaks the evaluations of $f$ and (ii) verifying $w_1$ requires $\vrf$ to know $x$. The solutions for these two points may seem similar but not quite the same, because the first point requires $\prv$ not to open the evaluations of $f(X)$ over $H$, and the second point means $\prv$ is supposed to reveal the evaluation of $f(\omega^0)$ to prove $x$ is the claimed one. Boneh \etal~\cite{rangeproof} introduced a zero-knowledge extension to solve the first issue. We will describe the extension and manipulate a variant of the opening scheme to solve the second one.
 
 \subsection{Batched Opening with Zero-Knowledge Extension ($\open$)}
 \label{sec:kgzzkp}
@@ -232,9 +232,9 @@ We can observe when $\vrf$ interacts with $\mathcal{S}$ to execute the protocol,
 We will use $\open$ to denote this opening technique.
 
 \subsection{Open KZG with Committed Value}
+\label{sec:kzgOpenComm}
 By Definition~\ref{def:pcs}, to prove $b$ is the evaluation of $f(a)$, $\prv$ reveals the pair $(a,b)$ to let $\vrf$ validate the proof through pairings. To solve the second issue in the above range proof, we describe the new opening scheme.
 \begin{definition}
-\label{sec:kzgOpenComm}
 \textbf{openToCommit} is a KZG opening scheme that $\prv$ is given input $f$ and $b$. $\prv$ and $\vrf$ are both given
 \begin{itemize}
     \item \textbf{srs} = $\tuple{g_1,g_1^\tau,\dots,g_1^{\tau^d},h_1,h_1^\tau,\dots,h_1^{\tau^d},g_2,g_2^\tau}$
@@ -253,6 +253,7 @@ By Definition~\ref{def:pcs}, to prove $b$ is the evaluation of $f(a)$, $\prv$ re
 \end{definition}
 This does not violate the soundness of the original KZG commitment scheme. Note $\textbf{C}(b)$ is a Pedersen commitment. Recall the computational binding property of Pedersen commitment, that means it is infeasible for $\prv$ to compute a $b^*$ such that $f(a)\ne{b^*},\textbf{C}(b)=\textbf{C}(b^*)$ based on discrete logarithm assumption.
 \begin{theorem}
+\label{them:kzgOpen}
 \textbf{openToCommit} is complete, sound, and special HVZK.
 \end{theorem}
 \begin{proof}
