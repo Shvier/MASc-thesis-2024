@@ -46,7 +46,7 @@ $\prv$'s private input: user balances, $\{\bal_1,\bal_2,\dots,\bal_\mu\}$
             \vdots \\
             v_{k-1}:=&[p_{k-1}(X)-2p_k(X)]\cdot[1-(p_{k-1}(X)-2p_k(X))]
         \end{align*}
-        $w_1$ and $w_2$ prove the accumulative vector is correct, $w_3$ and $\{v_i\}$ prove each liability is greater than or equal to 0 (range proof). To complete the proof, $\prv$ will run $\open(p_0,p_1,p_2,\dots,p_k)$ at a random evaluation point $\zeta$ and $\open(p_0)$ at $\zeta\omega$
+        $w_1$ and $w_2$ prove the accumulative vector is correct, $w_3$ and $\{v_i\}$ prove each liability is greater than or equal to 0 (range proof). To complete the proof, $\prv$ will run $\openzk(p_0,p_1,p_2,\dots,p_k)$ at a random evaluation point $\zeta$ and $\openzk(p_0)$ at $\zeta\omega$
         % This step involves the verifier sampling a random point as the challenge and the prover responding with the evaluations and the alleged commitments of each polynomial $p_i$ at that point.
         % \begin{enumerate}
         %     \item $\prv$ generates two random numbers $\omega^{\prime},\omega^{\prime\prime}$ in $\mathbb{F}\setminus{H}$ and another two random numbers $\alpha,\beta$ in $\mathbb{F}$ for each polynomial $p_i$

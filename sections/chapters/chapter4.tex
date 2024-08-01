@@ -60,9 +60,11 @@ For \bootstrap to be sound, it requires (i) the polynomial commitment scheme (PC
 \item \textbf{KZG.A3}: If an adversary interpolates a polynomial through the point $(\omega^i,y)$ such that $y=P(\omega^i)$ but claims $y'=P(\omega^i)$ for some $y'\neq y$ then the probability that $\tau-y'$ evenly divides $y=P(\tau)$ is overwhelmingly low. This property can be demonstrated using the Schwartz-Zippel lemma by showing the number of $\tau$ values satisfying this property is bounded from above by $d$/$q$ where $d$ is the degree of the polynomial and $q$ is the size of the exponent group. For \bls with 255-bit exponents and 2-adicity of 32, this is close to $2^{32-255}=2^{-233}$ which is negligible.
 \end{itemize}
 
-Finally, in our protocol $\prv$ does not reveal the evaluation of the polynomial at a point, $\prv$ instead reveals a commitment to the evaluation through \textbf{openToCommit}. In the original KZG opening scheme, $\prv$ opens the commitment to the polynomial first and then opens the evaluation at the challenge point. Our modification just moves the computation work for the committed evaluation from $\vrf$ to $\prv$. For the security proof of \textbf{openToCommit}, see Theorem~\ref{thm:kzgOpen}. Therefore, \bootstrap has zero knowledge.
+Finally, in our protocol $\prv$ does not reveal the evaluation of the polynomial at a point, $\prv$ instead reveals a commitment to the evaluation through \openc. In the original KZG opening scheme, $\prv$ opens the commitment to the polynomial first and then opens the evaluation at the challenge point. Our modification just moves the computation work for the committed evaluation from $\vrf$ to $\prv$. For the security proof of \openc, see Theorem~\ref{thm:kzgOpen}. Therefore, \bootstrap has zero knowledge.
+\end{proof}
 
-For future claims, we encapsulate all assumptions about KGZ as a \textit{polynomial oracle}. 
+For future claims, we encapsulate all assumptions about KZG as a \textit{polynomial oracle}. 
+
 \end{proof}
 
 % = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
