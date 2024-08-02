@@ -122,7 +122,7 @@ For future claims, we encapsulate all assumptions about KZG as a \textit{polynom
 \end{claim}
 
 \begin{proof}
-Clearly, \poa is a polynomial protocol for two polynomial relations (i) $\sigma(X)-\sigma(X\omega)=\delta(X)\cdot\phi(X),X\ne{\omega^{n-1}}$ and (ii) $\sigma(\omega^{n-1})=\delta(\omega^{n-1})\cdot\phi(\omega^{n-1})$. \poa also leverages $\openzk$ as its KZG opening scheme. Additionally, to complete the PoA proof, \poa publishes the evaluation of $\sigma(\omega^0)$ through $\openc$. We already analyzed the security of $\openc$ in Theorem~\ref{sec:kzgOpenComm}. Thus, \poa is complete, knowledge sound, and HVZK by Theorem~\ref{thm:polyproto}.
+Clearly, \poa is a polynomial protocol for two polynomial relations (i) $\sigma(X)-\sigma(X\omega)=\delta(X)\cdot\phi(X),X\ne{\omega^{n-1}}$ and (ii) $\sigma(\omega^{n-1})=\delta(\omega^{n-1})\cdot\phi(\omega^{n-1})$. The first relation proves the starting values are the same, and the second proves each successive value in the accumulative vector adds its adjacent value with the corresponding value. To check the relations, \poa also leverages $\openzk(\sigma,\delta,\phi)$ which includes opening the polynomials at a random evaluation point $\zeta$ and $\openzk(\sigma)$ at $\zeta\omega$. Additionally, to complete the PoA proof, \poa publishes the evaluation of $\sigma(\omega^0)$ through $\openc$. We already analyze the security of $\openc$ in Theorem~\ref{sec:kzgOpenComm}. Thus, \poa is complete, knowledge sound, and HVZK by Theorem~\ref{thm:polyproto}.
 \end{proof}
 
 % = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
