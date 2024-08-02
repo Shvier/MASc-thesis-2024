@@ -40,16 +40,42 @@ Given the relation can proven with a ``standard'' $\Sigma$-protocol (Thereom~\re
 \end{proof}
 
 % = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+\hfill \break
+Gabizon \etal introduced the definition of a universal polynomial protocol~\cite{plonk}. Here we describe a variant of it with some limitations for our work.
+\begin{definition}
+Fix positive integer $d,t,l$. Let $i\in[1,l]$. Let $\mathcal{R}\subseteq\mathbb{F}\times\mathbb{F}\times\cdots\times\mathbb{F}$ be a polynomial relation for one or more polynomials. Given a set of polynomials $f_1,f_2,\dots,f_t\in\mathbb{F}_{<d}[X]$ as $\prv$'s private input, and a set of polynomial relations $\mathcal{R}_1,\mathcal{R}_2,\dots,\mathcal{R}_l$ as public input, a polynomial protocol is a three-move protocol that $\prv$ wants to convince $\vrf$ each $\mathcal{R}_i$ holds for the certain set $F_i\subseteq\{f_1,f_2,\dots,f_t\}$. $\prv$ and $\vrf$ runs the protocol as follows.
+\begin{enumerate}
+    \item $\prv$ commits to $f_1,f_2,\dots,f_t$, and publishes all commitments, $\cm_{f_1},\cm_{f_2},\dots,\cm_{f_t}$.
+    \item $\vrf$ sends a random evaluation point as challenge.
+    \item $\prv$ responds with the corresponding evaluation and the commitment to the witness at the evaluation point for each polynomial.
+\end{enumerate}
+At the end of the protocol, $\vrf$ outputs \textbf{acc} or \textbf{rej}; such that
+\begin{itemize}
+    \item \textbf{Completeness:} $\vrf$ always outputs \textbf{acc} if $\prv$ follows the protocol correctly to compute the proof $\pi_i$ for the relation $\mathcal{R}_i$, and $\mathcal{R}_i$ holds for the prescribed polynomials $F_i$, denoted by $(F_i,\pi_i)\in\mathcal{R}_i$.
+    \item \textbf{Knowledge soundness in the algebraic group model}: For any algebraic adversary $\mathcal{A}$ in a polynomial protocol, there exists a $\ppt$ extractor $\mathcal{E}$ given access to $\mathcal{A}$'s messages during the protocol, and $\mathcal{A}$ can win the following game with negligible probability:
+    \begin{enumerate}
+        \item Given the inputs that $\prv$ \textit{can access, $\mathcal{A}$ outputs} $\cm_{f_1},\cm_{f_2},\dots,\cm_{f_t}$.
+        \item $\mathcal{E}$ outputs $f_1,f_2,\dots,f_t\in\mathbb{F}_{<d}[X]$ from $\mathcal{A}$'s output and $\{F_i\}$ from these polynomials.
+        \item $\mathcal{A}$ outputs the evaluation at the random evaluation point for each polynomial and the corresponding proofs $\{\pi_i\}$.
+        \item $\mathcal{A}$ wins if
+        \begin{itemize}
+            \item $\vrf$ accepts the proof at the end of the protocol.
+            \item $(F_i,\pi_i)\notin\mathcal{R}_i$ or any evaluation is not correct.
+        \end{itemize}
+    \end{enumerate}
+\end{itemize}
+\end{definition}
+% = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
 \section{The \bootstrap Argument}
 
 \begin{claim}
 \label{thm:keys}
-\bootstrap is a complete, sound, and NIZKP.
+\bootstrap is complete, sound, and HVZK.
 \end{claim}
 
 \begin{proof}
-Recall that the \bootstrap argument contains the relation proven to be NIZKP in Theorem~\ref{thm:nizkclaim}. For the outer frame in Protocol~\ref{alg:boot}, $\vrf$ does not need to send any challenge to $\prv$, and $\prv$ instead opens the evaluations of the selector polynomial at each root of unity, which mean \bootstrap is non-interactive. It remains to be shown the rest of the protocol (outer frame in Protocol~\ref{alg:boot}) is secure.
+Recall that the \bootstrap argument contains the relation proven to be complete, sound, and HVZK in Theorem~\ref{thm:sigmaclaim}. It remains to be shown the rest of the protocol (outer frame in Protocol~\ref{alg:boot}) is secure.
 
 Completeness follows from Protocol~\ref{alg:boot}. The remainder of the protocol involves $\prv$ demonstrating that the selector polynomial encodes a 1 at index $\omega^i$ if and only if the corresponding $i$-th run of the $\Sigma$-protocol used $s=1$, and contains a 0 otherwise.
 
@@ -60,7 +86,7 @@ For \bootstrap to be sound, it requires (i) the polynomial commitment scheme (PC
 \item \textbf{KZG.A3}: If an adversary interpolates a polynomial through the point $(\omega^i,y)$ such that $y=P(\omega^i)$ but claims $y'=P(\omega^i)$ for some $y'\neq y$ then the probability that $\tau-y'$ evenly divides $y=P(\tau)$ is overwhelmingly low. This property can be demonstrated using the Schwartz-Zippel lemma by showing the number of $\tau$ values satisfying this property is bounded from above by $d$/$q$ where $d$ is the degree of the polynomial and $q$ is the size of the exponent group. For \bls with 255-bit exponents and 2-adicity of 32, this is close to $2^{32-255}=2^{-233}$ which is negligible.
 \end{itemize}
 
-Finally, in our protocol $\prv$ does not reveal the evaluation of the polynomial at a point, $\prv$ instead reveals a commitment to the evaluation through \openc. In the original KZG opening scheme, $\prv$ opens the commitment to the polynomial first and then opens the evaluation at the challenge point. Our modification just moves the computation work for the committed evaluation from $\vrf$ to $\prv$. For the security proof of \openc, see Theorem~\ref{thm:kzgOpen}. Therefore, \bootstrap has zero knowledge.
+Finally, in our protocol $\prv$ does not reveal the evaluation of the polynomial at a point, $\prv$ instead reveals a commitment to the evaluation through \openc. In the original KZG opening scheme, $\prv$ opens the commitment to the polynomial first and then opens the evaluation at the challenge point. Our modification just moves the computation work for the committed evaluation from $\vrf$ to $\prv$. By Theorem~\ref{thm:kzgOpen}, $\openc$ has special HVZK. Therefore, \bootstrap has zero knowledge.
 \end{proof}
 
 For future claims, we encapsulate all assumptions about KZG as a \textit{polynomial oracle}. 
