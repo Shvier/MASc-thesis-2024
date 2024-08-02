@@ -74,6 +74,7 @@ A polynomial protocol has the following properties:
 % = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
 \begin{theorem}
+\label{thm:polyproto}
 A polynomial protocol with the zero-knowledge extension $\openzk$ is complete, has knowledge soundness in the algebraic group model, and is HVZK.
 \end{theorem}
 
@@ -111,6 +112,17 @@ Finally, in our protocol $\prv$ does not reveal the evaluation of the polynomial
 
 For future claims, we encapsulate all assumptions about KZG as a \textit{polynomial oracle}. 
 
+% = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+\section{The \poa Argument}
+
+\begin{claim}
+\label{thm:assets} 
+\poa is complete, has knowledge soundness in the algebraic group model, and is HVZK. 
+\end{claim}
+
+\begin{proof}
+Clearly, \poa is a polynomial protocol for two polynomial relations (i) $\sigma(X)-\sigma(X\omega)=\delta(X)\cdot\phi(X),X\ne{\omega^{n-1}}$ and (ii) $\sigma(\omega^{n-1})=\delta(\omega^{n-1})\cdot\phi(\omega^{n-1})$. \poa also leverages $\openzk$ as its KZG opening scheme. Additionally, to complete the PoA proof, \poa publishes the evaluation of $\sigma(\omega^0)$ through $\openc$. We already analyzed the security of $\openc$ in Theorem~\ref{sec:kzgOpenComm}. Thus, \poa is complete, knowledge sound, and HVZK by Theorem~\ref{thm:polyproto}.
 \end{proof}
 
 % = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
