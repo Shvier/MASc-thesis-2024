@@ -137,7 +137,23 @@ Clearly, \poa is a polynomial protocol for two polynomial relations (i) $\sigma(
 \begin{proof}
 Completeness follows from Protocol~\ref{alg:pol}. 
 
-Given a \textit{polynomial oracle}, $\prv$ commits to a set of integers in binary form and build a vector to accumulate the bits into the integer representation (call this the range accumulator). Soundness of this aspect follows from the soundness of the range proof by Lemma~\ref{lemma:range} which uses the polynomial oracle to demonstrate three constraints: that the range accumulator starts with a 0 or 1; that the binary relationship between adjacent bits in the range accumulator are 0 or 1; and that the header of the range accumulator matches a standalone commitment to the integer (we do not use this, we just use the header values directly from $p_1(X)$). To complete soundness, $\vrf$ must check that no more than $k$ bits are used for an integer in $[0,k)$. Outside of the range proof, the $\prv$ builds a vector ($p_0(X)$) to accumulate the sum of each header value ($p_1(X)$) from the set of range accumulators for each user account. This is the same protocol as Claim~\ref{thm:assets}. 
+Given a \textit{polynomial oracle}, $\prv$ commits to a set of integers in binary form and build a vector to accumulate the bits into the integer representation (call this the range accumulator). Knowledge soundness of this aspect follows from the knowledge soundness of the range proof by Lemma~\ref{lemma:range} which uses the polynomial oracle to demonstrate three constraints: that the range accumulator starts with a 0 or 1; that the binary relationship between adjacent bits in the range accumulator are 0 or 1; and that the header of the range accumulator matches a standalone commitment to the integer (we do not use this, we just use the header values directly from $p_1(X)$). To complete soundness, $\vrf$ must check that no more than $k$ bits are used for an integer in $[0,k)$. Outside of the range proof, $\prv$ builds a vector ($p_0(X)$) to accumulate the sum of each header value ($p_1(X)$) from the set of range accumulators for each user account. This is the same protocol as Claim~\ref{thm:assets}. 
 
 For HVZK, it remains to consider what evaluation points are leaked by $\pi_\mathsf{liabilities}$. It opens $w_1,w_2,w_3,v_1,v_2,\dots,v_{m-1}$ to 0 which are consistent with exactly the constraints of the range accumulator and the additive accumulator. To check the constraints, $\prv$ will run $\openzk(p_0,p_1,p_2,\dots,p_k)$ at a random evaluation point $\zeta$ and $\openzk(p_0)$ at $\zeta\omega$. Again, we already analyzed the security of $\openzk$ in Theorem~\ref{thm:kzgOpen}. Thus, \pol is HVZK.
 \end{proof}
+
+% = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+\section{The \userproof Argument}
+
+\begin{claim}
+\label{thm:users} 
+\userproof is complete, has knowledge soundness in the algebraic group model, and is zero-knowledge. 
+\end{claim}
+
+\begin{proof}
+Completeness follows from Protocol~\ref{alg:users}. 
+
+Knowledge soundness follows directly from the \textit{polynomial oracle} which, for $\pi_\mathsf{users}$, opens two points at the same index on two polynomials---one demonstrates the user's balance and one demonstrates the user's identification. The sufficincy of this to bind the balance to the user ID is already proven in Provisions which uses the same mechanism (for a different commitment scheme). The KZG assumptions already addressed in Claim~\ref{thm:keys} covers the rest. 
+
+Zero knowledge follows from the properties of KZG commitments---seeing a polynomial commitment and an opening at a specific evaluation point reveals no further information about any other point on the polynomial. KZG does not reveal the degree of the poiynomial, which would provide the number of users of the exchange, but an upperbound exists in the size of the SRS from the trusted setup (and if it can be assumed the prover will act efficiently, the largest root of unity). \end{proof}
