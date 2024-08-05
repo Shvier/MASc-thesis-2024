@@ -179,13 +179,13 @@ A range proof enables $\prv$ to convince $\vrf$ a value $x$ is in a specified ra
 
 \begin{lemma}
 \label{lemma:range}
-The range proof from Boneh \etal~\cite{rangeproof} is complete and sound.
+The range proof from Boneh \etal~\cite{rangeproof} is complete and has knowledge soundness in the algebraic group model.
 \end{lemma}
 
 \begin{proof}
 Completeness is clear by following the protocol.
 
-For soundness, to make the equation $w(\zeta)=q(\zeta)\cdot(\zeta^n-1)$ hold, $q(X)$ must exist (it is a rational function). That means $w(X)$ is vanishing on $H$, i.e., $w_1,w_2$, and $w_3$ are vanishing over $H$. Thus, if $f(X)$ does not satisfy any of the equations $w_1,w_2$, and $w_3$, $\vrf$ will detect the proof is invalid. By the binding property of KZG commitment, we know that the evaluations $f(\zeta),f(\zeta\omega)$, and $q(\zeta)$ are correct with overwhelming probability if the KZG verifying is passed.
+For knowledge soundness, to make the equation $w(\zeta)=q(\zeta)\cdot(\zeta^n-1)$ hold, $q(X)$ must exist (it is a rational function). That means $w(X)$ is vanishing on $H$, i.e., $w_1,w_2$, and $w_3$ are vanishing over $H$. Thus, if $f(X)$ does not satisfy any of the equations $w_1,w_2$, and $w_3$, $\vrf$ will detect the proof is invalid. By the binding property of KZG commitment, we know that the evaluations $f(\zeta),f(\zeta\omega)$, and $q(\zeta)$ are correct with overwhelmingly high probability if the KZG verifying is passed.
 \end{proof}
 We note that the above range proof is not zero-knowledge because (i) revealing $f(X)$ and $f(X\omega)$ leaks the evaluations of $f$ and (ii) verifying $w_1$ requires $\vrf$ to know $x$. The solutions for these two points may seem similar but not quite the same, because the first point requires $\prv$ not to open the evaluations of $f(X)$ over $H$, and the second point means $\prv$ is supposed to reveal the evaluation of $f(\omega^0)$ to prove $x$ is the claimed one. Boneh \etal~\cite{rangeproof} introduced a zero-knowledge extension to solve the first issue. We will describe the extension and manipulate a variant of the opening scheme to solve the second one.
 

@@ -81,7 +81,7 @@ A polynomial protocol with the zero-knowledge extension $\openzk$ is complete, h
 \begin{proof}
 Completeness is clear: for an honest $\prv$, the evaluations of polynomials are correct and the relations also hold. Thus, $\vrf$ will always accept the proofs.
 
-We argue the knowledge soundness from two aspects: the evaluations and the relations. The KZG commitment scheme tells us the probability that any invalid evaluation passes the verifying is negligible, which means $\mathcal{A}$ can win the first condition of the attack game with extremely low probability. By the Schwartz-Zippel lemma, the equation defined by a relation $\mathcal{R}$ has overwhelmingly low probability to hold if the evaluations at a random point do not satisfy the equation. Therefore, the knowledge soundness is proved.
+We argue the knowledge soundness from two aspects: the evaluations and the relations. The binding property of KZG commitment tells us the probability that any invalid evaluation passes the verifying is negligible, which means $\mathcal{A}$ can win the first condition of the attack game with extremely low probability. By the Schwartz-Zippel lemma, the equation defined by a relation $\mathcal{R}$ has overwhelmingly low probability to hold if the evaluations at a random point do not satisfy the equation. Therefore, the knowledge soundness is proved.
 
 Since $\vrf$ only knows the commitments to the polynomials and the witnesses except the opening evaluations, the commitments leak no information of the polynomials and the witnesses because of the hiding property of KZG commitment. By Theorem~\ref{thm:kzgOpen}, the opening scheme is HVZK. Thus, the polynomial protocol with $\openzk$ is HVZK.
 \end{proof}
@@ -122,7 +122,22 @@ For future claims, we encapsulate all assumptions about KZG as a \textit{polynom
 \end{claim}
 
 \begin{proof}
-Clearly, \poa is a polynomial protocol for two polynomial relations (i) $\sigma(X)-\sigma(X\omega)=\delta(X)\cdot\phi(X),X\ne{\omega^{n-1}}$ and (ii) $\sigma(\omega^{n-1})=\delta(\omega^{n-1})\cdot\phi(\omega^{n-1})$. The first relation proves the starting values are the same, and the second proves each successive value in the accumulative vector adds its adjacent value with the corresponding value. To check the relations, \poa also leverages $\openzk(\sigma,\delta,\phi)$ which includes opening the polynomials at a random evaluation point $\zeta$ and $\openzk(\sigma)$ at $\zeta\omega$. Additionally, to complete the PoA proof, \poa publishes the evaluation of $\sigma(\omega^0)$ through $\openc$. We already analyze the security of $\openc$ in Theorem~\ref{sec:kzgOpenComm}. Thus, \poa is complete, knowledge sound, and HVZK by Theorem~\ref{thm:polyproto}.
+Clearly, \poa is a polynomial protocol for two polynomial relations (i) $\sigma(X)-\sigma(X\omega)=\delta(X)\cdot\phi(X),X\ne{\omega^{n-1}}$ and (ii) $\sigma(\omega^{n-1})=\delta(\omega^{n-1})\cdot\phi(\omega^{n-1})$. The first relation proves the starting values are the same, and the second proves each successive value in the accumulative vector adds its adjacent value with the corresponding value. To check the relations, \poa also leverages $\openzk(\sigma,\delta,\phi)$ which includes opening the polynomials at a random evaluation point $\zeta$ and $\openzk(\sigma)$ at $\zeta\omega$. Additionally, to complete the PoA proof, \poa publishes the evaluation of $\sigma(\omega^0)$ through $\openc$. We already analyzed the security of $\openc$ in Theorem~\ref{sec:kzgOpenComm}. Thus, \poa is complete, knowledge sound, and HVZK by Theorem~\ref{thm:polyproto}.
 \end{proof}
 
 % = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+\section{The \pol argument}
+
+\begin{claim}
+\label{thm:liabilities} 
+\pol is complete, has knowledge soundness in the algebraic group model, and is HVZK. 
+\end{claim}
+
+\begin{proof}
+Completeness follows from Protocol~\ref{alg:pol}. 
+
+Given a \textit{polynomial oracle}, $\prv$ commits to a set of integers in binary form and build a vector to accumulate the bits into the integer representation (call this the range accumulator). Soundness of this aspect follows from the soundness of the range proof by Lemma~\ref{lemma:range} which uses the polynomial oracle to demonstrate three constraints: that the range accumulator starts with a 0 or 1; that the binary relationship between adjacent bits in the range accumulator are 0 or 1; and that the header of the range accumulator matches a standalone commitment to the integer (we do not use this, we just use the header values directly from $p_1(X)$). To complete soundness, $\vrf$ must check that no more than $k$ bits are used for an integer in $[0,k)$. Outside of the range proof, the $\prv$ builds a vector ($p_0(X)$) to accumulate the sum of each header value ($p_1(X)$) from the set of range accumulators for each user account. This is the same protocol as Claim~\ref{thm:assets}. 
+
+For HVZK, it remains to consider what evaluation points are leaked by $\pi_\mathsf{liabilities}$. It opens $w_1,w_2,w_3,v_1,v_2,\dots,v_{m-1}$ to 0 which are consistent with exactly the constraints of the range accumulator and the additive accumulator. To check the constraints, $\prv$ will run $\openzk(p_0,p_1,p_2,\dots,p_k)$ at a random evaluation point $\zeta$ and $\openzk(p_0)$ at $\zeta\omega$. Again, we already analyzed the security of $\openzk$ in Theorem~\ref{thm:kzgOpen}. Thus, \pol is HVZK.
+\end{proof}

@@ -15,14 +15,14 @@
 		\item $\vrf$ interpolates a polynomial $\delta(X)$ from $\overline{b}$
 	\end{enumerate}
 	\item $\vrf$ sends $\delta(X)$ to $\prv$
-	\item $\prv$ takes as input the selector vector of keys its shown ownership of, $\phi(X)$, from \bootstrap 
+	\item $\prv$ takes as input the selector vector of keys shown ownership of, $\phi(X)$, from \bootstrap 
 	\item $\prv$ constructs an accumulative polynomial $\sigma(X)$ such that:
 		\begin{enumerate}
 	\item $\sigma(X)-\sigma(X\omega)=\delta(X)\cdot\phi(X),X\ne{\omega^{n-1}}$
 	\item $\sigma(\omega^{n-1})=\delta(\omega^{n-1})\cdot\phi(\omega^{n-1})$
 		\end{enumerate}
 	\item $\prv$ runs $\openzk(\sigma,\delta,\phi)$ and opens $\sigma(\omega^0)$ through \textbf{openToCommit}
-	\item $\vrf$ accepts the proof in and only if
+	\item $\vrf$ accepts the proof if and only if
 	\begin{enumerate}
 		\item $[\sigma(X)-\sigma(X\omega)-\delta(X)\cdot{\phi(X)}]\cdot(X-\omega^{n-1})=0$
 		\item $[\sigma(X)-\delta(X)\cdot{\phi(X)}]\cdot\frac{X^n-1}{X-\omega^{n-1}}=0$
