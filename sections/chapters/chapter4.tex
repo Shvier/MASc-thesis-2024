@@ -148,7 +148,7 @@ For HVZK, it remains to consider what evaluation points are leaked by $\pi_\math
 
 \begin{claim}
 \label{thm:users} 
-\userproof is complete, has knowledge soundness in the algebraic group model, and is zero-knowledge. 
+\userproof is complete, has knowledge soundness in the algebraic group model, and is HVZK. 
 \end{claim}
 
 \begin{proof}
@@ -156,4 +156,17 @@ Completeness follows from Protocol~\ref{alg:users}.
 
 Knowledge soundness follows directly from the \textit{polynomial oracle} which, for $\pi_\mathsf{users}$, opens two points at the same index on two polynomials---one demonstrates the user's balance and one demonstrates the user's identification. The sufficincy of this to bind the balance to the user ID is already proven in Provisions which uses the same mechanism (for a different commitment scheme). The KZG assumptions already addressed in Claim~\ref{thm:keys} covers the rest. 
 
-Zero knowledge follows from the properties of KZG commitments---seeing a polynomial commitment and an opening at a specific evaluation point reveals no further information about any other point on the polynomial. KZG does not reveal the degree of the poiynomial, which would provide the number of users of the exchange, but an upperbound exists in the size of the SRS from the trusted setup (and if it can be assumed the prover will act efficiently, the largest root of unity). \end{proof}
+To verify HVZK, recall the properties of KZG commitments---seeing a polynomial commitment and an opening at a specific evaluation point reveals no further information about any other point on the polynomial. KZG does not reveal the degree of the poiynomial, which would provide the number of users of the exchange, but an upperbound exists in the size of the SRS from the trusted setup (and if it can be assumed the prover will act efficiently, the largest root of unity). For each user, a p.p.t simulator can be constructed such that the evaluation at the user's index is equal to the user's balance/identification while other evaluations are random numbers. As a user (the verifier), he cannot distinguish between the simulated transcript and the real one due to the hiding property of KZG commitment. \end{proof}
+
+% = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+\section{The \pos Argument}
+
+
+\begin{claim}
+\label{thm:solvency} 
+\pos is complete, sound, and HVZK. 
+\end{claim}
+
+\begin{proof}
+Completeness follows from Protocol~\ref{alg:pos}. The soundness of the argument is that $\sigma(\omega^0)$ is sound under Claim~\ref{thm:assets}, $p_0(\omega^0)$ is sound under Claim~\ref{thm:liabilities}, and $\psi(\omega^0)$ is zero or positive by the soundness of the range proof (as addressed in Claim~\ref{thm:liabilities}). The overall constraint demonstrates that total assets is equal or exceeds total liabilities. HVZK similarly follows from the same previous claims (\ref{thm:assets}, \ref{thm:liabilities}, and range proof).\end{proof}
