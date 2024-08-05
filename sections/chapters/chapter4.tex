@@ -170,3 +170,25 @@ To verify HVZK, recall the properties of KZG commitments---seeing a polynomial c
 
 \begin{proof}
 Completeness follows from Protocol~\ref{alg:pos}. The soundness of the argument is that $\sigma(\omega^0)$ is sound under Claim~\ref{thm:assets}, $p_0(\omega^0)$ is sound under Claim~\ref{thm:liabilities}, and $\psi(\omega^0)$ is zero or positive by the soundness of the range proof (as addressed in Claim~\ref{thm:liabilities}). The overall constraint demonstrates that total assets is equal or exceeds total liabilities. HVZK similarly follows from the same previous claims (\ref{thm:assets}, \ref{thm:liabilities}, and range proof).\end{proof}
+
+% = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+\section{\Sys}
+
+\begin{restatable}{theorem}{thmmaster}
+\label{thm:master}
+\Sys ($\Sys\leftarrow\langle \pi_\mathsf{keys}, \pi_\mathsf{liabilies}, \pi_\mathsf{assets}, \pi_\mathsf{users} \rangle$) is a privacy-preserving proof of solvency with respect to Definition~\ref{def:2}. 
+\end{restatable}
+
+\begin{proof}
+To prove this theorem, we rely on the previous claims. There are no new insights, it is simply a matter of mapping what is proven in the claims onto what is required in the definition of a privacy-preserving proof of solvency.
+\begin{enumerate}
+    \item \textit{Correctness}. If $\pi_\mathsf{solvency}$ is complete (Claim~\ref{thm:solvency}), then \Sys is correct according to Definition~\ref{def:2}.
+    \item \textit{k-Soundness}. If $\mathcal{A}$ and $\mathcal{L}$ are not a valid pair and the protocol accepts with probability greater than $\mathsf{neg}(k)$, then $\pi_\mathsf{solvency}$ is not sound (contradicting Claim~\ref{thm:solvency}), where soundness is bounded by $k=\mathrm{min}[d/n,2^{-t}]$ where $d/n=2^{-233}$ (Schwartz-Zippel lemma for polynomial commitments in \bls) and $t=2^{-254}$ (challenge length for NIZKPs under Fiat-Shamir for a common challenge in \secp and \bls). If $\mathcal{L}[\text{ID}] \neq \ell$ (\ie the exchange provides the user with the wrong balance) and the protocol accepts with probability greater than $\mathsf{neg}(k)$, then $\pi_\mathsf{solvency}$ is not sound (contradicting Claim~\ref{thm:users}).
+    \item \textit{Ownership}. Recall that ownership means that if the protocol accepts, there exists an extractor that can produce $x$ for all $y \in \mathcal{A}$. We show such an extractor in the proof of Theorem~\ref{thm:sigmaclaim}.
+    \item \textit{Privacy}. Roughly, this means a (statically) corrupted user cannot distinguish between an interaction using the real pair $\mathcal{A}$ and $\mathcal{L}$ and any other (equally sized) valid pair $\hat{\mathcal{A}}$ and $\hat{\mathcal{L}}$ such that $\hat{\mathcal{L}}[\text{ID}] = \mathcal{L}[\text{ID}]$ (\ie the simulated pair records the same balance for all corrupted users as the real valid pair). This follows from $\pi_\mathsf{solvency}$ and $\pi_\mathsf{users}$ being zero-knowledge (Claims~\ref{thm:users} and \ref{thm:solvency}), where the former covers the case that the universally verifiable proof reveals private information, and the latter covering the supplementary user check proof. 
+\end{enumerate}
+Therefore \Sys is a privacy-preserving proof of solvency.
+\end{proof}
+
+% = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
