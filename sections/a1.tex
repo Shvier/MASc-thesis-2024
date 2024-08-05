@@ -1,8 +1,25 @@
 % !TEX root = ../main.tex
 
-\chapter{}
+\chapter{Definitions}
 
 \section{Zero-Knowledge Proofs}
+\label{app:zkp}
+
+\begin{definition}[Special Soundness]
+For a $\Sigma$-protocol, if the witness $w$ can be extracted from any two accepting conversations on the same input $x$ with the same message but different challenge, we call this special soundness of $\Sigma$-protocol. Particularly, special soundness implies soundness.
+\end{definition}
+
+\begin{definition}[Knowledge Soundness in the Algebraic Group Model]
+
+\end{definition}
+
+\begin{definition}[Honest Verifier Zero Knowledge]
+Honest verifier zero knowledge, or HVZK, is for a $\Sigma$-protocol, if there exists a p.p.t simulator $\mathcal{S}$ such that the transcript produced by $\mathcal{S}$ has the same distribution as the transcript of a conversation between the honest $\prv$ and $\vrf$ on the same input.
+\end{definition}
+
+\begin{definition}[Special Honest Verifier Zero Knowledge]
+Special honset verifier zero knowledge, or special HVZK, is for a $\Sigma$-protocol, if there exists a p.p.t simulator such that additionally given the challenge $c$ to $\mathcal{S}$, the transcript produced by $\mathcal{S}$ has the same distribution as the transcript of a conversation between the honest $\prv$ and $\vrf$ on the same input, even if for the case that the witness for the statement does not exist.
+\end{definition}
 
 \section{Proof of Solvency}
 \label{app:defs}
