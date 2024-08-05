@@ -10,15 +10,24 @@ For a $\Sigma$-protocol, if the witness $w$ can be extracted from any two accept
 \end{definition}
 
 \begin{definition}[Knowledge Soundness in the Algebraic Group Model]
-
+For any algebraic adversary $\mathcal{A}$ in an interactive protocol between $\prv$ and $\vrf$ for a relation $\mathcal{R}$, there exists a $\ppt$ extractor $\mathcal{E}$ given access to $\mathcal{A}$'s messages during the protocol, and $\mathcal{A}$ can win the following game with negligible probability:
+\begin{enumerate}
+    \item $\mathcal{A}$ chooses input $x$ and outputs the message like $\prv$.
+    \item $\mathcal{E}$, given access to $\mathcal{A}$'s outputs from the previous step, outputs the witness $w$.
+    \item $\mathcal{A}$ wins if
+    \begin{enumerate}
+        \item $\vrf$ outputs \textbf{acc} at the end of the protocol, and
+        \item $(x,w)\notin\mathcal{R}$.
+    \end{enumerate}
+\end{enumerate}
 \end{definition}
 
 \begin{definition}[Honest Verifier Zero Knowledge]
-Honest verifier zero knowledge, or HVZK, is for a $\Sigma$-protocol, if there exists a p.p.t simulator $\mathcal{S}$ such that the transcript produced by $\mathcal{S}$ has the same distribution as the transcript of a conversation between the honest $\prv$ and $\vrf$ on the same input.
+Honest verifier zero knowledge, or HVZK, is for a $\Sigma$-protocol, if there exists a $\ppt$ simulator $\mathcal{S}$ such that the transcript produced by $\mathcal{S}$ has the same distribution as the transcript of a conversation between the honest $\prv$ and $\vrf$ on the same input.
 \end{definition}
 
 \begin{definition}[Special Honest Verifier Zero Knowledge]
-Special honset verifier zero knowledge, or special HVZK, is for a $\Sigma$-protocol, if there exists a p.p.t simulator such that additionally given the challenge $c$ to $\mathcal{S}$, the transcript produced by $\mathcal{S}$ has the same distribution as the transcript of a conversation between the honest $\prv$ and $\vrf$ on the same input, even if for the case that the witness for the statement does not exist.
+Special honset verifier zero knowledge, or special HVZK, is for a $\Sigma$-protocol, if there exists a $\ppt$ simulator such that additionally given the challenge $c$ to $\mathcal{S}$, the transcript produced by $\mathcal{S}$ has the same distribution as the transcript of a conversation between the honest $\prv$ and $\vrf$ on the same input, even if for the case that the witness for the statement does not exist.
 \end{definition}
 
 \section{Proof of Solvency}
