@@ -41,7 +41,7 @@ It is worth noting there are different definitions for the soundness (special so
 \subsection{$\Sigma$-Protocol}
 
 The $\Sigma-$protocol is a three-move interactive proof system. We define the $\Sigma-$protocol similarly to \cite{damgard10}.
-\begin{definition} 
+\begin{definition}[$\Sigma$-protocol]
 \label{sec:sigma}
 Let $R$ be a binary relation between the statement $x$ and the witness $w$. Given common input $x$ to $\prv$\ and $\vrf$, and private input $(x,w)$ such that $(x,w)\in{R}$ to $\prv$, they run the following protocol:
 \begin{enumerate}
@@ -60,7 +60,7 @@ A commonly well-known way to convert a $\Sigma-$protocol into non-interactive is
 
 \subsection{Disjunction of $\Sigma$-Protocols (OR Proof)}
 The disjunction of $\Sigma$-protocols (OR proof) allows $\prv$ to prove the claimed $x$ is $x_1$ or $x_2$ through a $\Sigma$-protocol. More precisely, given two inputs $x_1,x_2$, $\prv$ proves he knows a $w$ such that $(x_1,w)\in{R_1}$ or $(x_2,w)\in{R_2}$, but $\vrf$ cannot learn which one $\prv$ knows. We use the same definition as \cite{damgard10}.
-\begin{definition}
+\begin{definition}[OR Proof]
 Let $s$ equal $0$ or $1$. The OR proof is a $\Sigma-$protocol that $\prv$ and $\vrf$ are given two public inputs $x_1,x_2$, and $\prv$ is given $w$ as private input. They run the following protocol:
 \begin{enumerate}
     \item $\prv$ computes the message $m_s$ using $(x_s,w)$ as input. \\
@@ -102,7 +102,7 @@ For practical purposes, \(\kappa\) represents the length of the longest vector o
 
 \subsection{Polynomial Commitment Scheme}
 A polynomial commitment scheme (PCS) allows $\prv$ to commit to a polynomial to convince $\vrf$ that claimed evaluations are of the committed polynomial. Particularly, our protocol requires the scheme uses an extra random polynomial to achieve unconditionally binding, i.e., the KZG commitment in Pedersen form. We define the following scheme based on \cite{kzg,plonk,bdfg}.
-\begin{definition}
+\begin{definition}[Polynomial Commitment Scheme]
 \label{def:pcs}
 A polynomial commitment scheme consists of three moves: \textbf{gen}, \textbf{com}, and \textbf{open} such that
 \begin{enumerate}
@@ -235,7 +235,7 @@ We will use $\openzk$ to denote this opening technique.
 \subsection{Open KZG with Committed Value}
 \label{sec:kzgOpenComm}
 By Definition~\ref{def:pcs}, to prove $b$ is the evaluation of $f(a)$, $\prv$ reveals the pair $(a,b)$ to let $\vrf$ validate the proof through pairings. To solve the second issue in the above range proof, we describe the new opening scheme.
-\begin{definition}
+\begin{definition}[$\openc$]
 $\openc$ is a KZG opening scheme that $\prv$ is given input $f$ and $b$. $\prv$ and $\vrf$ are both given
 \begin{itemize}
     \item \textbf{srs} = $\tuple{g_1,g_1^\tau,\dots,g_1^{\tau^d},h_1,h_1^\tau,\dots,h_1^{\tau^d},g_2,g_2^\tau}$
@@ -252,16 +252,17 @@ $\openc$ is a KZG opening scheme that $\prv$ is given input $f$ and $b$. $\prv$ 
     \[ e(\cm/\textbf{C}(b),[1]_2)=e(w,[\tau-a]_2) \]
 \end{enumerate}
 \end{definition}
-This does not violate the soundness of the original KZG commitment scheme. Note $\textbf{C}(b)$ is a Pedersen commitment. Recall the computational binding property of Pedersen commitment, that means it is infeasible for $\prv$ to compute a $b^*$ such that $f(a)\ne{b^*},\textbf{C}(b)=\textbf{C}(b^*)$ based on discrete logarithm assumption.
 \begin{theorem}
 \label{thm:kzgOpen}
 $\openc$ is complete, sound, and special HVZK.
 \end{theorem}
 \begin{proof}
-Completeness and soundness follow the original KZG commitment scheme.
+Completeness follows the original KZG commitment scheme.
+
+For soundness, $\openc$ does not violate the soundness of the original KZG commitment scheme. Note $\textbf{C}(b)$ is a Pedersen commitment. Recall the computational binding property of Pedersen commitment, that means it is infeasible for $\prv$ to compute a $b^*$ such that $f(a)\ne{b^*},\textbf{C}(b)=\textbf{C}(b^*)$ based on discrete logarithm assumption.
 
 To prove special HVZK, let the simulator $\mathcal{S}$ take as inputs $\textbf{srs}$, $\cm_f$, $a$, and $\textbf{C}(b)$. Since $\mathcal{S}$ knows the random evaluation point $a$ in advance, $\mathcal{S}$ can compute a witness $w^*=\cm_f/\textbf{C}(b)/[\tau-a]_1$ that makes the pairing equation hold, i.e., $\mathcal{S}$ always outputs an accepting conversation $(\cm_f,a,w^*)$ for $\textbf{C}(b)$.
 \end{proof}
-Back to the above range proof, now $\prv$ is able to prove $w_1$ is correct with \openc in zero-knowledge while using the zero-knowledge extension to prove $w_2$ and $w_3$ are correct. Together, we can prove a value $x$ is in the specified range without revealing $x$. We use $\openc(f,a)$ to denote opening the committed evaluation of $f(a)$.
+Back to the above range proof, now $\prv$ is able to prove $w_1$ is correct with $\openc$ in zero-knowledge while using the zero-knowledge extension to prove $w_2$ and $w_3$ are correct. Together, we can prove a value $x$ is in the specified range without revealing $x$. We use $\openc(f,a)$ to denote opening the committed evaluation of $f(a)$.
 
 % = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
