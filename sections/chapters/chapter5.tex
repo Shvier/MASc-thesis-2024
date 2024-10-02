@@ -150,7 +150,7 @@ Completeness follows from Protocol~\ref{alg:pos}. The soundness of the argument 
 \end{restatable}
 
 \begin{proof}
-To prove this theorem, we rely on the corollaries in Section~\ref{app:claims}. There are no new insights, it is simply a matter of mapping what is proven in the corollaries onto what is required in the definition of a privacy-preserving proof of solvency.
+To prove this theorem, we rely on the above corollaries. There are no new insights, it is simply a matter of mapping what is proven in the corollaries onto what is required in the definition of a privacy-preserving proof of solvency.
 \begin{enumerate}
     \item \textit{Correctness}. If \pos is complete (Corollary~\ref{thm:solvency}), then \Sys is correct according to Definition~\ref{def:2}.
     \item \textit{k-Soundness}. If $\mathcal{A}$ and $\mathcal{L}$ are not a valid pair and the protocol accepts with probability greater than $\mathsf{neg}(k)$, then \pos is not sound (contradicting Corollary~\ref{thm:solvency}), where soundness is bounded by $k=\mathrm{min}[d/n,2^{-t}]$ where $d/n=2^{-233}$ (Schwartz-Zippel lemma for polynomial commitments in \bls) and $t=2^{-254}$ (challenge length for NIZKPs under Fiat-Shamir for a common challenge in \secp and \bls). If $\mathcal{L}[\uid] \neq \ell$ (\ie the exchange provides the user with the wrong balance) and the protocol accepts with probability greater than $\mathsf{neg}(k)$, then \pos is not sound (contradicting Corollary~\ref{thm:solvency}).
