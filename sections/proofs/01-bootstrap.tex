@@ -6,14 +6,14 @@
     \begin{enumerate}
     \item $\prv$ publishes an anonymity set of public keys: $\tuple{\mathsf{pk}_1,\mathsf{pk}_2,\mathsf{pk}_3,\dots,\mathsf{pk}_n}$.
     \item $\prv$ constructs a selector vector: $\overline{s}=\tuple{s_1,s_2,s_3,\ldots,s_n}$ where $s_i=0$ unless $\prv$ can prove knowledge of $\mathsf{sk}_i$ given $\mathsf{pk}_i=\gs^{\mathsf{sk}_i}$, then  $s_i=1$.
-    \item $\prv$ interpolates a polynomial from $\overline{s}$, denoted by $\phi(X)$, and commits to $\phi(X)$
+    \item $\prv$ interpolates a polynomial $\phi(X)$ from $\overline{s}$, and runs the following steps
     \begin{enumerate}
         \item $\prv$ computes the KZG polynomial commitment to $\phi$. Specifically, $\prv$ constructs a random polynomial $\hat\phi(X)$ and publishes the polynomial commitment $\cm_\phi$ such that $\cm_\phi=\gb^{\phi(\tau)}\hb^{\hat\phi(\tau)}$.
-        \item For each $i$, $\prv$ opens the committed evaluation through \textbf{openToCommit} (see Section~\ref{sec:kzgOpenComm}) of $\phi$: $p_i=\gb^{\phi(i)}\hb^{\hat\phi(i)}$.
-        \item $\prv$ publishes the witness for each evaluation, $\{w_i\}$.
-        \item $\vrf$ verifies $\{p_i\}$ are the evaluations of $\phi$ by checking $e(\cm_\phi/p_i, [1]_2)=e(w_i, [\tau-i]_2)$.
+        \item For each $i$, $\prv$ runs $\open(\phi, \omega^i, p_i)$, where $p_i=\gb^{\phi(\omega^i)}\hb^{\hat\phi(\omega^i)}$.
+        \item $\prv$ publishes the witness for each evaluation, $w_i$.
+        \item $\vrf$ verifies $\{p_i\}$ are the evaluations of $\phi$ by checking $e(\cm_\phi/p_i, [1]_2)=e(w_i, [\tau-\omega^i]_2)$.
     \end{enumerate}
-    \item For each $i$, $\prv$ and $\vrf$ run $\mathrm{ZKPoK} \{ (sk_i,s_i) :  [\mathsf{pk}_i=g^{\mathsf{sk}_i} \land p_i=\Comm{1,r_i}  ] \lor p_i=\Comm{0,r_i} \}$ as follows:
+    \item For each $p_i$, $\prv$ and $\vrf$ run $\mathrm{ZKPoK} \{ (sk_i,s_i) :  [\mathsf{pk}_i=g^{\mathsf{sk}_i} \land p_i=\Comm{1,r_i}  ] \lor p_i=\Comm{0,r_i} \}$ as follows:
     
     \begin{enumerate}   
     \begin{framed}

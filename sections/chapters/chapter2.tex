@@ -29,15 +29,6 @@ The discrete logarithm problem describes, given a triplet $(\mathbb{G}, p, g)$, 
 \label{sec:pedersen}
 The Pedersen commitment scheme \cite{pedersen} enables $\prv$ to \textit{commit} to a value $x$ without revealing it. Pedersen commitment provides perfectly hiding and computational binding based on the discrete logarithm assumption. Additionally, Pedersen commitments are \textit{additively homomorphic}: given two commitments $\textbf{C}_1$ and $\textbf{C}_2$, the summation of their secrets $x_1$ and $x_2$ is the secret of $\textbf{C}_1\cdot\textbf{C}_2$. We use $\textbf{C}(x)$ to denote a Pedersen commitment to the value $x$. Particularly, we use $\ps$ to denote a Pedersen commitment in \secp and $\pb$ to denote a Pedersen commitment in \bls.
 
-\subsection{Zero-Knowledge Proofs}
-Informally, a zero-knowledge proof is a cryptographic protocol allowing $\prv$ to convince $\vrf$ that the claiming statement is true without revealing additional information, except the fact that the statement's truth. A zero-knowledge proof must satisfy the following properties:
-\begin{enumerate}
-    \item \textbf{Completeness:} If the statement is true, $\vrf$ will be convinced.
-    \item \textbf{Soundness:} If the statement is false, the probability that $\vrf$ is convinced is negligible.
-    \item \textbf{Zero-knowledge:} If the statement is true, $\vrf$ learns nothing except the fact that the statement is true.
-\end{enumerate}
-It is worth noting there are different definitions for the soundness (special soundness, knowledge soundness in algebraic group model) and the zero knowledge (honset verifier zero knowledge, special honest verifier zero knowledge) in the context of some protocols. We refer to~\ref{app:zkp} for more detailed explanations.
-
 \subsection{$\Sigma$-Protocol}
 
 The $\Sigma-$protocol is a three-move interactive proof system. We define the $\Sigma-$protocol similarly to \cite{damgard10}.
@@ -81,6 +72,39 @@ At the end of the protocol $\vrf$ verifies $c=c_s\oplus{c_{1-s}}$ and both $(m_s
 \end{definition}
 We use $x={x_1\orproof{x_2}}$ to denote $x$ is $x_1$ or $x_2$.
 
+\subsection{Zero-Knowledge Proofs}
+Informally, a zero-knowledge proof is a cryptographic protocol allowing $\prv$ to convince $\vrf$ that the claiming statement is true without revealing additional information, except the fact that the statement's truth. A zero-knowledge proof must satisfy the following properties:
+\begin{enumerate}
+    \item \textbf{Completeness:} If the statement is true, $\vrf$ will be convinced.
+    \item \textbf{Soundness:} If the statement is false, the probability that $\vrf$ is convinced is negligible.
+    \item \textbf{Zero-knowledge:} If the statement is true, $\vrf$ learns nothing except the fact that the statement is true.
+\end{enumerate}
+
+\begin{definition}[Special Soundness]
+For a $\Sigma$-protocol, if the witness $w$ can be extracted from any two accepting conversations on the same input $x$ with the same message but different challenge, we call this special soundness of $\Sigma$-protocol. Particularly, special soundness implies soundness.
+\end{definition}
+
+\begin{definition}[Knowledge Soundness in the Algebraic Group Model]
+For any algebraic adversary $\mathcal{A}$ in an interactive protocol between $\prv$ and $\vrf$ for a relation $\mathcal{R}$, there exists a $\ppt$ extractor $\mathcal{E}$ given access to $\mathcal{A}$'s messages during the protocol, and $\mathcal{A}$ can win the following game with negligible probability:
+\begin{enumerate}
+    \item $\mathcal{A}$ chooses input $x$ and outputs the message like $\prv$.
+    \item $\mathcal{E}$, given access to $\mathcal{A}$'s outputs from the previous step, outputs the witness $w$.
+    \item $\mathcal{A}$ wins if
+    \begin{enumerate}
+        \item $\vrf$ outputs \textbf{acc} at the end of the protocol, and
+        \item $(x,w)\notin\mathcal{R}$.
+    \end{enumerate}
+\end{enumerate}
+\end{definition}
+
+\begin{definition}[Honest Verifier Zero Knowledge]
+Honest verifier zero knowledge, or HVZK, is for a $\Sigma$-protocol, if there exists a $\ppt$ simulator $\mathcal{S}$ such that the transcript produced by $\mathcal{S}$ has the same distribution as the transcript of a conversation between the honest $\prv$ and $\vrf$ on the same input.
+\end{definition}
+
+\begin{definition}[Special Honest Verifier Zero Knowledge]
+Special honset verifier zero knowledge, or special HVZK, is for a $\Sigma$-protocol, if there exists a $\ppt$ simulator such that additionally given the challenge $c$ to $\mathcal{S}$, the transcript produced by $\mathcal{S}$ has the same distribution as the transcript of a conversation between the honest $\prv$ and $\vrf$ on the same input, even if for the case that the witness for the statement does not exist.
+\end{definition}
+
 \subsection{Roots of Unity}
 \label{app:rou}
 
@@ -90,10 +114,10 @@ We use $x={x_1\orproof{x_2}}$ to denote $x$ is $x_1$ or $x_2$.
 \caption{Small number ($\mathbb{Z}_{31}$) example of encoding a vector of integers $\tuple{3,1,1,3,7}$ into (a) the first 5 points of a polynomial, and (b) into 5th roots of unity ($\omega=3$).\label{fig:rou}}
 \end{figure}
 
-We use the approach of encoding data vectors into polynomials, committing to them using a polynomial commitment scheme (PCS), and forming zero knowledge arguments---a model called a polynomial-based interactive oracle proof (Poly-IOP). The zk-snark system Plonk popularized Poly-IOPs and has many extensions and optimizations. A one-dimensional vector of data is encoded into a univariate polynomial using 1 of 3 methods (all 3 are used at different steps of Plonk): (1) into the coefficients of the polynomial, (2) as roots of the polynomial, and (3) as the \(y\)-coordinates (\(\mathsf{data}_i=p(x_i)\)) of points on the polynomial. Plonk mostly relies on (3) and an interpolation algorithm is used to find the corresponding coefficients of the polynomial, which is
+We use the approach of encoding data vectors into polynomials, committing to them using a polynomial commitment scheme (PCS), and forming zero knowledge arguments---a model called a polynomial-based interactive oracle proof (Poly-IOP). The zk-SNARK system Plonk popularized Poly-IOPs and has many extensions and optimizations. A one-dimensional vector of data is encoded into a univariate polynomial using 1 of 3 methods (all 3 are used at different steps of Plonk): (1) into the coefficients of the polynomial, (2) as roots of the polynomial, and (3) as the \(y\)-coordinates (\(\mathsf{data}_i=f(x_i)\)) of points on the polynomial. Plonk mostly relies on (3) and an interpolation algorithm is used to find the corresponding coefficients of the polynomial, which is
 needed for the PCS. General interpolation algorithms are \(O(n^2)\) work for \(n\) evaluation points but this can be reduced to \(O(n\log n)\) with an optimization.
 
-The optimization enables interpolation via the fast Fourier transform (FFT). It concerns how to choose the \(x\)-coordinates, which will serve as the index for accessing the data: evaluating \(p(X)\) at \(x_i\) will reveal \(\mathsf{data}_i\). First note, \(x\)-coordinates are from the exponent group (\(\mathbb{Z}_q\)) and the choices exceed what is feasible to use (\(2^{255}\) values in \bls). Any subset can be used and interpolated. The optimization is to chose them with a mathematical structure. Specifically, instead an additive sequence (e.g., \(0,1,2,3,\ldots\)), we use a multiplicative sequence
+The optimization enables interpolation via the fast Fourier transform (FFT). It concerns how to choose the \(x\)-coordinates, which will serve as the index for accessing the data: evaluating \(f(X)\) at \(x_i\) will reveal \(\mathsf{data}_i\). First note, \(x\)-coordinates are from the exponent group (\(\mathbb{Z}_q\)) and the choices exceed what is feasible to use (\(2^{255}\) values in \bls). Any subset can be used and interpolated. The optimization is to chose them with a mathematical structure. Specifically, instead an additive sequence (e.g., \(0,1,2,3,\ldots\)), we use a multiplicative sequence
 \(1,\omega,\omega\cdot\omega,\omega\cdot\omega\cdot\omega,\ldots\) or equivalently: \(\omega^0,\omega^1,\omega^2,\ldots,\omega^{\kappa-1}\). Further, the sequence is closed under multiplication which means that next index after \(\omega^{\kappa-1}\) wraps back to the first index: \(\omega^{k-1} \cdot \omega = \omega^\kappa = \omega^0=1\) (this property is also useful in proving relationships between data in the vector and its neighbouring values).
 
 For terminology, we say \(\omega\) is a generator with multiplicative order \(\kappa\) in \(\mathbb{Z}_q\). This implies \(\omega^\kappa=1\). Rearranging, \(\omega=\sqrt[\kappa]{1}\). Thus we can equivalently describe \(\omega\) as a \(\kappa\)-th root of 1. Finally, as 1 is the unity element in \(\mathbb{Z}_q\), \(\omega\) is commonly called a \(\kappa\)-th root of unity.
@@ -101,7 +125,7 @@ For terminology, we say \(\omega\) is a generator with multiplicative order \(\k
 For practical purposes, \(\kappa\) represents the length of the longest vector of data we can use in our protocol. Where does \(\kappa\) come from? Different elements of \(\mathbb{Z}_q\) will have different multiplicative orders but every order must be a divisor of \(q-1\). Thus \(\kappa\) is the largest divisor of the exact value of \(q\) used in an elliptic curve standard. The value of $q$ in \bls has \(\kappa=2^{32}\) (for terminology, this called a \(2\)-adicity of \(32\)).
 
 \subsection{Polynomial Commitment Scheme}
-A polynomial commitment scheme (PCS) allows $\prv$ to commit to a polynomial to convince $\vrf$ that claimed evaluations are of the committed polynomial. Particularly, our protocol requires the scheme uses an extra random polynomial to achieve unconditionally binding, i.e., the KZG commitment in Pedersen form. We define the following scheme based on \cite{kzg,plonk,bdfg}.
+A polynomial commitment scheme (PCS) allows $\prv$ to commit to a polynomial to convince $\vrf$ that claimed evaluations are of the committed polynomial. Particularly, our protocol requires the scheme uses an extra random polynomial to achieve unconditionally binding, \ie the KZG commitment in Pedersen form. We define the following scheme based on \cite{kzg,plonk,bdfg}.
 \begin{definition}[Polynomial Commitment Scheme]
 \label{def:pcs}
 A polynomial commitment scheme consists of three moves: \textbf{gen}, \textbf{com}, and \textbf{open} such that
@@ -141,128 +165,35 @@ A polynomial commitment scheme consists of three moves: \textbf{gen}, \textbf{co
     \end{enumerate}
 \end{itemize}
 \end{definition}
-Our work uses PCS with the roots of unity. We use $\omega$ to denote the roots of unity. We use $\cm_f$ to denote a polynomial commitment to $f$ in Pedersen form.
+Our work uses PCS with the roots of unity. We use $\omega$ to denote the roots of unity. We use $\cm_f$ to denote a polynomial commitment to $f$.
 
-\subsection{Range Proof}
-\label{sec:range}
-
-A range proof enables $\prv$ to convince $\vrf$ a value $x$ is in a specified range, e.g., $[0,2^k)$, without revealing $x$. Zero-knowledge range proofs (ZKRPs) have three typical approaches: square decomposition, $n$-ary decomposition, and hash chains~\cite{zkrp}. We use the polynomial-based range proof from Boneh \etal~\cite{rangeproof}.
+\subsection{Polynomial Protocol}
+Gabizon \etal~\cite{plonk} introduced the definition of a universal polynomial protocol. Here we describe a variant of it based on KZG commitment scheme for our work.
+\begin{definition}[Polynomial Protocol]
+Fix positive integer $d,t,l$. Let $i\in[1,l]$. Let $\mathcal{R}\subseteq\mathbb{F}\times\mathbb{F}\times\cdots\times\mathbb{F}$ be a polynomial relation for one or more polynomials. Given a set of polynomials $f_1,f_2,\dots,f_t\in\mathbb{F}_{<d}[X]$ as $\prv$'s private input, and a set of polynomial relations $\mathcal{R}_1,\mathcal{R}_2,\dots,\mathcal{R}_l$ as public input, a polynomial protocol is a three-move protocol that $\prv$ wants to convince $\vrf$ each $\mathcal{R}_i$ holds for the certain set $F_i\subseteq\{f_1,f_2,\dots,f_t\}$. $\prv$ and $\vrf$ runs the protocol as follows.
 \begin{enumerate}
-    \item \textit{Given input $x$, $\prv$ decomposes $x$ to a vector of binary digits $\overline{z}=\tuple{z_1,z_2,\dots,z_k}$, so that $x=\sum_{i=0}^{k-1}2^i\cdot{z_i}$} 
-    \item \textit{$\prv$ constructs a vector $\overline{x}=\tuple{x_1,x_2,\dots,x_k}$ such that}
-    \begin{align*}
-        x_1&=x \\
-        x_k&=z_k \\
-        x_i&=2x_{i+1}+z_i,i\in[1,k-1]
-    \end{align*}
-    \item \textit{$\prv$ interpolates a polynomial $f$ from $\overline{x}$ over a finite field $H$ of order $n$ with elements $\omega^0,\omega^1,\omega^2,\ldots,\omega^{n-1}$} 
-    \item \textit{$\prv$ proves the following polynomials are vanishing in $H$}
-    \begin{align*}
-        w_1&:=[f(X)-x]\cdot\frac{X^n-1}{X-\omega^0} \\
-        w_2&:=f(X)\cdot[f(X)-1]\cdot\frac{X^n-1}{X-\omega^{n-1}} \\
-        w_3&:=[f(X)-2\cdot{f(X\omega)}]\cdot[f(X)-2\cdot{f(X\omega)}-1]\cdot(X-\omega^{n-1})
-    \end{align*}
-    \begin{enumerate}
-        \item $\prv$ \textit{sends the commitment to $f(X)$}
-        \item $\vrf$ \textit{sends a random challenge $\gamma$}
-        \item $\prv$ \textit{sends the commitment to $q(X)=w/(X^n-1)$, such that}
-        \[ w=w_1+\gamma\cdot{w_2}+\gamma^2\cdot{w_3} \]
-        \item $\vrf$ \textit{sends a random evaluation point $\zeta\in\mathbb{F}$}
-        \item $\prv$ \textit{replies with $f(\zeta),f(\zeta\omega),q(\zeta)$}
-        \item $\vrf$ \textit{checks}
-        \begin{enumerate}
-            \item $w(\zeta)=q(\zeta)\cdot(\zeta^n-1)$
-            \item $f(\zeta),f(\zeta\omega),q(\zeta)$ \textit{are the correct evaluations through the verifying process of KZG}
-        \end{enumerate}
-    \end{enumerate}
+    \item $\prv$ commits to $f_1,f_2,\dots,f_t$, and publishes all commitments, $\cm_{f_1},\cm_{f_2},\dots,\cm_{f_t}$.
+    \item $\vrf$ sends a random evaluation point as challenge.
+    \item $\prv$ responds with the corresponding evaluation and the commitment to the witness at the evaluation point for each polynomial.
 \end{enumerate}
-
-\begin{lemma}
-\label{lemma:range}
-The range proof from Boneh \etal~\cite{rangeproof} is complete and has knowledge soundness in the algebraic group model.
-\end{lemma}
-
-\begin{proof}
-Completeness is clear by following the protocol.
-
-For knowledge soundness, to make the equation $w(\zeta)=q(\zeta)\cdot(\zeta^n-1)$ hold, $q(X)$ must exist (it is a rational function). That means $w(X)$ is vanishing on $H$, i.e., $w_1,w_2$, and $w_3$ are vanishing over $H$. Thus, if $f(X)$ does not satisfy any of the equations $w_1,w_2$, and $w_3$, $\vrf$ will detect the proof is invalid. By the binding property of KZG commitment, we know that the evaluations $f(\zeta),f(\zeta\omega)$, and $q(\zeta)$ are correct with overwhelmingly high probability if the KZG verifying is passed.
-\end{proof}
-We note that the above range proof is not zero-knowledge because (i) revealing $f(X)$ and $f(X\omega)$ leaks the evaluations of $f$ and (ii) verifying $w_1$ requires $\vrf$ to know $x$. The solutions for these two points may seem similar but not quite the same, because the first point requires $\prv$ not to open the evaluations of $f(X)$ over $H$, and the second point means $\prv$ is supposed to reveal the evaluation of $f(\omega^0)$ to prove $x$ is the claimed one. Boneh \etal~\cite{rangeproof} introduced a zero-knowledge extension to solve the first issue. We will describe the extension and manipulate a variant of the opening scheme to solve the second one.
-
-\subsection{Batched Opening with Zero-Knowledge Extension ($\openzk$)}
-\label{sec:kgzzkp}
-To efficiently prove several polynomials are vanishing at several points, there are some batched KZG opening schemes such as the schemes in \cite{plonk,bdfg,fflonk}. Here, we use the batched opening scheme from~\cite{plonk} with the zero-knowledge extension from~\cite{rangeproof} to explain how to prove the range-proof polynomials are vanishing efficiently and in zero-knowledge. \\
-\textit{Assume $\prv$ is given $x$ and $\prv$ computes $f(X)$ using the above range proof. $\prv$ wants to prove $f(X)$ satisfies the second and the third condition, i.e., $w_2$ and $w_3$ are vanishing over $H$:}
+At the end of the protocol, $\vrf$ outputs \textbf{acc} or \textbf{rej} by checking
 \begin{enumerate}
-    \item $\prv$ \textit{generates two random numbers $\omega^{\prime},\omega^{\prime\prime}\in\mathbb{F}\setminus{H}$ and another two random numbers $\alpha,\beta\in\mathbb{F}$}
-    \item $\prv$ \textit{interpolates $f$ at two more points ${\omega^{\prime},\omega^{\prime\prime}}$ such that}
-    \[ f(\omega^{\prime})=\alpha \]
-    \[ f(\omega^{\prime\prime})=\beta \]
-    \textit{The new polynomial is called $f^\prime$.}
-    \item $\prv$ \textit{computes $w_2$ and $w_3$ following the above range proof and sends the commitment to $f^\prime$,} $\cm_{f^\prime}$
-    \item $\vrf$ \textit{sends a random challenge $\gamma\in\mathbb{F}$}
-    \item $\prv$ \textit{sends the commitment to $q_w:=w/(X^n-1)$ where}
-    \[ w:=w_2+\gamma\cdot{w_3} \]
-    \item $\vrf$ \textit{sends a random evaluation point $\zeta\in\mathbb{F}\setminus{H}$}
-    \item $\prv$ \textit{sends the evaluations $f^\prime(\zeta),f^\prime(\zeta\omega),q_w(\zeta)$}
-    \item $\prv$ \textit{sends the commitments to $q_1(X),q_2(X)$, where}
-    \[ q_1(X):=\frac{f^\prime(X)-f^\prime(\zeta)}{X-\zeta}+\gamma\cdot\frac{q_w(X)-q_w(\zeta)}{X-\zeta} \]
-    \[ q_2(X):=\frac{f^\prime(X)-f^\prime(\zeta\omega)}{X-\zeta\omega} \]
-    \item $\vrf$ \textit{chooses random $r\in\mathbb{F}$}
-    \item $\vrf$ \textit{accepts the proof if and only if}
-    \begin{enumerate}
-    	\item $w_1(\zeta)+\gamma\cdot{w_2(\zeta)}=q_w(\zeta)\cdot(\zeta^n-1)$
-    	\item $e(F+\zeta\cdot\cm_{q_1}+r\zeta\omega\cdot\cm_{q_2},[1]_2)=e(\cm_{q_1}+r\cdot\cm_{q_2},[x]_2)$\textit{, where}
-    	\begin{align*}
-    		F:=&\cm_{f^\prime}-[f^\prime(\zeta)]_1+\gamma\cdot(\cm_{q_w}-[q_w(\zeta)]_1)+r\cdot(\cm_{f^\prime}-[f^\prime(\zeta\omega)]_1)
-    	\end{align*}
-    \end{enumerate}
+    \item Each evaluation of $f_1,f_2,\dots,f_t$ at the random point is valid through the KZG checking
+    \item Each relation $\mathcal{R}_i$ holds for the prescribed polynomials $F_i$. More precisely, $\vrf$ verifies the evaluations of the polynomials in $F_i$ satisfy the equation defined by $\mathcal{R}_i$, \ie the zero test of polynomials.
 \end{enumerate}
-
-\begin{theorem}
-The batched KZG opening scheme with the zero-knowledge extension is complete, sound, and HVZK.
-\end{theorem}
-\begin{proof}
-Completeness is clear by following the protocol. Soundness can be verified by Lemma~\ref{lemma:range} and~\cite{plonk}. \\
-To verify zero knowledge, we construct a simulator $\mathcal{S}$. Let $\mathcal{S}$ randomly generate $\{\omega^{*^\prime},\omega^{*^{\prime\prime}},\alpha^*,\beta^*\}$ like $\prv$, and interpolate $f^*$ such that
-\[ f^*(\omega^{*^\prime})=\alpha^* \]
-\[ f^*(\omega^{*^{\prime\prime}})=\beta^* \]
-\[ f^*(x)=0,x\in{H} \]
-We can observe when $\vrf$ interacts with $\mathcal{S}$ to execute the protocol, $\vrf$ always accepts the proof from $\mathcal{S}$. Given $\{\omega^{*^\prime},\omega^{*^{\prime\prime}},\alpha^*,\beta^*\}$ are chosen uniformly at random each time, that is excatly the same as $\prv$ interpolates $f^\prime$. It should be clear $\vrf$ cannot distinguish between the transcript from $\mathcal{S}$ and the transcript from $\prv$.
-\end{proof}
-We will use $\openzk$ to denote this opening technique.
-
-\subsection{Open KZG with Committed Value}
-\label{sec:kzgOpenComm}
-By Definition~\ref{def:pcs}, to prove $b$ is the evaluation of $f(a)$, $\prv$ reveals the pair $(a,b)$ to let $\vrf$ validate the proof through pairings. To solve the second issue in the above range proof, we describe the new opening scheme.
-\begin{definition}[$\openc$]
-$\openc$ is a KZG opening scheme that $\prv$ is given input $f$ and $b$. $\prv$ and $\vrf$ are both given
+A polynomial protocol has the following properties:
 \begin{itemize}
-    \item \textbf{srs} = $\tuple{g_1,g_1^\tau,\dots,g_1^{\tau^d},h_1,h_1^\tau,\dots,h_1^{\tau^d},g_2,g_2^\tau}$
-    \item $\cm$ - the commitment to $f$
-    \item $a$ - an evaluation point of $f$
-    \item $\textbf{C}(b)$ - the committed evaluation of $f(a)$, $g_1^{f(a)}h_1^{\hat{f}(a)}$
+    \item \textbf{Completeness:} $\vrf$ always outputs \textbf{acc} if $\prv$ follows the protocol correctly to compute the proof $\pi_i$ for the relation $\mathcal{R}_i$, and $\mathcal{R}_i$ holds for the prescribed polynomials $F_i$, denoted by $(F_i,\pi_i)\in\mathcal{R}_i$.
+    \item \textbf{Knowledge soundness in the algebraic group model}: For any algebraic adversary $\mathcal{A}$ in a polynomial protocol, there exists a $\ppt$ extractor $\mathcal{E}$ given access to $\mathcal{A}$'s messages during the protocol, and $\mathcal{A}$ can win the following game with negligible probability:
+    \begin{enumerate}
+        \item Given the inputs that $\prv$ \textit{can access, $\mathcal{A}$ outputs} $\cm_{f_1},\cm_{f_2},\dots,\cm_{f_t}$.
+        \item $\mathcal{E}$ outputs $f_1,f_2,\dots,f_t\in\mathbb{F}_{<d}[X]$ from $\mathcal{A}$'s output and $\{F_i\}$ from these polynomials.
+        \item $\mathcal{A}$ outputs the evaluation at the random evaluation point for each polynomial and the corresponding proofs $\{\pi_i\}$.
+        \item $\mathcal{A}$ wins if
+        \begin{itemize}
+            \item $\vrf$ accepts the proof at the end of the protocol.
+            \item $(F_i,\pi_i)\notin\mathcal{R}_i$ or any evaluation is not correct.
+        \end{itemize}
+    \end{enumerate}
 \end{itemize}
-\textit{They run the protocol as follows:}
-\begin{enumerate}
-    \item $\prv$ computes the witness $w$ for $(a,b,\hat{b})$ such that
-    \[ w=g_1^{\psi(\tau)}h_1^{\hat\psi(\tau)} \]
-    where $\psi(x)=\frac{f(X)-f(a)}{X-a}$, and $\hat\psi(x)=\frac{\hat{f}(X)-\hat{f}(a)}{X-a}$
-    \item $\vrf$ outputs \textbf{acc} if and only if
-    \[ e(\cm/\textbf{C}(b),[1]_2)=e(w,[\tau-a]_2) \]
-\end{enumerate}
 \end{definition}
-\begin{theorem}
-\label{thm:kzgOpen}
-$\openc$ is complete, sound, and special HVZK.
-\end{theorem}
-\begin{proof}
-Completeness follows the original KZG commitment scheme.
-
-For soundness, $\openc$ does not violate the soundness of the original KZG commitment scheme. Note $\textbf{C}(b)$ is a Pedersen commitment. Recall the computational binding property of Pedersen commitment, that means it is infeasible for $\prv$ to compute a $b^*$ such that $f(a)\ne{b^*},\textbf{C}(b)=\textbf{C}(b^*)$ based on discrete logarithm assumption.
-
-To prove special HVZK, let the simulator $\mathcal{S}$ take as inputs $\textbf{srs}$, $\cm_f$, $a$, and $\textbf{C}(b)$. Since $\mathcal{S}$ knows the random evaluation point $a$ in advance, $\mathcal{S}$ can compute a witness $w^*=\cm_f/\textbf{C}(b)/[\tau-a]_1$ that makes the pairing equation hold, i.e., $\mathcal{S}$ always outputs an accepting conversation $(\cm_f,a,w^*)$ for $\textbf{C}(b)$.
-\end{proof}
-Back to the above range proof, now $\prv$ is able to prove $w_1$ is correct with $\openc$ in zero-knowledge while using the zero-knowledge extension to prove $w_2$ and $w_3$ are correct. Together, we can prove a value $x$ is in the specified range without revealing $x$. We use $\openc(f,a)$ to denote opening the committed evaluation of $f(a)$.
-
-% = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
