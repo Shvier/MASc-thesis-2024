@@ -3,7 +3,12 @@
 \section{Range Proof}
 \label{sec:range}
 
-A range proof enables $\prv$ to convince $\vrf$ a value $x$ is in a specified range, e.g., $[0,2^k)$, without revealing $x$. Zero-knowledge range proofs (ZKRPs) have three typical approaches: square decomposition, $n$-ary decomposition, and hash chains~\cite{zkrp}. We use the polynomial-based range proof from Boneh \etal~\cite{rangeproof}.
+A zero-knowledge range proof (ZKRP) enables $\prv$ to convince $\vrf$ a value $x$ is in a specified range, e.g., $[0,2^k)$, without revealing $x$. ZKRPs have three typical approaches: square decomposition, $n$-ary decomposition, and hash chains~\cite{zkrp}. Our work is a variant of the approach from Boneh \etal~\cite{rangeproof}. Specifically, the work from Boneh \etal is not efficient to prove multiple values are in the specified range. However, we do not explain the variant here; instead, we introduce it in Section~\ref{sec:pol}, as it requires some context to clarify why we construct such protocol. Now we review the range proof from Boneh \etal.
+
+\subsection{Range Proof for Single Value}
+\label{sec:range}
+
+$\prv$ wants to convince $\vrf$ that a number $x$ is in the range $[0,2^k)$ without revealing $x$. They run the protocol as follows:
 \begin{enumerate}
     \item \textit{Given input $x$, $\prv$ decomposes $x$ to a vector of binary digits $\overline{z}=\tuple{z_1,z_2,\dots,z_k}$, so that $x=\sum_{i=0}^{k-1}2^i\cdot{z_i}$} 
     \item \textit{$\prv$ constructs a vector $\overline{x}=\tuple{x_1,x_2,\dots,x_k}$ such that}
@@ -13,7 +18,7 @@ A range proof enables $\prv$ to convince $\vrf$ a value $x$ is in a specified ra
         x_i&=2x_{i+1}+z_i,i\in[1,k-1]
     \end{align*}
     \item \textit{$\prv$ interpolates a polynomial $f$ from $\overline{x}$ over a finite field $H$ of order $n$ with elements $\omega^0,\omega^1,\omega^2,\ldots,\omega^{n-1}$} 
-    \item \textit{$\prv$ proves the following polynomials are vanishing in $H$}
+    \item \textit{$\prv$ proves the following polynomials are vanishing on $H$}
     \begin{align*}
         w_1&:=[f(X)-x]\cdot\frac{X^n-1}{X-\omega^0} \\
         w_2&:=f(X)\cdot[f(X)-1]\cdot\frac{X^n-1}{X-\omega^{n-1}} \\
@@ -42,82 +47,72 @@ The range proof from Boneh \etal~\cite{rangeproof} is complete and has knowledge
 \begin{proof}
 Completeness is clear by following the protocol.
 
-For knowledge soundness, to make the equation $w(\zeta)=q(\zeta)\cdot(\zeta^n-1)$ hold, $q(X)$ must exist (it is a rational function). That means $w(X)$ is vanishing on $H$, i.e., $w_1,w_2$, and $w_3$ are vanishing over $H$. Thus, if $f(X)$ does not satisfy any of the equations $w_1,w_2$, and $w_3$, $\vrf$ will detect the proof is invalid. By the binding property of KZG commitment, we know that the evaluations $f(\zeta),f(\zeta\omega)$, and $q(\zeta)$ are correct with overwhelmingly high probability if the KZG verifying is passed.
+For knowledge soundness, to make the equation $w(\zeta)=q(\zeta)\cdot(\zeta^n-1)$ hold, $q(X)$ must exist (it is a rational function). That means $w(X)$ is vanishing on $H$, \ie $w_1,w_2$, and $w_3$ are vanishing over $H$. Thus, if $f(X)$ does not satisfy any of the equations $w_1,w_2$, and $w_3$, $\vrf$ will detect the proof is invalid. By the binding property of KZG commitment, we know that the evaluations $f(\zeta),f(\zeta\omega)$, and $q(\zeta)$ are correct with overwhelmingly high probability if the KZG verifying is passed.
 \end{proof}
-We note that the above range proof is not zero-knowledge because (i) revealing $f(X)$ and $f(X\omega)$ leaks the evaluations of $f$ and (ii) verifying $w_1$ requires $\vrf$ to know $x$. The solutions for these two points may seem similar but not quite the same, because the first point requires $\prv$ not to open the evaluations of $f(X)$ over $H$, and the second point means $\prv$ is supposed to reveal the evaluation of $f(\omega^0)$ to prove $x$ is the claimed one. Boneh \etal~\cite{rangeproof} introduced a zero-knowledge extension to solve the first issue. We will describe the extension and manipulate a variant of the opening scheme to solve the second one.
 
-\section{Batched Opening with Zero-Knowledge Extension}
+\section{KZG Opening with Zero-Knowledge Extension ($\openzk$)}
 \label{sec:kgzzkp}
-To efficiently prove several polynomials are vanishing at several points, there are some batched KZG opening schemes such as the schemes in \cite{plonk,bdfg,fflonk}. Here, we use the batched opening scheme from~\cite{plonk} with the zero-knowledge extension from~\cite{rangeproof} to explain how to prove the range-proof polynomials are vanishing efficiently and in zero-knowledge. \\
-\textit{Assume $\prv$ is given $x$ and $\prv$ computes $f(X)$ using the above range proof. $\prv$ wants to prove $f(X)$ satisfies the second and the third condition, i.e., $w_2$ and $w_3$ are vanishing over $H$:}
+Although a KZG commitment does not reveal the information of the polynomial directly due to the hiding property, the opening point leaks the evaluation of that polynomial. Assume a malicious verifier sends different challenge point in each round, which allows him to recover the polynomial after $d+1$ rounds ($d$ is the degree of the polynomial). The previous works~\cite{rangeproof,linear} mentioned this issue but did not clarify the solution. Here we introduce the solution formally.
+\begin{definition}[$\openzk$]
+$\openzk$ is a variant of KZG commitment scheme such that $\prv$ is given input $f\in\mathbb{F}_{<d}[X]$, $\prv$ wants to open $f$ at $n$ random points, where $n\le{d+1}$. They run the protocol as follows:
 \begin{enumerate}
-    \item $\prv$ \textit{generates two random numbers $\omega^{\prime},\omega^{\prime\prime}\in\mathbb{F}\setminus{H}$ and another two random numbers $\alpha,\beta\in\mathbb{F}$}
-    \item $\prv$ \textit{interpolates $f$ at two more points ${\omega^{\prime},\omega^{\prime\prime}}$ such that}
-    \[ f(\omega^{\prime})=\alpha \]
-    \[ f(\omega^{\prime\prime})=\beta \]
-    \textit{The new polynomial is called $f^\prime$.}
-    \item $\prv$ \textit{computes $w_2$ and $w_3$ following the above range proof and sends the commitment to $f^\prime$,} $\cm_{f^\prime}$
-    \item $\vrf$ \textit{sends a random challenge $\gamma\in\mathbb{F}$}
-    \item $\prv$ \textit{sends the commitment to $q_w:=w/(X^n-1)$ where}
-    \[ w:=w_2+\gamma\cdot{w_3} \]
-    \item $\vrf$ \textit{sends a random evaluation point $\zeta\in\mathbb{F}\setminus{H}$}
-    \item $\prv$ \textit{sends the evaluations $f^\prime(\zeta),f^\prime(\zeta\omega),q_w(\zeta)$}
-    \item $\prv$ \textit{sends the commitments to $q_1(X),q_2(X)$, where}
-    \[ q_1(X):=\frac{f^\prime(X)-f^\prime(\zeta)}{X-\zeta}+\gamma\cdot\frac{q_w(X)-q_w(\zeta)}{X-\zeta} \]
-    \[ q_2(X):=\frac{f^\prime(X)-f^\prime(\zeta\omega)}{X-\zeta\omega} \]
-    \item $\vrf$ \textit{chooses random $r\in\mathbb{F}$}
-    \item $\vrf$ \textit{accepts the proof if and only if}
-    \begin{enumerate}
-    	\item $w_1(\zeta)+\gamma\cdot{w_2(\zeta)}=q_w(\zeta)\cdot(\zeta^n-1)$
-    	\item $e(F+\zeta\cdot\cm_{q_1}+r\zeta\omega\cdot\cm_{q_2},[1]_2)=e(\cm_{q_1}+r\cdot\cm_{q_2},[x]_2)$\textit{, where}
-    	\begin{align*}
-    		F:=&\cm_{f^\prime}-[f^\prime(\zeta)]_1+\gamma\cdot(\cm_{q_w}-[q_w(\zeta)]_1)+r\cdot(\cm_{f^\prime}-[f^\prime(\zeta\omega)]_1)
-    	\end{align*}
-    \end{enumerate}
+    \item $\prv$ generates $n$ random numbers $x_1,x_2,\dots,x_n\in\mathbb{F}\setminus{H}$ and another $n$ random numbers $y_1,y_2,\dots,y_n\in\mathbb{F}$.
+    \item $\prv$ incrementally interpolates $f$ at $n$ more points $x_1,x_2,\dots,x_n$ such that
+    \[ f(x_1)=y_1,f(x_2)=y_2,\dots,f(x_n)=y_n \]
+    \item $\prv$ publishes the commitment to $f$, $\cm_f$.
+    \item $\vrf$ sends $n$ random evaluation points $\zeta_1,\zeta_2,\dots,\zeta_n\in\mathbb{F}\setminus{H}$.
+    \item $\prv$ and $\vrf$ proceed with the original KZG protocol.
 \end{enumerate}
+\end{definition}
 
 \begin{theorem}
-The batched KZG opening scheme with the zero-knowledge extension is complete, sound, and HVZK.
+\label{thm:openzk}
+$\openzk$ is complete, sound, and HVZK.
 \end{theorem}
 \begin{proof}
-Completeness is clear by following the protocol. Soundness can be verified by Lemma~\ref{lemma:range} and~\cite{plonk}. \\
-To verify zero knowledge, we construct a simulator $\mathcal{S}$. Let $\mathcal{S}$ randomly generate $\{\omega^{*^\prime},\omega^{*^{\prime\prime}},\alpha^*,\beta^*\}$ like $\prv$, and interpolate $f^*$ such that
-\[ f^*(\omega^{*^\prime})=\alpha^* \]
-\[ f^*(\omega^{*^{\prime\prime}})=\beta^* \]
-\[ f^*(x)=0,x\in{H} \]
-We can observe when $\vrf$ interacts with $\mathcal{S}$ to execute the protocol, $\vrf$ always accepts the proof from $\mathcal{S}$. Given $\{\omega^{*^\prime},\omega^{*^{\prime\prime}},\alpha^*,\beta^*\}$ are chosen uniformly at random each time, that is excatly the same as $\prv$ interpolates $f^\prime$. It should be clear $\vrf$ cannot distinguish between the transcript from $\mathcal{S}$ and the transcript from $\prv$.
-\end{proof}
-We will use $\openzk$ to denote this opening technique.
+Completeness is clear because the new polynomial has the same evaluations as the old one over the domain.
 
-\section{Open KZG with Committed Value}
+For soundness, note the difference between the variant and the original is we reduce the field of the challenge evaluation point from $\mathbb{F}$ to $\mathbb{F}\setminus{H}$. The soundness error increases but is still negligible.
+
+To verify zero knowledge, we construct a simulator $\mathcal{S}$. Let $\mathcal{S}$ construct a vanishing polynomial $f^*$ over the same domain and randomly generate $\{x_1^*,x_2^*,\dots,x_n^*\}$, $\{y_1^*,y_2^*,\dots,y_n^*\}$ like $\prv$, and then incrementally interpolate $f^*$ such that
+\[ f^*(x_1^*)=y_1^*,f^*(x_2^*)=y_2^*,\dots,f^*(x_n^*)=y_n^* \]
+We can observe when $\vrf$ interacts with $\mathcal{S}$ to execute the protocol, $\vrf$ always accepts the proof from $\mathcal{S}$ because $f^*$ has the same roots as $f$. Given $\{x_1^*,x_2^*,\dots,x_n^*\}$, $\{y_1^*,y_2^*,\dots,y_n^*\}$ are chosen uniformly at random each time, that is excatly the same as $\prv$ incrementally interpolates $f$. Thus $\vrf$ cannot distinguish between the transcript from $\mathcal{S}$ and the transcript from $\prv$.
+\end{proof}
+It is worth mentioning to efficiently prove several polynomials are vanishing at several points, there are some batched KZG opening schemes~\cite{plonk,bdfg,fflonk}. Our protocol uses the batched opening scheme from~\cite{plonk} with the zero-knowledge extension to demonstrate how to prove the above range proof efficiently (See Section~\ref{sec:rpzk}).
+
+We will use $\openzk(f_1,f_2,f_3,\dots)$ to denote opening multiple polynomials with this opening technique.
+
+\section{Open KZG with Committed Value ($\openc$)}
 \label{sec:kzgOpenComm}
-By Definition~\ref{def:pcs}, to prove $b$ is the evaluation of $f(a)$, $\prv$ reveals the pair $(a,b)$ to let $\vrf$ validate the proof through pairings. To solve the second issue in the above range proof, we describe the new opening scheme.
+$\openzk$ allows $\prv$ to prove a polynomial is vanishing over a specified domain. However, in some cases, $\prv$ needs to prove the claimed evaluation is correct. For example, we construct a polynomial where the evaluation at $\omega^0$ is the total assets we want to prove. Instead of revealing the evaluation directly, we publish the committed value. Now we introduce this opening scheme based on the KZG commitment in Pedersen form.
 \begin{definition}[$\openc$]
-$\openc$ is a KZG opening scheme that $\prv$ is given input $f$ and $b$. $\prv$ and $\vrf$ are both given
-\begin{itemize}
-    \item \textbf{srs} = $\tuple{g_1,g_1^\tau,\dots,g_1^{\tau^d},h_1,h_1^\tau,\dots,h_1^{\tau^d},g_2,g_2^\tau}$
-    \item $\cm$ - the commitment to $f$
-    \item $a$ - an evaluation point of $f$
-    \item $\textbf{C}(b)$ - the committed evaluation of $f(a)$, $g_1^{f(a)}h_1^{\hat{f}(a)}$
-\end{itemize}
+$\openc$ is a KZG opening scheme that $\prv$ is given input $f\in\mathbb{F}_{<d}[X]$. $\prv$ and $\vrf$ run the protocol as follows:
 \textit{They run the protocol as follows:}
 \begin{enumerate}
-    \item $\prv$ computes the witness $w$ for $(a,b,\hat{b})$ such that
+    \item $\prv$ generates a random polynomial $\hat{f}$ with the same degree as $f$ and computes the commitment to $f$, $\cm_f=g_1^{f(\tau)}h_1^{\hat{f}(\tau)}$.
+    \item $\vrf$ sends a random evaluation point $a$ as challenge.
+    \item $\prv$ computes the witness $w$ for $a$ such that
     \[ w=g_1^{\psi(\tau)}h_1^{\hat\psi(\tau)} \]
-    where $\psi(x)=\frac{f(X)-f(a)}{X-a}$, and $\hat\psi(x)=\frac{\hat{f}(X)-\hat{f}(a)}{X-a}$
+    where $\psi(x)=\frac{f(X)-f(a)}{X-a}$, $\hat\psi(x)=\frac{\hat{f}(X)-\hat{f}(a)}{X-a}$.
+    \item $\prv$ sends $w$ and $\textbf{C}(b)$ such that $\textbf{C}(b)=g_1^{f(a)}h_1^{\hat{f}(a)}$.
     \item $\vrf$ outputs \textbf{acc} if and only if
     \[ e(\cm/\textbf{C}(b),[1]_2)=e(w,[\tau-a]_2) \]
 \end{enumerate}
 \end{definition}
 \begin{theorem}
-\label{thm:kzgOpen}
-$\openc$ is complete, sound, and special HVZK.
+\label{thm:kzgOpenComm}
+$\openc$ is complete, sound, and HVZK.
 \end{theorem}
 \begin{proof}
 Completeness follows the original KZG commitment scheme.
 
-For soundness, $\openc$ does not violate the soundness of the original KZG commitment scheme. Note $\textbf{C}(b)$ is a Pedersen commitment. Recall the computational binding property of Pedersen commitment, that means it is infeasible for $\prv$ to compute a $b^*$ such that $f(a)\ne{b^*},\textbf{C}(b)=\textbf{C}(b^*)$ based on discrete logarithm assumption.
+For soundness, $\openc$ does not violate the soundness of the original KZG commitment scheme. Recall the computational binding property of Pedersen commitment, that means it is infeasible for $\prv$ to compute a $b^*$ such that $f(a)\ne{b^*},\textbf{C}(b)=\textbf{C}(b^*)$ based on discrete logarithm assumption.
 
-To prove special HVZK, let the simulator $\mathcal{S}$ take as inputs $\textbf{srs}$, $\cm_f$, $a$, and $\textbf{C}(b)$. Since $\mathcal{S}$ knows the random evaluation point $a$ in advance, $\mathcal{S}$ can compute a witness $w^*=\cm_f/\textbf{C}(b)/[\tau-a]_1$ that makes the pairing equation hold, i.e., $\mathcal{S}$ always outputs an accepting conversation $(\cm_f,a,w^*)$ for $\textbf{C}(b)$.
+To prove HVZK, let the simulator $\mathcal{S}$ compute
+$$
+\cm_{f^*}\stackrel{\$}{\leftarrow}\mathbb{G}_1,a^*\stackrel{\$}{\leftarrow}\mathbb{F},\textbf{C}(b^*)\stackrel{\$}{\leftarrow}\mathbb{G}_1,w^*=\cm_{f^*}/\textbf{C}(b^*)/[\tau-a^*]_1
+$$
+It is clear that the simulated conversation $(\cm_{f^*},a^*,\textbf{C}(b^*),w^*)$  is always accepted by $\vrf$. We can observe that $\cm_{f^*},a^*,\textbf{C}(b^*)$ are independent, uniformly distributed over their own field, and $w^*$ is determined by $\cm_{f^*}/\textbf{C}(b^*)/[\tau-a^*]_1$. Thus, the simulated conversation has the same distrbution as the output of $\prv$.
 \end{proof}
-Back to the above range proof, now $\prv$ is able to prove $w_1$ is correct with $\openc$ in zero-knowledge while using $\openzk$ to prove $w_2$ and $w_3$ are correct. Together, we can prove a value $x$ is in the specified range without revealing $x$. For simplicity, we use $\open(f,a,b)$ to denote opening the evaluation $b$ of $f(a)$, where $\open$ means $\openzk$ if $b$ is a plain value and $\openc$ if $b$ is a committed value.
+
+We will use $\openc(f,a,\textbf{C}(b))$ to denote opening the comitted evaluation $b$ of $f(a)$ through the above opening scheme.

@@ -1,0 +1,37 @@
+% !TEX root = ../../main.tex
+
+% = = = 
+
+\begin{Protocol*}[t!]
+\begin{mdframed}
+\footnotesize
+
+% = = = 
+
+\begin{enumerate}
+	\item $\vrf$ processes the balance of the anonymous set.
+	\begin{enumerate}
+		\item $\vrf$ queries the balance of each public key in the set $\prv$ chose, denoted by $\overline{b}=\tuple{\bal_1,\bal_2,\dots,\bal_n}$.
+		\item $\vrf$ interpolates a polynomial $f_\mathsf{bal}(X)$ from $\overline{b}$.
+	\end{enumerate}
+	\item $\vrf$ sends $f_\mathsf{bal}(X)$ to $\prv$.
+	\item $\prv$ takes as input the selector vector of keys shown ownership of, $f_\mathsf{sel}(X)$, from \bootstrap.
+	\item $\prv$ constructs an accumulative polynomial $f_\mathsf{assets}(X)$ such that
+		\begin{enumerate}
+	\item $f_\mathsf{assets}(X)-f_\mathsf{assets}(X\omega)=f_\mathsf{bal}(X)\cdot{f_\mathsf{sel}(X)},X\ne{\omega^{n-1}}$
+	\item $f_\mathsf{assets}(\omega^{n-1})=f_\mathsf{bal}(\omega^{n-1})\cdot{f_\mathsf{sel}}(\omega^{n-1})$
+		\end{enumerate}
+	\item $\prv$ runs $\openzk(f_\mathsf{assets},f_\mathsf{bal},f_\mathsf{sel})$ and $\openc(f_\mathsf{assets},\omega^0,\pb(f_\mathsf{assets}(\omega^0)))$.
+	\item $\vrf$ accepts the proof if and only if
+	\begin{enumerate}
+		\item $[f_\mathsf{assets}(X)-f_\mathsf{assets}(X\omega)-f_\mathsf{bal}(X)\cdot{f_\mathsf{sel}(X)}]\cdot(X-\omega^{n-1})=0$
+		\item $[f_\mathsf{assets}(X)-f_\mathsf{bal}(X)\cdot{f_\mathsf{sel}(X)}]\cdot\frac{X^n-1}{X-\omega^{n-1}}=0$
+	\end{enumerate}
+\end{enumerate}	
+
+% = = = 
+
+\normalsize	
+\end{mdframed}
+\caption{The \poa proof demonstrates that the balances associated with each key in the anonymity set are included, the subset not owned by the exchange (per selector vector from \bootstrap) are zero-ed out, and remaining balances are totalled correctly in $f_\mathsf{assets}(\omega^0)$. \label{alg:poa}}
+\end{Protocol*}

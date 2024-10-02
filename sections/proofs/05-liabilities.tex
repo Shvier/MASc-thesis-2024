@@ -1,0 +1,36 @@
+% !TEX root = ../../main.tex
+
+% = = = 
+
+\begin{Protocol*}[t!]
+\begin{mdframed}
+\footnotesize
+
+% = = = 
+
+\textbf{$\prv$'s private input:} user balances, $\{\bal_1,\bal_2,\dots,\bal_\mu\}$
+\begin{enumerate}
+    \item $\prv$ runs Protocol~\ref{alg:multirange} with $\{\bal_1,\bal_2,\dots,\bal_\mu\}$ to compute $\{p_1,p_2,\dots,p_k\}$ and $\{v_1,v_2,\dots,v_k\}$
+    \item $\prv$ builds an additive accumulator $\nu$ for $\overline{p}_1$ where $\nu_k=\bal_k=\overline{p}_1[k]$ and $\nu_i=\nu_{i+1}+\bal_i,i\in[1,\mu]$. Remark: $\nu_1$ will contain the total liability balances.
+    \item $\prv$ interpolates $f_\mathsf{liab}$ from $\nu$.
+    \item $\prv$ shows the following polynomials
+    \begin{align*}
+        w_1:=&[f_\mathsf{liab}(X)-f_\mathsf{liab}(X\omega)-p_1(X)]\cdot(X-\omega^{\mu-1}) \\
+        w_2:=&[f_\mathsf{liab}(X)-p_1(X)]\cdot\frac{X^\mu-1}{X-\omega^{\mu-1}}
+    \end{align*}
+    and $\{v_1,v_2,\dots,v_k\}$ are vanishing for all $x\in{H}$ where $H=\{\omega^0,\omega^1,\dots,\omega^{k-1}\}$. \\
+    $w_1$ and $w_2$ prove the accumulative vector is correct. To complete the proof, $\prv$ will run $\openzk(f_\mathsf{liab},p_1,p_2,\dots,p_k)$ at a random evaluation point $\zeta$ and $\openzk(f_\mathsf{liab})$ at $\zeta\omega$, and $\openc(f_\mathsf{liab},\omega^0,\pb(f_\mathsf{liab}(\omega^0)))$.
+\end{enumerate}
+
+\textbf{$\vrf$ checks:}
+\begin{enumerate}
+    \item each evaluation is valid
+    \item $\{w_1,w_2\}$ and $\{v_1,v_2,\dots,v_k\}$ are vanishing on $H$
+\end{enumerate}
+
+% = = = 
+
+\normalsize	
+\end{mdframed}
+\caption{The \pol proof demonstrates that each liability is either zero or a positive number, and that the balances are totalled correctly in $f_\mathsf{liab}(\omega^0)$. \label{alg:pol}}
+\end{Protocol*}

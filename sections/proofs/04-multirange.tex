@@ -1,0 +1,46 @@
+% !TEX root = ../../main.tex
+
+% = = = 
+
+\begin{Protocol*}[t!]
+\begin{mdframed}
+\footnotesize
+
+% = = = 
+
+\textbf{$\prv$'s private input:} some values to be proved, $\{x_1,x_2,\dots,x_\mu\}$
+\begin{enumerate}
+    \item $\prv$ computes the binary decomposition (from most significant bit to least significant bit) of each balance, $\{z_j^{(x_i)}\}_{i\in[\mu],j\in[k]}$, such that $z_j^{(x_i)}\in\{0,1\}$ and $x_i=\sum_{j=k}^{0}2^j\cdot{z_j^{(x_i)}}$.
+    \item $\prv$ puts the bits into accumulator form where $\chi_k^{(x_i)}=z_k^{(x_i)}$ and $\chi_i^{(x_i)}=2\chi_{i+1}^{(x_i)}+z_i^{(x_i)}$.  (Remark: visualized as a matrix, each row is a balance where the $k$-th column is the least significant bit and, moving right-to-left, each bit is folded in until it accumulates to $x_j$ in the first column.)
+    \[\begin{bmatrix}
+        \chi_1^{(x_1)} & \chi_2^{(x_1)} & \chi_3^{(x_1)} & \dots & \chi_k^{(x_1)} \\[3pt]
+        \chi_1^{(x_2)} & \chi_2^{(x_2)} & \chi_3^{(x_2)} & \dots & \chi_k^{(x_2)} \\[3pt]
+        \chi_1^{(x_3)} & \chi_2^{(x_3)} & \chi_3^{(x_3)} & \dots & \chi_k^{(x_3)} \\[3pt]
+        \vdots & \vdots & \vdots & \ddots & \vdots \\[3pt]
+        \chi_1^{(x_\mu)} & \chi_2^{(x_\mu)} & \chi_3^{(x_\mu)} & \dots & \chi_k^{(x_\mu)}
+    \end{bmatrix}\]
+    \item Due to the concrete parameters of \bls, $\prv$ will work column-by-column (proof size and verifier time will be linear in $k$ which is the bit-precision of each account). Let column $j$ be vector $\overline{p}_j=\{\chi_j^{(x_1)},\chi_j^{(x_2)},\dots,\chi_j^{(x_\mu)}\}$. The following constraints apply (for $i\in[\mu],j\in[k]$):       $\overline{p}_1[i]=x_i$; $\overline{p}_j[i] - 2\cdot\overline{p}_{j+1}[i]\in\{0,1\}$; and $\overline{p}_k[i]\in\{0,1\}$. $\overline{p}_1$ contains $\{x_1,x_2,\dots,x_\mu\}$.
+	\item $\prv$ interpolates polynomials for $\overline{p}_j \rightarrow p_j(X)$ and publishes commitments to each.
+    \item $\prv$ shows the following polynomials are vanishing for all $x\in{H}$ where $H=\{\omega^0,\omega^1,\dots,\omega^{k-1}\}$
+    \begin{align*}
+        v_1:=&[p_1(X)-2p_2(X)]\cdot[1-(p_1(X)-2p_2(X))] \\
+        v_2:=&[p_2(X)-2p_3(X)]\cdot[1-(p_2(X)-2p_3(X))] \\
+        \vdots \\
+        v_{k-1}:=&[p_{k-1}(X)-2p_k(X)]\cdot[1-(p_{k-1}(X)-2p_k(X))] \\
+        v_k:=&p_k(X)\cdot[1-p_k(X)] \\
+    \end{align*}
+    $\{v_1,v_2,\dots,v_k\}$ prove each liability is greater than or equal to 0 (range proof). To complete the proof, $\prv$ will run $\openzk(p_1,p_2,\dots,p_k)$.
+\end{enumerate}
+
+\textbf{$\vrf$ checks:}
+\begin{enumerate}
+    \item each evaluation is valid
+    \item $\{v_1,v_2,\dots,v_k\}$ are vanishing on $H$
+\end{enumerate}
+
+% = = = 
+
+\normalsize	
+\end{mdframed}
+\caption{The range proof for multiple values demonstrates that each value is either zero or a positive number less than a specified value. \label{alg:multirange}}
+\end{Protocol*}
