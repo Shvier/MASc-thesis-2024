@@ -3,23 +3,23 @@
 
 We adapt the security definition of a zero-knowledge proof of solvency from Provisions~\cite{provisions} in Appendix~\ref{app:defs}. We offer security proofs for \Sys and its sub-components: \bootstrap, \userproof, \pol, \poa, and \pos.
 
-\section{Claims}
+\section{Theorems}
 
 % = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
 \begin{theorem}
 \label{thm:sigmaclaim}
-A $\Sigma$-protocol for relation $\mathrm{ZKPoK}\{(sk_i,s_i):[\mathsf{pk}_i=g^{\mathsf{sk}_i}\land{p_i}=\Comm{1,r_i}] \lor{p_i}=\Comm{0,r_i}\}$ exists which is complete, has special soundness and is special HVZK. 
+A $\Sigma$-protocol for relation $\mathrm{ZKPoK}\{(\mathsf{sk}_i,s_i):[\mathsf{pk}_i=g^{\mathsf{sk}_i}\land{C_{s_i}}=\Comm{1}] \lor{C_{s_i}}=\Comm{0}\}$ exists which is complete, has special soundness and is special HVZK. 
 \end{theorem}
 
 \begin{proof}
-To demonstrate completeness, consult Protocol~\ref{alg:boot} (the inner framed protocol).
+To demonstrate completeness, consult Protocol~\ref{alg:zkpok}.
 
 To demonstrate special soundness, let two accepting conversations between $\prv$ and $\vrf$
 $$
 (t_1,t_2,t_3,e,e_0,e_1,z_1,z_2,z_3),(t_1,t_2,t_3,e^\prime,e_0^\prime,e_1^\prime,z_1^\prime,z_2^\prime,z_3^\prime)\text{ with $e\ne{e^\prime}$}
 $$
-be given. It is obivious for some $s=0$ or $1$ and $e_s\ne{e_s^\prime}$, we can compute $sk_i,s_i$ from the above conversations. Thus, the $\Sigma$-protocol for the relation $\mathrm{ZKPoK}$ has special soundness.
+be given. It is obivious for some $s=0$ or $1$ and $e_s\ne{e_s^\prime}$, we can compute $\mathsf{sk}_i,s_i$ from the above conversations. Thus, the $\Sigma$-protocol for the relation $\mathrm{ZKPoK}$ has special soundness.
 
 To demonstrate special HVZK, given $e$ and randomly choose $e_0,e_1$ such that $e=e_1\oplus{e_2}$, let the simulator compute
 $$
@@ -30,46 +30,14 @@ and output $(t_1,t_2,t_3,e,e_0,e_1,z_1,z_2,z_3)$. Clearly, the transcript is acc
 
 % = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
-\begin{restatable}{theorem}{nizkclaim}
+\begin{restatable}{corollary}{nizkclaim}
 \label{thm:nizkclaim}
-A $\Sigma$-protocol for relation $\mathrm{ZKPoK} \{ (sk_i,s_i) :  [\mathsf{pk}_i=g^{\mathsf{sk}_i} \land p_i=\Comm{1,r_i}  ] \lor p_i=\Comm{0,r_i} \}$ exists which is a non-interactive zero knowledge proof (NIZKP).
+A $\Sigma$-protocol for relation $\mathrm{ZKPoK} \{ (\mathsf{sk}_i,s_i) :  [\mathsf{pk}_i=g^{\mathsf{sk}_i} \land C_{s_i}=\Comm{1}  ] \lor C_{s_i}=\Comm{0} \}$ exists which is a non-interactive zero knowledge proof (NIZKP).
 \end{restatable}
     
 \begin{proof}
 Given the relation can proven with a ``standard'' $\Sigma$-protocol (Thereom~\ref{thm:sigmaclaim}), we can use the well-known Fiat-Shamir heuristic to compile it to a NIZKP in the random oracle model. We do not repeat the proof for this (see~\cite{damgard10,sigma}) but stress that strong Fiat-Shamir~\cite{weakfs} needs to be used here and in the Poly-IOP components of \Sys, or practical attacks could be leveraged against the system (\cf~\cite{weakfsattacks}).
 \end{proof}
-
-% = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
-\hfill \break
-Gabizon \etal introduced the definition of a universal polynomial protocol~\cite{plonk}. Here we describe a variant of it based on KZG commitment scheme for our work.
-\begin{definition}
-Fix positive integer $d,t,l$. Let $i\in[1,l]$. Let $\mathcal{R}\subseteq\mathbb{F}\times\mathbb{F}\times\cdots\times\mathbb{F}$ be a polynomial relation for one or more polynomials. Given a set of polynomials $f_1,f_2,\dots,f_t\in\mathbb{F}_{<d}[X]$ as $\prv$'s private input, and a set of polynomial relations $\mathcal{R}_1,\mathcal{R}_2,\dots,\mathcal{R}_l$ as public input, a polynomial protocol is a three-move protocol that $\prv$ wants to convince $\vrf$ each $\mathcal{R}_i$ holds for the certain set $F_i\subseteq\{f_1,f_2,\dots,f_t\}$. $\prv$ and $\vrf$ runs the protocol as follows.
-\begin{enumerate}
-    \item $\prv$ commits to $f_1,f_2,\dots,f_t$, and publishes all commitments, $\cm_{f_1},\cm_{f_2},\dots,\cm_{f_t}$.
-    \item $\vrf$ sends a random evaluation point as challenge.
-    \item $\prv$ responds with the corresponding evaluation and the commitment to the witness at the evaluation point for each polynomial.
-\end{enumerate}
-At the end of the protocol, $\vrf$ outputs \textbf{acc} or \textbf{rej} by checking
-\begin{enumerate}
-    \item Each evaluation of $f_1,f_2,\dots,f_t$ at the random point is valid through the KZG checking
-    \item Each relation $\mathcal{R}_i$ holds for the prescribed polynomials $F_i$. More precisely, $\vrf$ verifies the evaluations of the polynomials in $F_i$ satisfy the equation defined by $\mathcal{R}_i$, i.e., the zero test of polynomials.
-\end{enumerate}
-A polynomial protocol has the following properties:
-\begin{itemize}
-    \item \textbf{Completeness:} $\vrf$ always outputs \textbf{acc} if $\prv$ follows the protocol correctly to compute the proof $\pi_i$ for the relation $\mathcal{R}_i$, and $\mathcal{R}_i$ holds for the prescribed polynomials $F_i$, denoted by $(F_i,\pi_i)\in\mathcal{R}_i$.
-    \item \textbf{Knowledge soundness in the algebraic group model}: For any algebraic adversary $\mathcal{A}$ in a polynomial protocol, there exists a $\ppt$ extractor $\mathcal{E}$ given access to $\mathcal{A}$'s messages during the protocol, and $\mathcal{A}$ can win the following game with negligible probability:
-    \begin{enumerate}
-        \item Given the inputs that $\prv$ \textit{can access, $\mathcal{A}$ outputs} $\cm_{f_1},\cm_{f_2},\dots,\cm_{f_t}$.
-        \item $\mathcal{E}$ outputs $f_1,f_2,\dots,f_t\in\mathbb{F}_{<d}[X]$ from $\mathcal{A}$'s output and $\{F_i\}$ from these polynomials.
-        \item $\mathcal{A}$ outputs the evaluation at the random evaluation point for each polynomial and the corresponding proofs $\{\pi_i\}$.
-        \item $\mathcal{A}$ wins if
-        \begin{itemize}
-            \item $\vrf$ accepts the proof at the end of the protocol.
-            \item $(F_i,\pi_i)\notin\mathcal{R}_i$ or any evaluation is not correct.
-        \end{itemize}
-    \end{enumerate}
-\end{itemize}
-\end{definition}
 
 % = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
@@ -83,20 +51,20 @@ Completeness is clear: for an honest $\prv$, the evaluations of polynomials are 
 
 We argue the knowledge soundness from two aspects: the evaluations and the relations. The binding property of KZG commitment tells us the probability that any invalid evaluation passes the verifying is negligible, which means $\mathcal{A}$ can win the first condition of the attack game with extremely low probability. By the Schwartz-Zippel lemma, the equation defined by a relation $\mathcal{R}$ has overwhelmingly low probability to hold if the evaluations at a random point do not satisfy the equation. Therefore, the knowledge soundness is proved.
 
-Since $\vrf$ only knows the commitments to the polynomials and the witnesses except the opening evaluations, the commitments leak no information of the polynomials and the witnesses because of the hiding property of KZG commitment. By Theorem~\ref{thm:kzgOpen}, the opening scheme is HVZK. Thus, the polynomial protocol with $\openzk$ is HVZK.
+Since $\vrf$ only knows the commitments to the polynomials and the witnesses except the opening evaluations, the commitments leak no information of the polynomials and the witnesses because of the hiding property of KZG commitment. By Theorem~\ref{thm:openzk}, the opening scheme is HVZK. Thus, the polynomial protocol with $\openzk$ is HVZK.
 \end{proof}
 
 % = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
 \section{The \bootstrap Argument}
 
-\begin{claim}
+\begin{restatable}{corollary}{}
 \label{thm:keys}
 \bootstrap is complete, sound, and HVZK.
-\end{claim}
+\end{restatable}
 
 \begin{proof}
-Recall that the \bootstrap argument contains the relation proven to be complete, sound, and HVZK in Theorem~\ref{thm:sigmaclaim}. It remains to be shown the rest of the protocol (outer frame in Protocol~\ref{alg:boot}) is secure.
+Recall that the \bootstrap argument contains the relation proven to be complete, sound, and HVZK in Theorem~\ref{thm:sigmaclaim}. It remains to be shown the rest of the protocol (Protocol~\ref{alg:boot}) is secure.
 
 Completeness follows from Protocol~\ref{alg:boot}. The remainder of the protocol involves $\prv$ demonstrating that the selector polynomial encodes a 1 at index $\omega^i$ if and only if the corresponding $i$-th run of the $\Sigma$-protocol used $s=1$, and contains a 0 otherwise.
 
@@ -104,10 +72,10 @@ For \bootstrap to be sound, it requires (i) the polynomial commitment scheme (PC
 \begin{itemize}
 \item \textbf{KZG.A1}: The trusted setup outputs a structured reference string (SRS) with the value of $\tau$ unknown to $\prv$. 
 \item \textbf{KZG.A2}: The value of $\tau$ cannot be extracted from the SRS which assumes $\prv$ is computationally bounded and relies on (for us in \bls) the $t$-strong Diffie-Hellman (t-SDH) assumption.
-\item \textbf{KZG.A3}: If an adversary interpolates a polynomial through the point $(\omega^i,y)$ such that $y=P(\omega^i)$ but claims $y'=P(\omega^i)$ for some $y'\neq y$ then the probability that $\tau-y'$ evenly divides $y=P(\tau)$ is overwhelmingly low. This property can be demonstrated using the Schwartz-Zippel lemma by showing the number of $\tau$ values satisfying this property is bounded from above by $d$/$q$ where $d$ is the degree of the polynomial and $q$ is the size of the exponent group. For \bls with 255-bit exponents and 2-adicity of 32, this is close to $2^{32-255}=2^{-233}$ which is negligible.
+\item \textbf{KZG.A3}: If an adversary interpolates a polynomial through the point $(\omega^i,y)$ such that $y=f(\omega^i)$ but claims $y'=f(\omega^i)$ for some $y'\neq y$ then the probability that $\tau-y'$ evenly divides $y=f(\tau)$ is overwhelmingly low. This property can be demonstrated using the Schwartz-Zippel lemma by showing the number of $\tau$ values satisfying this property is bounded from above by $d$/$q$ where $d$ is the degree of the polynomial and $q$ is the size of the exponent group. For \bls with 255-bit exponents and 2-adicity of 32, this is close to $2^{32-255}=2^{-233}$ which is negligible.
 \end{itemize}
 
-Finally, in our protocol $\prv$ does not reveal the evaluation of the polynomial at a point, $\prv$ instead reveals a commitment to the evaluation through $\openc$. In the original KZG opening scheme, $\prv$ opens the commitment to the polynomial first and then opens the evaluation at the challenge point. Our modification just moves the computation work for the committed evaluation from $\vrf$ to $\prv$. By Theorem~\ref{thm:kzgOpen}, $\openc$ has special HVZK. Therefore, \bootstrap has zero knowledge.
+Finally, in our protocol $\prv$ does not reveal the evaluation of the polynomial at a point, $\prv$ instead reveals a commitment to the evaluation through $\openc$. In the original KZG opening scheme, $\prv$ opens the commitment to the polynomial first and then opens the evaluation at the challenge point. Our modification just moves the computation work for the committed evaluation from $\vrf$ to $\prv$. By Theorem~\ref{thm:kzgOpenComm}, $\openc$ has HVZK. Therefore, \bootstrap has zero knowledge.
 \end{proof}
 
 For future claims, we encapsulate all assumptions about KZG as a \textit{polynomial oracle}. 
@@ -116,59 +84,61 @@ For future claims, we encapsulate all assumptions about KZG as a \textit{polynom
 
 \section{The \poa Argument}
 
-\begin{claim}
+\begin{restatable}{corollary}{}
 \label{thm:assets} 
 \poa is complete, has knowledge soundness in the algebraic group model, and is HVZK. 
-\end{claim}
+\end{restatable}
 
 \begin{proof}
-Clearly, \poa is a polynomial protocol for two polynomial relations (i) $\sigma(X)-\sigma(X\omega)=\delta(X)\cdot\phi(X),X\ne{\omega^{n-1}}$ and (ii) $\sigma(\omega^{n-1})=\delta(\omega^{n-1})\cdot\phi(\omega^{n-1})$. The first relation proves the starting values are the same, and the second proves each successive value in the accumulative vector adds its adjacent value with the corresponding value. To check the relations, \poa also leverages $\openzk(\sigma,\delta,\phi)$ which includes opening the polynomials at a random evaluation point $\zeta$ and $\openzk(\sigma)$ at $\zeta\omega$. Additionally, to complete the PoA proof, \poa publishes the evaluation of $\sigma(\omega^0)$ through $\openc$. We already analyzed the security of $\openc$ in Theorem~\ref{sec:kzgOpenComm}. Thus, \poa is complete, knowledge sound, and HVZK by Theorem~\ref{thm:polyproto}.
+Clearly, \poa is a polynomial protocol for two polynomial relations (i) $f_\mathsf{assets}(X)-f_\mathsf{assets}(X\omega)=f_\mathsf{bal}(X)\cdot{f_\mathsf{sel}}(X),X\ne{\omega^{n-1}}$ and (ii) $f_\mathsf{assets}(\omega^{n-1})=f_\mathsf{bal}(\omega^{n-1})\cdot{f_\mathsf{sel}}(\omega^{n-1})$. The first relation proves the starting values are the same, and the second proves each successive value in the accumulative vector adds its adjacent value with the corresponding value. To check the relations, \poa also leverages $\openzk(f_\mathsf{assets},f_\mathsf{bal},f_\mathsf{sel})$ which includes opening the polynomials at a random evaluation point $\zeta$ and $\openzk(f_\mathsf{assets})$ at $\zeta\omega$. Additionally, to complete the PoA proof, \poa publishes the evaluation of $f_\mathsf{assets}(\omega^0)$ through $\openc$. We already analyzed the security of $\openc$ in Theorem~\ref{thm:kzgOpenComm}. Thus, \poa is complete, knowledge sound, and HVZK by Theorem~\ref{thm:polyproto}.
 \end{proof}
 
 % = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
 \section{The \pol argument}
 
-\begin{claim}
+\begin{restatable}{corollary}{}
 \label{thm:liabilities} 
 \pol is complete, has knowledge soundness in the algebraic group model, and is HVZK. 
-\end{claim}
+\end{restatable}
 
 \begin{proof}
 Completeness follows from Protocol~\ref{alg:pol}. 
 
-Given a \textit{polynomial oracle}, $\prv$ commits to a set of integers in binary form and build a vector to accumulate the bits into the integer representation (call this the range accumulator). Knowledge soundness of this aspect follows from the knowledge soundness of the range proof by Lemma~\ref{lemma:range} which uses the polynomial oracle to demonstrate three constraints: that the range accumulator starts with a 0 or 1; that the binary relationship between adjacent bits in the range accumulator are 0 or 1; and that the header of the range accumulator matches a standalone commitment to the integer (we do not use this, we just use the header values directly from $p_1(X)$). To complete soundness, $\vrf$ must check that no more than $k$ bits are used for an integer in $[0,k)$. Outside of the range proof, $\prv$ builds a vector ($p_0(X)$) to accumulate the sum of each header value ($p_1(X)$) from the set of range accumulators for each user account. This is the same protocol as Claim~\ref{thm:assets}. 
+Given a \textit{polynomial oracle}, $\prv$ commits to a set of integers in binary form and build a vector to accumulate the bits into the integer representation (call this the range accumulator). Knowledge soundness of this aspect follows from the knowledge soundness of the range proof by Lemma~\ref{lemma:range} which uses the \textit{polynomial oracle} to demonstrate three constraints: that the range accumulator starts with a 0 or 1; that the binary relationship between adjacent bits in the range accumulator are 0 or 1; and that the header of the range accumulator matches a standalone commitment to the integer (we do not use this, we just use the header values directly from $p_1(X)$). To complete soundness, $\vrf$ must check that no more than $k$ bits are used for an integer in $[0,k)$. Outside of the range proof, $\prv$ builds a vector ($f_\mathsf{liab}(X)$) to accumulate the sum of each header value ($p_1(X)$) from the set of range accumulators for each user account. This is the same protocol as in \poa. 
 
-For HVZK, it remains to consider what evaluation points are leaked by $\pi_\mathsf{liabilities}$. It opens $w_1,w_2,w_3,v_1,v_2,\dots,v_{m-1}$ to 0 which are consistent with exactly the constraints of the range accumulator and the additive accumulator. To check the constraints, $\prv$ will run $\openzk(p_0,p_1,p_2,\dots,p_k)$ at a random evaluation point $\zeta$ and $\openzk(p_0)$ at $\zeta\omega$. Again, we already analyzed the security of $\openzk$ in Theorem~\ref{thm:kzgOpen}. Thus, \pol is HVZK.
+For HVZK, it remains to consider what evaluation points are leaked by $\pi_\mathsf{liabilities}$. It opens $v_1,v_2,\dots,v_k$ which are consistent with exactly the constraints of the range accumulator and the additive accumulator. To check the constraints, $\prv$ will run $\openzk(f_\mathsf{liab},p_1,p_2,\dots,p_k)$ at a random evaluation point $\zeta$ and $\openzk(f_\mathsf{liab})$ at $\zeta\omega$. Again, we already analyzed the security of $\openzk$ in Theorem~\ref{thm:openzk}. Thus, \pol is HVZK.
 \end{proof}
 
 % = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
 \section{The \userproof Argument}
 
-\begin{claim}
+\begin{restatable}{corollary}{}
 \label{thm:users} 
 \userproof is complete, has knowledge soundness in the algebraic group model, and is HVZK. 
-\end{claim}
+\end{restatable}
 
 \begin{proof}
 Completeness follows from Protocol~\ref{alg:users}. 
 
-Knowledge soundness follows directly from the \textit{polynomial oracle} which, for $\pi_\mathsf{users}$, opens two points at the same index on two polynomials---one demonstrates the user's balance and one demonstrates the user's identification. The sufficincy of this to bind the balance to the user ID is already proven in Provisions which uses the same mechanism (for a different commitment scheme). The KZG assumptions already addressed in Claim~\ref{thm:keys} covers the rest. 
+Knowledge soundness follows directly from the \textit{polynomial oracle} which, for $\pi_\mathsf{users}$, opens two points at the same index on two polynomials---one demonstrates the user's balance and one demonstrates the user's identification. The sufficincy of this to bind the balance to the user ID is already proven in Provisions which uses the same mechanism (for a different commitment scheme). The KZG assumptions already addressed in Corollary~\ref{thm:keys} covers the rest. 
 
-To verify HVZK, recall the properties of KZG commitments---seeing a polynomial commitment and an opening at a specific evaluation point reveals no further information about any other point on the polynomial. KZG does not reveal the degree of the poiynomial, which would provide the number of users of the exchange, but an upperbound exists in the size of the SRS from the trusted setup (and if it can be assumed the prover will act efficiently, the largest root of unity). For each user, a $\ppt$ simulator can be constructed such that the evaluation at the user's index is equal to the user's balance/identification while other evaluations are random numbers. As a user (the verifier), he cannot distinguish between the simulated transcript and the real one due to the hiding property of KZG commitment. \end{proof}
+To verify HVZK, recall the properties of KZG commitments---seeing a polynomial commitment and an opening at a specific evaluation point reveals no further information about any other point on the polynomial. KZG does not reveal the degree of the polynomial, which would provide the number of users of the exchange, but an upperbound exists in the size of the SRS from the trusted setup (and if it can be assumed the prover will act efficiently, the largest root of unity). For each user, a $\ppt$ simulator can be constructed such that the evaluation at the user's index is equal to the user's balance/identification while other evaluations are random numbers. As a user (the verifier), he cannot distinguish between the simulated transcript and the real one due to the hiding property of KZG commitment. 
+\end{proof}
 
 % = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
 \section{The \pos Argument}
 
-\begin{claim}
+\begin{restatable}{corollary}{}
 \label{thm:solvency} 
 \pos is complete, sound, and HVZK. 
-\end{claim}
+\end{restatable}
 
 \begin{proof}
-Completeness follows from Protocol~\ref{alg:pos}. The soundness of the argument is that $\sigma(\omega^0)$ is sound under Claim~\ref{thm:assets}, $p_0(\omega^0)$ is sound under Claim~\ref{thm:liabilities}, and $\psi(\omega^0)$ is zero or positive by the soundness of the range proof (as addressed in Claim~\ref{thm:liabilities}). The overall constraint demonstrates that total assets is equal or exceeds total liabilities. HVZK similarly follows from the same previous claims (\ref{thm:assets}, \ref{thm:liabilities}, and range proof).\end{proof}
+Completeness follows from Protocol~\ref{alg:pos}. The soundness of the argument is that $f_\mathsf{assets}(\omega^0)$ is sound under Corollary~\ref{thm:assets}, $f_\mathsf{liab}(\omega^0)$ is sound under Corollary~\ref{thm:liabilities}, and $f_\mathsf{eq}(\omega^0)$ is zero or positive by the soundness of the range proof (as addressed in Corollary~\ref{thm:liabilities}). The overall constraint demonstrates that total assets is equal or exceeds total liabilities. HVZK similarly follows from the same previous corollaries (\ref{thm:assets}, \ref{thm:liabilities}, and range proof).
+\end{proof}
 
 % = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
@@ -180,12 +150,12 @@ Completeness follows from Protocol~\ref{alg:pos}. The soundness of the argument 
 \end{restatable}
 
 \begin{proof}
-To prove this theorem, we rely on the previous claims. There are no new insights, it is simply a matter of mapping what is proven in the claims onto what is required in the definition of a privacy-preserving proof of solvency.
+To prove this theorem, we rely on the corollaries in Section~\ref{app:claims}. There are no new insights, it is simply a matter of mapping what is proven in the corollaries onto what is required in the definition of a privacy-preserving proof of solvency.
 \begin{enumerate}
-    \item \textit{Correctness}. If $\pi_\mathsf{solvency}$ is complete (Claim~\ref{thm:solvency}), then \Sys is correct according to Definition~\ref{def:2}.
-    \item \textit{k-Soundness}. If $\mathcal{A}$ and $\mathcal{L}$ are not a valid pair and the protocol accepts with probability greater than $\mathsf{neg}(k)$, then $\pi_\mathsf{solvency}$ is not sound (contradicting Claim~\ref{thm:solvency}), where soundness is bounded by $k=\mathrm{min}[d/n,2^{-t}]$ where $d/n=2^{-233}$ (Schwartz-Zippel lemma for polynomial commitments in \bls) and $t=2^{-254}$ (challenge length for NIZKPs under Fiat-Shamir for a common challenge in \secp and \bls). If $\mathcal{L}[\text{ID}] \neq \ell$ (\ie the exchange provides the user with the wrong balance) and the protocol accepts with probability greater than $\mathsf{neg}(k)$, then $\pi_\mathsf{solvency}$ is not sound (contradicting Claim~\ref{thm:users}).
+    \item \textit{Correctness}. If \pos is complete (Corollary~\ref{thm:solvency}), then \Sys is correct according to Definition~\ref{def:2}.
+    \item \textit{k-Soundness}. If $\mathcal{A}$ and $\mathcal{L}$ are not a valid pair and the protocol accepts with probability greater than $\mathsf{neg}(k)$, then \pos is not sound (contradicting Corollary~\ref{thm:solvency}), where soundness is bounded by $k=\mathrm{min}[d/n,2^{-t}]$ where $d/n=2^{-233}$ (Schwartz-Zippel lemma for polynomial commitments in \bls) and $t=2^{-254}$ (challenge length for NIZKPs under Fiat-Shamir for a common challenge in \secp and \bls). If $\mathcal{L}[\uid] \neq \ell$ (\ie the exchange provides the user with the wrong balance) and the protocol accepts with probability greater than $\mathsf{neg}(k)$, then \pos is not sound (contradicting Corollary~\ref{thm:solvency}).
     \item \textit{Ownership}. Recall that ownership means that if the protocol accepts, there exists an extractor that can produce $x$ for all $y \in \mathcal{A}$. We show such an extractor in the proof of Theorem~\ref{thm:sigmaclaim}.
-    \item \textit{Privacy}. Roughly, this means a (statically) corrupted user cannot distinguish between an interaction using the real pair $\mathcal{A}$ and $\mathcal{L}$ and any other (equally sized) valid pair $\hat{\mathcal{A}}$ and $\hat{\mathcal{L}}$ such that $\hat{\mathcal{L}}[\text{ID}] = \mathcal{L}[\text{ID}]$ (\ie the simulated pair records the same balance for all corrupted users as the real valid pair). This follows from $\pi_\mathsf{solvency}$ and $\pi_\mathsf{users}$ being zero-knowledge (Claims~\ref{thm:users} and \ref{thm:solvency}), where the former covers the case that the universally verifiable proof reveals private information, and the latter covering the supplementary user check proof. 
+    \item \textit{Privacy}. Roughly, this means a (statically) corrupted user cannot distinguish between an interaction using the real pair $\mathcal{A}$ and $\mathcal{L}$ and any other (equally sized) valid pair $\hat{\mathcal{A}}$ and $\hat{\mathcal{L}}$ such that $\hat{\mathcal{L}}[\uid] = \mathcal{L}[\uid]$ (\ie the simulated pair records the same balance for all corrupted users as the real valid pair). This follows from \userproof and \pos being zero-knowledge (Corollary~\ref{thm:users} and \ref{thm:solvency}), where the former covers the case that the universally verifiable proof reveals private information, and the latter covering the supplementary user check proof. 
 \end{enumerate}
 Therefore \Sys is a privacy-preserving proof of solvency.
 \end{proof}
