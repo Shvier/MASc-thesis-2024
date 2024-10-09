@@ -29,7 +29,7 @@ The discrete logarithm problem describes, given a triplet $(\mathbb{G}, p, g)$, 
 
 \subsection{Pedersen Commitment}
 \label{sec:pedersen}
-The Pedersen commitment scheme \cite{pedersen} enables $\prv$ to \textit{commit} to a value $x$ without revealing it. Pedersen commitment provides perfectly hiding and computational binding based on the discrete logarithm assumption. Additionally, Pedersen commitments are \textit{additively homomorphic}: given two commitments $\textbf{C}_1$ and $\textbf{C}_2$, the summation of their secrets $x_1$ and $x_2$ is the secret of $\textbf{C}_1\cdot\textbf{C}_2$. We use $\textbf{C}(x)$ to denote a Pedersen commitment to the value $x$. Particularly, we use $\ps$ to denote a Pedersen commitment in \secp and $\pb$ to denote a Pedersen commitment in \bls.
+The Pedersen commitment scheme \cite{pedersen} enables $\prv$ to \textit{commit} to a value $x$ without revealing it. Pedersen commitment provides perfectly hiding and computational binding based on the discrete logarithm assumption. Additionally, Pedersen commitments are \textit{additively homomorphic}: given two commitments $\textbf{C}_1$ and $\textbf{C}_2$, the summation of their secrets $x_1$ and $x_2$ is the secret of $\textbf{C}_1\cdot\textbf{C}_2$. We use $\textbf{C}(x)$ to denote a Pedersen commitment to the value $x$ with hiding factor. Particularly, we use $\ps$ to denote a Pedersen commitment in \secp and $\pb$ to denote a Pedersen commitment in \bls.
 
 \subsection{$\Sigma$-Protocol}
 

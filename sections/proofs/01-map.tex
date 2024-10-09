@@ -5,7 +5,7 @@
 $\prv$ and $\vrf$ are both given $\{\pb(A_{\mathsf{keys},i})\}$. $\prv$ has the access to $\{\mathsf{sk}_i\},\{A_{\mathsf{keys},i}\}$ and the hiding factor of $\pb(A_{\mathsf{keys},i})$, $r_i$.
 \begin{enumerate}   
     \item Case 1: $A_{\mathsf{keys},i}=1$ ($\prv$ claims knowledge of $\mathsf{sk}_i$)
-    \begin{itemize}  
+    \begin{enumerate}  
         \item $\prv$ selects $e_1\stackrel{\$}{\leftarrow} \{0,1\}^t; z_3,\beta\stackrel{\$}{\leftarrow}\mathbb{Z}_b;\alpha\stackrel{\$}{\leftarrow}\mathbb{Z}_s$
         \item $\prv$ publishes  $t_1=\gs^\alpha$
         \item $\prv$ publishes $t_2=\hb^\beta$
@@ -15,10 +15,10 @@ $\prv$ and $\vrf$ are both given $\{\pb(A_{\mathsf{keys},i})\}$. $\prv$ has the 
         \item $\prv$ publishes $z_1=e_0\mathsf{sk}_i+\alpha$
         \item $\prv$ publishes $z_2=e_0r_i+\beta$
         \item $\prv$ publishes $z_3$
-    \end{itemize}
+    \end{enumerate}
     
     \item Case 2: $A_{\mathsf{keys},i}=0$ ($\prv$ does not claim knowledge of $\mathsf{sk}_i$)
-    \begin{itemize}  
+    \begin{enumerate}  
         \item $\prv$ selects $e_0\stackrel{\$}{\leftarrow} \{0,1\}^t;z_1\stackrel{\$}{\leftarrow}\mathbb{Z}_s;z_2,\alpha\stackrel{\$}{\leftarrow}\mathbb{Z}_b$
         \item $\prv$ publishes $t_1=\gs^{z_1}/\mathsf{pk}_i^{e_0}$
         \item $\prv$ publishes $t_2=\gb^{e_0}\hb^{z_2-r_ie_0}$
@@ -28,15 +28,15 @@ $\prv$ and $\vrf$ are both given $\{\pb(A_{\mathsf{keys},i})\}$. $\prv$ has the 
         \item $\prv$ publishes $z_1$
         \item $\prv$ publishes $z_2$
         \item $\prv$ publishes $z_3=e_1r_i+\alpha$
-    \end{itemize}
+    \end{enumerate}
     
-    \item $\vrf$ checks
-    \begin{itemize}
+    \item $\vrf$ outputs $\textbf{acc}$ if and only if
+    \begin{enumerate}
         \item $e=e_0\oplus{e_1}$
         \item $\gs^{z_1}=\mathsf{pk}_i^{e_0}t_1$ 
         \item $\gb^{e_0}\hb^{z_2}=\pb(A_{\mathsf{keys},i})^{e_0}t_2$ 
         \item $\hb^{z_3}=\pb(A_{\mathsf{keys},i})^{e_1}t_3$
-    \end{itemize} 
+    \end{enumerate} 
 \end{enumerate} 
 \end{mdframed}
 \caption{The ZKPoK proof demonstrates that $\prv$ can prove knowledge of a secret key with the correct committed selector.}\label{alg:zkpok}

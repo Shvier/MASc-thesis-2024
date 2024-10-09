@@ -50,24 +50,35 @@ Completeness is clear by following the protocol.
 For knowledge soundness, to make the equation $w(\zeta)=q(\zeta)\cdot(\zeta^n-1)$ hold, $q(X)$ must exist (it is a rational function). That means $w(X)$ is vanishing on $H$, \ie $w_1,w_2$, and $w_3$ are vanishing over $H$. Thus, if $f(X)$ does not satisfy any of the equations $w_1,w_2$, and $w_3$, $\vrf$ will detect the proof is invalid. By the binding property of KZG commitment, we know that the evaluations $f(\zeta),f(\zeta\omega)$, and $q(\zeta)$ are correct with overwhelmingly high probability if the KZG verifying is passed.
 \end{proof}
 
-\section{KZG Opening with Zero-Knowledge Extension ($\openzk$)}
+\section{KZG Opening with Zero-Knowledge Extension ($\kzgzk$)}
 \label{sec:kgzzkp}
-Although a KZG commitment does not reveal the information of the polynomial directly due to the hiding property, the opening point leaks the evaluation of that polynomial. Assume a malicious verifier sends different challenge point in each round, which allows him to recover the polynomial after $d+1$ rounds ($d$ is the degree of the polynomial). The previous works~\cite{rangeproof,linear} mentioned this issue but did not clarify the solution. Here we introduce the solution formally.
-\begin{definition}[$\openzk$]
-$\openzk$ is a variant of KZG commitment scheme such that $\prv$ is given input $f\in\mathbb{F}_{<d}[X]$, $\prv$ wants to open $f$ at $n$ random points, where $n\le{d+1}$. They run the protocol as follows:
+Although a KZG commitment does not reveal the information of the polynomial directly due to the hiding property, the opening point leaks the evaluation of that polynomial. Assume a malicious verifier sends different challenge point in each round, which allows him to recover the polynomial after $d+1$ rounds ($d$ is the degree of the polynomial). The previous works~\cite{rangeproof,linear} mentioned this issue but did not clarify the solution. Here we introduce the solution formally. First we claim two algorithms to help us explain the solution.
+
+\begin{claim}
+$\pi_\zeta\leftarrow\kzgzkprove(f_1,f_2,\dots;\zeta)$. This is an algorithm for $\prv$ that takes as input polynomials $f_1,f_2,\dots$ and an evaluation point $\zeta$ to output a proof $\pi_\zeta$ to prove the opening evaluations are correct.
+\end{claim}
+
+\begin{claim}
+$\{1/0\}\leftarrow\kzgzkverify(\cm_{f_1},\cm_{f_2},\dots;\pi_\zeta;\zeta)$. This is an algorithm for $\vrf$ that takes as input the commitments to $f_1,f_2,\dots$, $\pi_\zeta$ from $\kzgzkprove$, and the evaluation point $\zeta$ to verify $\pi_\zeta$. If $\pi_\zeta$ is valid, it returns $1$, else it returns $0$.
+\end{claim}
+
+Now we define $\kzgzk$.
+\begin{definition}[$\kzgzk$]
+$\kzgzk$ is a variant of KZG commitment scheme such that $\prv$ is given input $f\in\mathbb{F}_{<d}[X]$, $\prv$ wants to open $f$ at $n$ random points, where $n\le{d+1}$. They run the protocol as follows:
 \begin{enumerate}
     \item $\prv$ generates $n$ random numbers $x_1,x_2,\dots,x_n\in\mathbb{F}\setminus{H}$ and another $n$ random numbers $y_1,y_2,\dots,y_n\in\mathbb{F}$.
     \item $\prv$ incrementally interpolates $f$ at $n$ more points $x_1,x_2,\dots,x_n$ such that
     \[ f(x_1)=y_1,f(x_2)=y_2,\dots,f(x_n)=y_n \]
     \item $\prv$ publishes the commitment to $f$, $\cm_f$.
     \item $\vrf$ sends $n$ random evaluation points $\zeta_1,\zeta_2,\dots,\zeta_n\in\mathbb{F}\setminus{H}$.
-    \item $\prv$ and $\vrf$ proceed with the original KZG protocol.
+    \item For each $\zeta_i,i\in[1,n]$, $\prv$ computes $\pi_{\zeta_i}\leftarrow\kzgzkprove(f;\zeta_i)$ to open $f$ at $\zeta_i$.
+    \item $\vrf$ outputs \textbf{acc} if and only if $\kzgzkverify(f;\pi_{\zeta_i};\zeta)$ returns 1 for each $\pi_{\zeta_i},i\in[1,n]$.
 \end{enumerate}
 \end{definition}
 
 \begin{theorem}
-\label{thm:openzk}
-$\openzk$ is complete, sound, and HVZK.
+\label{thm:kzgzk}
+$\kzgzk$ is complete, sound, and HVZK.
 \end{theorem}
 \begin{proof}
 Completeness is clear because the new polynomial has the same evaluations as the old one over the domain.
@@ -80,14 +91,11 @@ We can observe when $\vrf$ interacts with $\mathcal{S}$ to execute the protocol,
 \end{proof}
 It is worth mentioning to efficiently prove several polynomials are vanishing at several points, there are some batched KZG opening schemes~\cite{plonk,bdfg,fflonk}. Our protocol uses the batched opening scheme from~\cite{plonk} with the zero-knowledge extension to demonstrate how to prove the above range proof efficiently (See Section~\ref{sec:rpzk}).
 
-We will use $\openzk(f_1,f_2,f_3,\dots)$ to denote opening multiple polynomials with this opening technique.
-
-\section{Open KZG with Committed Value ($\openc$)}
+\section{Open KZG with Committed Value ($\kzgcm$)}
 \label{sec:kzgOpenComm}
-$\openzk$ allows $\prv$ to prove a polynomial is vanishing over a specified domain. However, in some cases, $\prv$ needs to prove the claimed evaluation is correct. For example, we construct a polynomial where the evaluation at $\omega^0$ is the total assets we want to prove. Instead of revealing the evaluation directly, we publish the committed value. Now we introduce this opening scheme based on the KZG commitment in Pedersen form.
-\begin{definition}[$\openc$]
-$\openc$ is a KZG opening scheme that $\prv$ is given input $f\in\mathbb{F}_{<d}[X]$. $\prv$ and $\vrf$ run the protocol as follows:
-\textit{They run the protocol as follows:}
+$\kzgzk$ allows $\prv$ to prove a polynomial is vanishing over a specified domain. However, in some cases, $\prv$ needs to prove the claimed evaluation is correct. For example, we construct a polynomial where the evaluation at $\omega^0$ is the total assets we want to prove. Instead of revealing the evaluation directly, we publish the committed value. Now we introduce this opening scheme based on the KZG commitment in Pedersen form.
+\begin{definition}[$\kzgcm$]
+$\kzgcm$ is a KZG opening scheme that $\prv$ is given input $f\in\mathbb{F}_{<d}[X]$. $\prv$ and $\vrf$ run the protocol as follows:
 \begin{enumerate}
     \item $\prv$ generates a random polynomial $\hat{f}$ with the same degree as $f$ and computes the commitment to $f$, $\cm_f=g_1^{f(\tau)}h_1^{\hat{f}(\tau)}$.
     \item $\vrf$ sends a random evaluation point $a$ as challenge.
@@ -100,13 +108,13 @@ $\openc$ is a KZG opening scheme that $\prv$ is given input $f\in\mathbb{F}_{<d}
 \end{enumerate}
 \end{definition}
 \begin{theorem}
-\label{thm:kzgOpenComm}
-$\openc$ is complete, sound, and HVZK.
+\label{thm:kzgcm}
+$\kzgcm$ is complete, sound, and HVZK.
 \end{theorem}
 \begin{proof}
 Completeness follows the original KZG commitment scheme.
 
-For soundness, $\openc$ does not violate the soundness of the original KZG commitment scheme. Recall the computational binding property of Pedersen commitment, that means it is infeasible for $\prv$ to compute a $b^*$ such that $f(a)\ne{b^*},\textbf{C}(b)=\textbf{C}(b^*)$ based on discrete logarithm assumption.
+For soundness, $\kzgcm$ does not violate the soundness of the original KZG commitment scheme. Recall the computational binding property of Pedersen commitment, that means it is infeasible for $\prv$ to compute a $b^*$ such that $f(a)\ne{b^*},\textbf{C}(b)=\textbf{C}(b^*)$ based on discrete logarithm assumption.
 
 To prove HVZK, let the simulator $\mathcal{S}$ compute
 $$
@@ -115,4 +123,11 @@ $$
 It is clear that the simulated conversation $(\cm_{f^*},a^*,\textbf{C}(b^*),w^*)$  is always accepted by $\vrf$. We can observe that $\cm_{f^*},a^*,\textbf{C}(b^*)$ are independent, uniformly distributed over their own field, and $w^*$ is determined by $\cm_{f^*}/\textbf{C}(b^*)/[\tau-a^*]_1$. Thus, the simulated conversation has the same distrbution as the output of $\prv$.
 \end{proof}
 
-We will use $\openc(f,a,\textbf{C}(b))$ to denote opening the comitted evaluation $b$ of $f(a)$ through the above opening scheme.
+We claim two algorithms representing the step 4 and 5 in the above opening scheme, respectively.
+\begin{claim}
+$\textbf{C}(b)\leftarrow\kzgcmprove(f;b;a)$. This is an algorithm for $\prv$ that takes as input a polynomial $f$ and an evaluation point $a$ to output the committed evaluation of $b=f(a)$.
+\end{claim}
+
+\begin{claim}
+$\{1/0\}\leftarrow\kzgcmverify(\cm_f;\textbf{C}(b);a)$. This is an algorithm for $\vrf$ that takes as input the commitment to $f$, the committed evaluation $f(a)$, and the point $a$ to verify the committed value. If $\textbf{C}(b)$ is the correct evaluation at $a$, it returns $1$, else it returns $0$.
+\end{claim}

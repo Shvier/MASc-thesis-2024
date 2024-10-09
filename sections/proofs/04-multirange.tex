@@ -8,8 +8,8 @@
 
 % = = = 
 
-\textbf{$\prv$'s private input:} some values to be proved, $\{x_1,x_2,\dots,x_\mu\}$
 \begin{enumerate}
+    \item $\prv$ takes as input some values to be proved, $\{x_1,x_2,\dots,x_\mu\}$
     \item $\prv$ computes the binary decomposition (from most significant bit to least significant bit) of each balance, $\{z_j^{(x_i)}\}_{i\in[\mu],j\in[k]}$, such that $z_j^{(x_i)}\in\{0,1\}$ and $x_i=\sum_{j=k}^{0}2^j\cdot{z_j^{(x_i)}}$.
     \item $\prv$ puts the bits into accumulator form where $\chi_k^{(x_i)}=z_k^{(x_i)}$ and $\chi_i^{(x_i)}=2\chi_{i+1}^{(x_i)}+z_i^{(x_i)}$.  (Remark: visualized as a matrix, each row is a balance where the $k$-th column is the least significant bit and, moving right-to-left, each bit is folded in until it accumulates to $x_j$ in the first column.)
     \[\begin{bmatrix}
@@ -27,15 +27,14 @@
         v_2:=&[p_2(X)-2p_3(X)]\cdot[1-(p_2(X)-2p_3(X))] \\
         \vdots \\
         v_{k-1}:=&[p_{k-1}(X)-2p_k(X)]\cdot[1-(p_{k-1}(X)-2p_k(X))] \\
-        v_k:=&p_k(X)\cdot[1-p_k(X)] \\
+        v_k:=&p_k(X)\cdot[1-p_k(X)]
     \end{align*}
-    $\{v_1,v_2,\dots,v_k\}$ prove each liability is greater than or equal to 0 (range proof). To complete the proof, $\prv$ will run $\openzk(p_1,p_2,\dots,p_k)$.
-\end{enumerate}
-
-\textbf{$\vrf$ checks:}
-\begin{enumerate}
-    \item each evaluation is valid
-    \item $\{v_1,v_2,\dots,v_k\}$ are vanishing on $H$
+    $\{v_1,v_2,\dots,v_k\}$ prove each liability is greater than or equal to 0 (range proof). To complete the proof, $\prv$ and $\vrf$ run $\kzgzk$ to open $(p_1,p_2,\dots,p_k)$ at a random evaluation point.
+    \item $\vrf$ outputs \textbf{acc} if and only if
+    \begin{enumerate}
+        \item each evaluation is valid
+        \item $\{v_1,v_2,\dots,v_k\}$ are vanishing on $H$
+    \end{enumerate}
 \end{enumerate}
 
 % = = = 

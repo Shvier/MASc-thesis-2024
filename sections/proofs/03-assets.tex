@@ -18,14 +18,16 @@
 	\item $\prv$ takes as input the selector vector of keys shown ownership of, $f_\mathsf{sel}(X)$, from \bootstrap.
 	\item $\prv$ constructs an accumulative polynomial $f_\mathsf{assets}(X)$ such that
 		\begin{enumerate}
-	\item $f_\mathsf{assets}(X)-f_\mathsf{assets}(X\omega)=f_\mathsf{bal}(X)\cdot{f_\mathsf{sel}(X)},X\ne{\omega^{n-1}}$
-	\item $f_\mathsf{assets}(\omega^{n-1})=f_\mathsf{bal}(\omega^{n-1})\cdot{f_\mathsf{sel}}(\omega^{n-1})$
+			\item $f_\mathsf{assets}(X)-f_\mathsf{assets}(X\omega)=f_\mathsf{bal}(X)\cdot{f_\mathsf{sel}(X)},X\ne{\omega^{n-1}}$
+			\item $f_\mathsf{assets}(\omega^{n-1})=f_\mathsf{bal}(\omega^{n-1})\cdot{f_\mathsf{sel}}(\omega^{n-1})$
 		\end{enumerate}
-	\item $\prv$ runs $\openzk(f_\mathsf{assets},f_\mathsf{bal},f_\mathsf{sel})$ and $\openc(f_\mathsf{assets},\omega^0,\pb(f_\mathsf{assets}(\omega^0)))$.
-	\item $\vrf$ accepts the proof if and only if
+	\item $\prv$ commits to $f_\mathsf{assets},f_\mathsf{bal},f_\mathsf{sel}$ and sends the commitments to $\vrf$.
+	\item $\vrf$ replies with a random evaluation point $\zeta\in\mathbb{F}\setminus{H}$.
+	\item $\prv$ computes $\pi_\zeta\leftarrow\kzgzkprove(f_\mathsf{assets},f_\mathsf{bal},f_\mathsf{sel};\zeta)$, $\pi_{\zeta\omega}\leftarrow\kzgzkprove(f_\mathsf{assets};\zeta\omega)$, and $\pb(f_\mathsf{assets}(\omega^0))\leftarrow\kzgcmprove(f_\mathsf{assets};f_\mathsf{assets}(\omega^0);\omega^0)$.
+	\item $\vrf$ outputs \textbf{acc} if and only if
 	\begin{enumerate}
-		\item $[f_\mathsf{assets}(X)-f_\mathsf{assets}(X\omega)-f_\mathsf{bal}(X)\cdot{f_\mathsf{sel}(X)}]\cdot(X-\omega^{n-1})=0$
-		\item $[f_\mathsf{assets}(X)-f_\mathsf{bal}(X)\cdot{f_\mathsf{sel}(X)}]\cdot\frac{X^n-1}{X-\omega^{n-1}}=0$
+		\item $\kzgzkverify(\cm_{f_\mathsf{assets}},\cm_{f_\mathsf{bal}},\cm_{f_\mathsf{sel}};\pi_\zeta;\zeta)$, $\kzgzkverify(\cm_{f_\mathsf{assets}};\pi_{\zeta\omega};\zeta\omega)$, and $\kzgcmverify(\cm_{f_\mathsf{assets}};\pb(f_\mathsf{assets}(\omega^0));\omega^0)$ return 1.
+		\item The opening evaluations satisfy the conditions (a) and (b) in step 4.
 	\end{enumerate}
 \end{enumerate}	
 

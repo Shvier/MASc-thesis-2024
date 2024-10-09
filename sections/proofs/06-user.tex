@@ -8,21 +8,16 @@
 
 % = = = 
 
-\textbf{$\prv$'s private input:} user identifiers, $\{\uid_1,\uid_2,\dots,\uid_\mu\}$, and $p_1(\omega^i)$ (from \pol above)
 \begin{enumerate}
     \item $\prv$ interpolates the identifier polynomial $f_\mathsf{uid}(X)$ such that $f_\mathsf{uid}(X_i)=\uid_i$ for $i$ from 1 to $\mu$.
-    \item $\prv$ publishes the commitment to $f_\mathsf{uid}(X)$, $\cm_{f_\mathsf{uid}}$.
-    \item For check from user $i$, $\prv$ tells the user they at index $i$ and opens $f_\mathsf{uid}(\omega^{i-1})$ and $p_1(\omega^{i-1})$.
+    \item $\prv$ publishes the commitments to $f_\mathsf{uid}(X)$ and $p_1$ (from \pol above).
+    \item For check from user $i$, $\prv$ tells the user he is at index $i$ and opens $f_\mathsf{uid}(\omega^{i-1})$ and $p_1(\omega^{i-1})$.
+    \item $\vrf$ outputs \textbf{acc} if and only if
+    \begin{enumerate}
+        \item His user identifier is the evaluation of $f_\mathsf{uid}$ at the given point $\omega^{i-1}$.
+        \item His balance is the evaluation of $p_1$ at the given point $\omega^{i-1}$.
+    \end{enumerate}
 \end{enumerate}
-
-\textbf{Customer's input:} $\cm_{f_\mathsf{uid}},\cm_{p_1}$ and the corresponding witnesses of opening $f_\mathsf{uid}(\omega^{i-1}),p_1(\omega^{i-1})$
-\begin{enumerate}
-    \item $\vrf$ verifies that the two indexes $i$ are identical.
-    \item $\vrf$ verifies their user identifier is the evaluation of $f_\mathsf{uid}$ at the given point $\omega^{i-1}$.
-    \item $\vrf$ verifies their balance is the evaluation of $p_1$ at the given point $\omega^{i-1}$.
-\end{enumerate}
-
-
 
 % = = = 
 

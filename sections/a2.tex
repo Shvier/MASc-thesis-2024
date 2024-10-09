@@ -2,9 +2,9 @@
 
 \chapter{Protocols}
 
-\section{Range Proof for Single Value with $\openzk$}
+\section{Range Proof for Single Value with $\kzgzk$}
 \label{sec:rpzk}
-Assume $\prv$ is given $x$ and $\prv$ computes $f(X)$ using the above range proof (\ref{sec:range}). $\prv$ wants to prove $f(X)$ satisfies the second and the third condition, \ie $w_2$ and $w_3$ are vanishing over $H$:
+Assume $\prv$ is given $x$ and $\prv$ computes $f(X)$ using the above range proof (\ref{sec:range}). $\prv$ wants to prove $f(X)$ satisfies the second and the third condition, \ie $w_2$ and $w_3$ are vanishing over $H$. They run the protocol as follows:
 \begin{enumerate}
     \item $\prv$ \textit{generates two random numbers $\omega^{\prime},\omega^{\prime\prime}\in\mathbb{F}\setminus{H}$ and another two random numbers $\alpha,\beta\in\mathbb{F}$}
     \item $\prv$ \textit{interpolates $f$ at two more points ${\omega^{\prime},\omega^{\prime\prime}}$ such that}
@@ -19,7 +19,7 @@ Assume $\prv$ is given $x$ and $\prv$ computes $f(X)$ using the above range proo
     \[ q_1(X):=\frac{f(X)-f(\zeta)}{X-\zeta}+\gamma\cdot\frac{q_w(X)-q_w(\zeta)}{X-\zeta} \]
     \[ q_2(X):=\frac{f(X)-f(\zeta\omega)}{X-\zeta\omega} \]
     \item $\vrf$ \textit{chooses random $r\in\mathbb{F}$}
-    \item $\vrf$ \textit{accepts the proof if and only if}
+    \item $\vrf$ \textit{outputs \textbf{acc} if and only if}
     \begin{enumerate}
     	\item $w_1(\zeta)+\gamma\cdot{w_2(\zeta)}=q_w(\zeta)\cdot(\zeta^n-1)$
     	\item $e(F+\zeta\cdot\cm_{q_1}+r\zeta\omega\cdot\cm_{q_2},[1]_2)=e(\cm_{q_1}+r\cdot\cm_{q_2},[x]_2)$\textit{, where}
@@ -30,14 +30,16 @@ Assume $\prv$ is given $x$ and $\prv$ computes $f(X)$ using the above range proo
 \end{enumerate}
 
 \begin{theorem}
-The above range proof with $\openzk$ is complete, sound, and HVZK.
+The above range proof with $\kzgzk$ is complete, sound, and HVZK.
 \end{theorem}
 \begin{proof}
-Completeness follows the protocol. Soundness and zero knowledge can be verified by Plonk (Section 3.1 of~\cite{plonk}) and Theorem~\ref{thm:openzk}.
+Completeness follows the protocol. Soundness and zero knowledge can be verified by Plonk (Section 3.1 of~\cite{plonk}) and Theorem~\ref{thm:kzgzk}.
 \end{proof}
 
 \section{The Protocol ZKPoK in \bootstrap}
 \label{alg:map}
+
+Protocol~\ref{alg:zkpok} presents how to map the \textit{success} or \textit{failure} in \secp to \bls.
 
 \FloatBarrier
 \input{sections/proofs/01-map.tex}
@@ -45,6 +47,8 @@ Completeness follows the protocol. Soundness and zero knowledge can be verified 
 
 \section{Range Proof for Multiple Values}
 \label{alg:rpmv}
+
+Protocol~\ref{alg:multirange} presents how to prove multiple values satisfy the range proof based on binary decomposition.
 
 \FloatBarrier
 \input{sections/proofs/04-multirange.tex}

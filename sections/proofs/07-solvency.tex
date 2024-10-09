@@ -12,7 +12,12 @@
     \item $\prv$ computes equality $\mathsf{eq}$ as the total assets minus the total liabilities. 
     \item $\prv$ publishes commitment to polynomial $f_\mathsf{eq}(X)$ where $f_\mathsf{eq}(\omega^0)=\mathsf{eq}$.
     \item $\prv$ generates a range proof for $\mathsf{eq}$ in $f_\mathsf{eq}(X)$ to demonstrate it is a non-negative integer.
-    \item $\prv$ opens $f_\mathsf{assets}(\omega^0) - f_\mathsf{liab}(\omega^0) - f_\mathsf{eq}(\omega^0)$ to the value 0.
+    \item $\prv$ opens $f_\mathsf{eq}(\omega^0)$ through $\kzgcm$ and publishes $\pb(f_\mathsf{assets}(\omega^0))$, $\pb(f_\mathsf{liab}(\omega^0))$ from \poa and \pol.
+    \item $\vrf$ outputs \textbf{acc} if and only if
+    \begin{enumerate}
+        \item $\pb(f_\mathsf{assets}(\omega^0))=\pb(f_\mathsf{liab}(\omega^0))\cdot\pb(f_\mathsf{eq}(\omega^0))$.
+        \item The range proof for $\mathsf{eq}$ is valid.
+    \end{enumerate}
 \end{enumerate}
 
 % = = = 

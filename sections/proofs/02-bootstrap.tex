@@ -5,9 +5,9 @@
 \begin{enumerate}
 \item $\prv$ publishes an anonymity set of public keys: $\tuple{\mathsf{pk}_1,\mathsf{pk}_2,\mathsf{pk}_3,\dots,\mathsf{pk}_n}$.
 \item $\prv$ constructs a selector vector: $\overline{s}=\tuple{s_1,s_2,s_3,\ldots,s_n}$ where $s_i=0$ unless $\prv$ can prove knowledge of $\mathsf{sk}_i$ given $\mathsf{pk}_i=\gs^{\mathsf{sk}_i}$, then $s_i=1$.
-\item $\prv$ interpolates a polynomial $f_\mathsf{sel}(X)$ from $\overline{s}$.
-\item For each $i$, $\prv$ and $\vrf$ run $\openc(f_\mathsf{sel}, \omega^i, C_{s_i})$, where $C_{s_i}=\Comm{f_\mathsf{sel}(\omega^i)}$.
-\item For each $C_{s_i}$, $\prv$ and $\vrf$ run $\mathrm{ZKPoK} \{ (\mathsf{sk}_i,s_i) :  [\mathsf{pk}_i=\gs^{\mathsf{sk}_i} \land C_{s_i}=\Comm{1}  ] \lor C_{s_i}=\Comm{0} \}$.
+\item $\prv$ interpolates a polynomial $f_\mathsf{sel}(X)$ from $\overline{s}$ and commits to $f_\mathsf{sel}$.
+\item For each $i$, $\prv$ computes $\pb(s_i)\leftarrow\kzgcmprove(f_\mathsf{sel};s_i;\omega^i)$, and $\vrf$ aborts if $\kzgcmverify(\cm_{f_\mathsf{sel}};\pb(s_i);\omega^i)$ returns 0;
+\item For each $\pb(s_i)$, $\prv$ and $\vrf$ run Protocol~\ref{alg:zkpok} to prove $\mathrm{ZKPoK} \{ (\mathsf{sk}_i,s_i) :  [\mathsf{pk}_i=\gs^{\mathsf{sk}_i} \land \pb(s_i)=\Comm{1}  ] \lor \pb(s_i)=\Comm{0} \}$.
 \end{enumerate}
 \end{mdframed}
 \caption{The \bootstrap proof demonstrates that $f_\mathsf{sel}(X)$ encodes a binary selector vector of the public keys for which the exchange can prove knowledge of the corresponding secret key. \label{alg:boot}}
