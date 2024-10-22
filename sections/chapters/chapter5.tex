@@ -19,13 +19,13 @@ To demonstrate special soundness, let two accepting conversations between $\prv$
 $$
 (t_1,t_2,t_3,e,e_0,e_1,z_1,z_2,z_3),(t_1,t_2,t_3,e^\prime,e_0^\prime,e_1^\prime,z_1^\prime,z_2^\prime,z_3^\prime)\text{ with $e\ne{e^\prime}$}
 $$
-be given. It is obivious for some $s=0$ or $1$ and $e_s\ne{e_s^\prime}$, we can compute $\mathsf{sk}_i,s_i$ from the above conversations. Thus, the $\Sigma$-protocol for the relation $\mathrm{ZKPoK}$ has special soundness.
+be given. It is obvious for some $s=0$ or $1$ and $e_s\ne{e_s^\prime}$, we can compute $\mathsf{sk}_i,s_i$ from the above conversations. Thus, the $\Sigma$-protocol for the relation $\mathrm{ZKPoK}$ has special soundness.
 
 To demonstrate special HVZK, given $e$ and randomly choose $e_0,e_1$ such that $e=e_1\oplus{e_2}$, let the simulator compute
 $$
 z_1\stackrel{\$}{\leftarrow}\mathbb{Z}_s,z_2\stackrel{\$}{\leftarrow}\mathbb{Z}_b,z_3\stackrel{\$}{\leftarrow}\mathbb{Z}_b,t_1=\gs^{z_1}/\mathsf{pk}_i^{e_0},t_2=\gb^{e_0}\hb^{z_2}/{p_i^{e_0}},t_3=\hb^{z_3}/{p_i^{e_1}}
 $$
-and output $(t_1,t_2,t_3,e,e_0,e_1,z_1,z_2,z_3)$. Clearly, the transcript is accepted by $\vrf$. Note $e$, $e_0$ and $e_1$ are random $t$-bit strings, which means they have the same distribution as the conversation between $\prv$ and $\vrf$. $z_1$, $z_2$, and $z_3$ are uniformly distributed over their corresponding fields; moreover, given $(e_1,e_2,z_1,z_2,z_3)$, $(t_1,t_2,t_3)$ are uniquely determined by the above equations. Therefore, the simuated transcript is not distinguishable from the real one to $\vrf$.
+and output $(t_1,t_2,t_3,e,e_0,e_1,z_1,z_2,z_3)$. Clearly, the transcript is accepted by $\vrf$. Note $e$, $e_0$ and $e_1$ are random $t$-bit strings, which means they have the same distribution as the conversation between $\prv$ and $\vrf$. $z_1$, $z_2$, and $z_3$ are uniformly distributed over their corresponding fields; moreover, given $(e_1,e_2,z_1,z_2,z_3)$, $(t_1,t_2,t_3)$ are uniquely determined by the above equations. Therefore, the simulated transcript is not distinguishable from the real one to $\vrf$.
 \end{proof}
 
 % = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -36,7 +36,7 @@ A $\Sigma$-protocol for relation $\mathrm{ZKPoK} \{ (\mathsf{sk}_i,s_i) :  [\mat
 \end{restatable}
     
 \begin{proof}
-Given the relation can proven with a ``standard'' $\Sigma$-protocol (Thereom~\ref{thm:sigmaclaim}), we can use the well-known Fiat-Shamir heuristic to compile it to a NIZKP in the random oracle model. We do not repeat the proof for this (see~\cite{damgard10,sigma}) but stress that strong Fiat-Shamir~\cite{weakfs} needs to be used here and in the Poly-IOP components of \Sys, or practical attacks could be leveraged against the system (\cf~\cite{weakfsattacks}).
+Given the relation can proven with a ``standard'' $\Sigma$-protocol (Thereon~\ref{thm:sigmaclaim}), we can use the well-known Fiat-Shamir heuristic to compile it to a NIZKP in the random oracle model. We do not repeat the proof for this (see~\cite{damgard10,sigma}) but stress that strong Fiat-Shamir~\cite{weakfs} needs to be used here and in the Poly-IOP components of \Sys, or practical attacks could be leveraged against the system (\cf~\cite{weakfsattacks}).
 \end{proof}
 
 % = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -122,7 +122,7 @@ For HVZK, it remains to consider what evaluation points are leaked by $\pi_\math
 \begin{proof}
 Completeness follows from Protocol~\ref{alg:users}. 
 
-Knowledge soundness follows directly from the \textit{polynomial oracle} which, for $\pi_\mathsf{users}$, opens two points at the same index on two polynomials---one demonstrates the user's balance and one demonstrates the user's identification. The sufficincy of this to bind the balance to the user ID is already proven in Provisions which uses the same mechanism (for a different commitment scheme). The KZG assumptions already addressed in Corollary~\ref{thm:keys} covers the rest. 
+Knowledge soundness follows directly from the \textit{polynomial oracle} which, for $\pi_\mathsf{users}$, opens two points at the same index on two polynomials---one demonstrates the user's balance and one demonstrates the user's identification. The sufficiency of this to bind the balance to the user ID is already proven in Provisions which uses the same mechanism (for a different commitment scheme). The KZG assumptions already addressed in Corollary~\ref{thm:keys} covers the rest. 
 
 To verify HVZK, recall the properties of KZG commitments---seeing a polynomial commitment and an opening at a specific evaluation point reveals no further information about any other point on the polynomial. KZG does not reveal the degree of the polynomial, which would provide the number of users of the exchange, but an upperbound exists in the size of the SRS from the trusted setup (and if it can be assumed the prover will act efficiently, the largest root of unity). For each user, a $\ppt$ simulator can be constructed such that the evaluation at the user's index is equal to the user's balance/identification while other evaluations are random numbers. As a user (the verifier), he cannot distinguish between the simulated transcript and the real one due to the hiding property of KZG commitment. 
 \end{proof}

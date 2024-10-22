@@ -87,7 +87,7 @@ For soundness, note the difference between the variant and the original is we re
 
 To verify zero knowledge, we construct a simulator $\mathcal{S}$. Let $\mathcal{S}$ construct a vanishing polynomial $f^*$ over the same domain and randomly generate $\{x_1^*,x_2^*,\dots,x_n^*\}$, $\{y_1^*,y_2^*,\dots,y_n^*\}$ like $\prv$, and then incrementally interpolate $f^*$ such that
 \[ f^*(x_1^*)=y_1^*,f^*(x_2^*)=y_2^*,\dots,f^*(x_n^*)=y_n^* \]
-We can observe when $\vrf$ interacts with $\mathcal{S}$ to execute the protocol, $\vrf$ always accepts the proof from $\mathcal{S}$ because $f^*$ has the same roots as $f$. Given $\{x_1^*,x_2^*,\dots,x_n^*\}$, $\{y_1^*,y_2^*,\dots,y_n^*\}$ are chosen uniformly at random each time, that is excatly the same as $\prv$ incrementally interpolates $f$. Thus $\vrf$ cannot distinguish between the transcript from $\mathcal{S}$ and the transcript from $\prv$.
+We can observe when $\vrf$ interacts with $\mathcal{S}$ to execute the protocol, $\vrf$ always accepts the proof from $\mathcal{S}$ because $f^*$ has the same roots as $f$. Given $\{x_1^*,x_2^*,\dots,x_n^*\}$, $\{y_1^*,y_2^*,\dots,y_n^*\}$ are chosen uniformly at random each time, that is exactly the same as $\prv$ incrementally interpolates $f$. Thus $\vrf$ cannot distinguish between the transcript from $\mathcal{S}$ and the transcript from $\prv$.
 \end{proof}
 It is worth mentioning to efficiently prove several polynomials are vanishing at several points, there are some batched KZG opening schemes~\cite{plonk,bdfg,fflonk}. Our protocol uses the batched opening scheme from~\cite{plonk} with the zero-knowledge extension to demonstrate how to prove the above range proof efficiently (See Section~\ref{sec:rpzk}).
 
