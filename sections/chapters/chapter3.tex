@@ -120,7 +120,7 @@ To prove HVZK, let the simulator $\mathcal{S}$ compute
 $$
 \cm_{f^*}\stackrel{\$}{\leftarrow}\mathbb{G}_1,a^*\stackrel{\$}{\leftarrow}\mathbb{F},\textbf{C}(b^*)\stackrel{\$}{\leftarrow}\mathbb{G}_1,w^*=\cm_{f^*}/\textbf{C}(b^*)/[\tau-a^*]_1
 $$
-It is clear that the simulated conversation $(\cm_{f^*},a^*,\textbf{C}(b^*),w^*)$  is always accepted by $\vrf$. We can observe that $\cm_{f^*},a^*,\textbf{C}(b^*)$ are independent, uniformly distributed over their own field, and $w^*$ is determined by $\cm_{f^*}/\textbf{C}(b^*)/[\tau-a^*]_1$. Thus, the simulated conversation has the same distrbution as the output of $\prv$.
+It is clear that the simulated conversation $(\cm_{f^*},a^*,\textbf{C}(b^*),w^*)$  is always accepted by $\vrf$. We can observe that $\cm_{f^*},a^*,\textbf{C}(b^*)$ are independent, uniformly distributed over their own field, and $w^*$ is determined by $\cm_{f^*}/\textbf{C}(b^*)/[\tau-a^*]_1$. Thus, the simulated conversation has the same distribution as the output of $\prv$.
 \end{proof}
 
 We claim two algorithms representing the step 4 and 5 in the above opening scheme, respectively.
