@@ -152,7 +152,7 @@ A polynomial commitment scheme consists of three moves: \textbf{gen}, \textbf{co
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{roots}
-\caption{Small number ($\mathbb{Z}_{31}$) example of encoding a vector of integers $\tuple{3,1,1,3,7}$ into (a) the first 5 points of a polynomial, and (b) into 5th roots of unity ($\omega=3$).\label{fig:rou}}
+\caption[An example of encoding a vector of integers into a polynomial]{Small number ($\mathbb{Z}_{31}$) example of encoding a vector of integers $\tuple{3,1,1,3,7}$ into (a) the first 5 points of a polynomial, and (b) into 5th roots of unity ($\omega=3$).\label{fig:rou}}
 \end{figure}
 
 We use the approach of encoding data vectors into polynomials, committing to them using a polynomial commitment scheme (PCS), and forming zero knowledge arguments---a model called a polynomial-based interactive oracle proof (Poly-IOP). The zk-SNARK system Plonk popularized Poly-IOPs and has many extensions and optimizations. A one-dimensional vector of data is encoded into a univariate polynomial using 1 of 3 methods (all 3 are used at different steps of Plonk): (1) into the coefficients of the polynomial, (2) as roots of the polynomial, and (3) as the \(y\)-coordinates (\(\mathsf{data}_i=f(x_i)\)) of points on the polynomial. Plonk mostly relies on (3) and an interpolation algorithm is used to find the corresponding coefficients of the polynomial, which is
