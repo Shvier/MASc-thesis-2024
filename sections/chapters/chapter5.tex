@@ -1,7 +1,40 @@
 \chapter{Security Analysis}
 \label{sec:proof}
 
-We adapt the security definition of a zero-knowledge proof of solvency from Provisions~\cite{provisions} in Appendix~\ref{app:defs}. We offer security proofs for \Sys and its sub-components: \bootstrap, \userproof, \pol, \poa, and \pos.
+In this chapter, we introduce the security definition of a zero-knowledge proof of solvency. Then We offer security proofs for \Sys and its sub-components: \bootstrap, \userproof, \pol, \poa, and \pos.
+
+\section{Definitions}
+
+Definitions~\ref{def:1} and~\ref{def:2} are taken largely verbatim from the Provisions paper at CCS 2015~\cite{provisions}. Let $\mathcal{A}$ (exchange-controlled addresses) and $\mathcal{A}'$ (anonymity set of addresses) denote mappings $(y = g^x) \mapsto \text{bal}(y)$ where $\mathcal{A} \subseteq \mathcal{A}'$, $y$ is the public key corresponding to a Bitcoin address with private key $x$ and $\text{bal}(y)$ is the amount of currency, or assets, observably spendable by this key on the blockchain. Let $\mathcal{L}$ denote a mapping $\uid \mapsto \ell$ where $\ell$ is the amount of currency, or liabilities, owed by the exchange to each user identified by the unique identity $\uid$. A balance is a positive integer in $[0,\mathsf{MaxETH}]$ for a known upper-bound $\mathsf{MaxETH}$. The size of $\mathcal{A}'$ is known, the size of $\mathcal{A}$ is generally unknown (beyond being less than or equal to $\mathcal{A}'$), and the size of $\mathcal{L}$ is generally unknown (see Definition \ref{def:2}(4) below). 
+
+\begin{definition}[Valid Pair]
+\label{def:1} We say that $\mathcal{A}$ and $\mathcal{L}$ are a valid pair with respect to a positive integer $\mathsf{MaxETH}$ iff $\forall \uid \in \mathcal{L}$,
+
+\begin{itemize}
+\item $\sum_{y \in \mathcal{A}} \mathcal{A}[y] - \sum_{\uid \in \mathcal{L}} \mathcal{L}[\uid] \geq 0 \quad$
+\item $0 \leq \mathcal{L}[\uid] \leq \mathsf{MaxETH}$
+\end{itemize}
+Consider an interactive protocol ProveSolvency run between an exchange $\mathcal{E}$ and user $\mathcal{U}$ such that
+
+\begin{itemize}
+\item $\mathsf{output}_{\mathcal{E}}^{\mathsf{ProveSolvency}}(1^k, \mathsf{MaxETH}, \mathcal{A}, \mathcal{L}, \mathcal{A}') = \emptyset$
+\item $\mathsf{output}_{\mathcal{U}}^{\mathsf{ProveSolvency}}(1^k, \mathsf{MaxETH}, \mathcal{A}', \uid, \ell) \in \{\text{ACCEPT}, \text{REJECT}\}$
+\end{itemize}
+   
+\end{definition}
+
+For brevity, we refer to these as $\text{out}_{\mathcal{E}}$ and $\text{out}_{\mathcal{U}}$ respectively. Next we define, with reference to the valid pair definition, a privacy-preserving proof of solvency.
+
+\begin{definition}[Privacy-Preserving Proof of Solvency]
+\label{def:2} A privacy-preserving proof of solvency is a probabilistic polynomial-time interactive protocol ProveSolvency, with inputs/outputs as above, such that the following properties hold:
+
+\begin{enumerate}
+\item \textit{Correctness}. If $\mathcal{A}$ and $\mathcal{L}$ are a valid pair and $\mathcal{L}[\uid] = \ell$, then $\Pr[\text{out}_{\mathcal{U}} = \text{ACCEPT}] = 1$.
+\item \textit{k-Soundness}. If $\mathcal{A}$ and $\mathcal{L}$ are instead not a valid pair, or if $\mathcal{L}[\uid] \neq \ell$, then $\Pr[\text{out}_{\mathcal{U}} = \text{REJECT}] \geq 1 - \mathsf{negl}(k)$.
+\item \textit{Ownership}. For all valid pairs $\mathcal{A}$ and $\mathcal{L}$, if $\Pr[\text{out}_{\mathcal{U}} = \text{ACCEPT}] = 1$, then the exchange must have ‘known’ the private keys associated with the public keys in $\mathcal{A}$; \ie there exists an extractor that, given $\mathcal{A}$, $\mathcal{L}$, and rewindable black-box access to exchange $\mathcal{E}$, can produce $x$ for all $y \in \mathcal{A}$.
+\item \textit{Privacy}. A potentially dishonest user $\mathcal{U}'$ interacting with an honest exchange $\mathcal{E}$ cannot learn anything about a valid pair $\mathcal{A}$ and $\mathcal{L}$ beyond its validity and $\mathcal{L}[\uid]$ (and possibly $|\mathcal{A}|$ and $|\mathcal{L}|$); \ie even a cheating user cannot distinguish between an interaction using the real pair $\mathcal{A}$ and $\mathcal{L}$ and any other (equally sized) valid pair $\hat{\mathcal{A}}$ and $\hat{\mathcal{L}}$ such that $\hat{\mathcal{L}}[\uid] = \mathcal{L}[\uid]$.
+\end{enumerate}
+\end{definition}
 
 \section{Theorems}
 
