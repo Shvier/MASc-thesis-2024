@@ -1,0 +1,54 @@
+% !TEX root = ../../main.tex
+
+% \begin{Protocol*}[t!]
+\begin{mdframed}
+$\prv$ and $\vrf$ are both given $\{\mathsf{addr}_i=\hash(\mathsf{pk}_i),\pb(A_{\mathsf{keys},i})\}$ and an arithmetic circuit $f$ such that 
+
+\[
+    f(\mathsf{addr},\mathsf{pk})=\left\{
+        \begin{aligned}
+            1 & \text{ if } \hash(\mathsf{pk})=\mathsf{addr} \\
+            0 & \text{ otherwise.}
+        \end{aligned}
+    \right.
+\]
+
+$\prv$ has the access to $\{\mathsf{sk}_i\},\{A_{\mathsf{keys},i}\}$ and all hiding factors of relevant Pedersen commitments. Particularly, let $r_i$ denote the hiding factor of $\pb(A_{\mathsf{keys},i})$.
+\begin{enumerate}   
+    \item Case 1: $A_{\mathsf{keys},i}=1$ ($\prv$ claims knowledge of $\mathsf{sk}_i$)
+    \begin{enumerate}  
+        \item $\prv$ commits to $\mathsf{addr}_i,\mathsf{sk}_i,\mathsf{pk}_i$ and output the commitments $comm_1=\ps(\mathsf{addr}_i),comm_2=\ps^\prime(\mathsf{sk}_i)$ and $comm_3=\ps(\mathsf{pk}_i)$ where $\ps^\prime$ has a different generator from $\ps$ and the discrete logarithm between these two is unknown to $\prv$
+        \item $\prv$ selects $e_1\stackrel{\$}{\leftarrow} \{0,1\}^t; z_3\stackrel{\$}{\leftarrow}\mathbb{Z}_b$
+        \item $\prv$ publishes $t_3=\gb^{-e_1}\hb^{z_3-r_ie_1}$
+        \item $\vrf$ publishes $t$-bit challenge $e\stackrel{\$}{\leftarrow} \{0,1\}^t$ (or $\prv$ via Fiat-Shamir)
+        \item $\prv$ computes $e_0=e\oplus{e_1}$ and publishes $e_0$ and $e_1$
+        \item $\prv$ runs the protocols $\texttt{ddlog}$ and the sigma protocol $\texttt{comSigma}$ to prove the following statement: $\{(\mathsf{sk}_i,\mathsf{pk}_i):\ps(\mathsf{sk}_i)=\mathsf{pk}_i\land{comm_2}=\ps^\prime(\mathsf{sk}_i)\land{comm_3=\ps(\mathsf{pk}_i)}\}$
+        \item $\prv$ runs $\texttt{comInSnark}$ to prove $f(\mathsf{addr}_i,\mathsf{pk}_i)=1$ given $comm_1,comm_3$
+        \item $\prv$ publishes the proofs $\pi_1,\pi_2$ and $\pi_3$ from step (f) and (g), respectively
+        \item $\prv$ publishes $z_3$
+    \end{enumerate}
+    
+    \item Case 2: $A_{\mathsf{keys},i}=0$ ($\prv$ does not claim knowledge of $\mathsf{sk}_i$)
+    \begin{enumerate}
+        \item $\prv$ commits to $\mathsf{addr}_i,\mathsf{pk}_i$ and output the commitments $comm_1=\ps($ $\mathsf{addr}_i),comm_3=\ps(\mathsf{pk}_i)$
+        \item $\prv$ selects $e_0\stackrel{\$}{\leftarrow} \{0,1\}^t;\alpha\stackrel{\$}{\leftarrow}\mathbb{Z}_b$
+        \item $\prv$ runs the protocol $\texttt{ddlog}$ and $\texttt{comSigma}$ given the challenge $e_0$ in advance (The proofs $\pi_1$ and $\pi_2$ are always accepted by $\vrf$ as $\texttt{ddlog}$ and $\texttt{comSigma}$ are sigma protocols)
+        \item $\prv$ runs $\texttt{comInSnark}$ to prove $f(\mathsf{addr}_i,\mathsf{pk}_i)=1$ given $comm_1,comm_3$
+        \item $\prv$ publishes $t_3=\hb^\alpha$
+        \item $\vrf$ publishes $t$-bit challenge $e\stackrel{\$}{\leftarrow} \{0,1\}^t$ (or $\prv$ via Fiat-Shamir)
+        \item $\prv$ computes $e_1=e\oplus{e_0}$ and publishes $e_0$ and $e_1$    
+        \item $\prv$ publishes $\pi_1,\pi_2,\pi_3$ from step (c) and (d)
+        \item $\prv$ publishes $z_3=e_1r_i+\alpha$
+    \end{enumerate}
+    
+    \item $\vrf$ outputs $\textbf{acc}$ if and only if
+    \begin{enumerate}
+        \item $e=e_0\oplus{e_1}$
+        \item $\hb^{z_3}=\pb(A_{\mathsf{keys},i})^{e_1}t_3$
+        \item $\pi_1,\pi_2,\pi_3$ are valid
+    \end{enumerate} 
+\end{enumerate}
+\end{mdframed}
+\captionof{Protocol}{The extension for \bootstrap to support hashed keys. The protocols $\texttt{ddlog},\texttt{comSigma},\texttt{comInSnark}$ can be found in Section 3.1, 3.2, and 4.2 of Agrawal~\etal~\cite{composite}, respectively.}\label{alg:hashed}
+% \end{Protocol*}
+    

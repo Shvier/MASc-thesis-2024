@@ -29,7 +29,7 @@ We do not argue that a proof of solvency is a silver bullet that prevents all fr
 
 \begin{itemize}
 \item Our protocol relies on a trusted setup. However the setup is universal (shareable with other zk-SNARK systems) and is secure with one honest participant in a decentralized computation of it~\cite{tau}.
-\item $\pi_\mathsf{keys}$ assumes the public key (as opposed to only its hash) associated with every address in an anonymity set of keys is known. In Bitcoin and Ethereum, this (typically) corresponds to the address having originated at least one transaction. 
+\item $\pi_\mathsf{keys}$ assumes the public key (as opposed to only its hash\footnote{We demonstrate \Sys with the public keys for brevity. However, \Sys can support interacting with hashed keys as well by simply integrating the scheme from Agrawal~\etal~\cite{composite}. For details see Appendix~\ref{sec:hashedkeys}.}) associated with every address in an anonymity set of keys is known. In Bitcoin and Ethereum, this (typically) corresponds to the address having originated at least one transaction.
 \item $\pi_\mathsf{keys}$ assumes funds are controlled by a single public key. We do not explore how to handle multisig, wallets, Gnosis Safe, \etc However we can support tokens (\eg ERC20, ERC721,\etc) given the mapping between balances and public keys is on-chain, and we can support such assets split across layer two solutions or EVM-chains. 
 \end{itemize}
 

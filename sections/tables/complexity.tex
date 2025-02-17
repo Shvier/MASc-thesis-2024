@@ -1,52 +1,62 @@
-\begin{table}[t]
+\begin{table*}[t]
 \centering
-    \begin{tabular}{|c|c|c|c|} 
+\resizebox{\textwidth}{!}{
+    \begin{tabular}{|c|c|c|c|c|c|c|c|} 
         \hline
-        \multicolumn{4}{|c|}{$\pi_\mathsf{keys}$} \\
+        \multicolumn{7}{|c|}{$\pi_\mathsf{keys}$} \\
         \hline
-        \textbf{Scheme} & \textbf{Proving time} & \textbf{Verifying time} & \textbf{Proof size}  \\
+        \textbf{Scheme} & \textbf{Proving time} & \textbf{Verifying time} & \textbf{Proof size} & \textbf{Hashed} & \textbf{NI} & \textbf{Incremental} \\
         \hline
-        \Sys(\textbf{Ours}) & $O(\nkeys^2)$ & $O(\nkeys)$ & $O(\nkeys)$ \\
+        \Sys(\textbf{Ours}) & $O(\nkeys^2)$ & $O(\nkeys)$ & $O(\nkeys)$ & $\tikzcmark$ & $\tikzcmark$ & $\tikzxmark$ \\
         \hline
     \end{tabular}
-    \begin{tabular}{|c|c|c|c|c|} 
+}\\
+\resizebox{\textwidth}{!}{
+    \begin{tabular}{|c|c|c|c|c|c|c|c|} 
         \hline
-        \multicolumn{5}{|c|}{$\pi_\mathsf{assets}$} \\
+        \multicolumn{8}{|c|}{$\pi_\mathsf{assets}$} \\
         \hline
-        \multirow{2}{*}{\textbf{Scheme}} & \multirow{2}{*}{\textbf{Proving time}} & \multicolumn{2}{c|}{\textbf{Verifying time}} & \multirow{2}{*}{\textbf{Proof size}} \\
+        \multirow{2}{*}{\textbf{Scheme}} & \multirow{2}{*}{\textbf{Proving time}} & \multicolumn{2}{c|}{\textbf{Verifying time}} & \multirow{2}{*}{\textbf{Proof size}} & \multirow{2}{*}{\textbf{Hashed}} & \multirow{2}{*}{\textbf{NI}} & \multirow{2}{*}{\textbf{Incremental}} \\
         \cline{3-4}
-        & & $\pi_\mathsf{input}$ & $\pi_\mathsf{proof}$ & \\
+        & & $\pi_\mathsf{input}$ & $\pi_\mathsf{proof}$ & & & & \\
         \hline
-        Provisions\cite{provisions} & $O(\nkeys)$ & N/A & $O(\nkeys)$ & $O(\nkeys)$ \\
+        Provisions\cite{provisions} & $O(\nkeys)$ & N/A & $O(\nkeys)$ & $O(\nkeys)$ & $\tikzxmark$ & $\tikzcmark$ & $\tikzxmark$ \\
         \hline
-        Bulletproofs\cite{bulletproofs} & $O(\nkeys)$ & N/A & $O(\nkeys)$ & $O(\log{\nkeys})$  \\
+        Bulletproofs\cite{bulletproofs} & $O(\nkeys)$ & N/A & $O(\nkeys)$ & $O(\log{\nkeys})$ & $\tikzcmark$ & $\tikzcmark$ & $\tikzxmark$ \\
         \hline
-        IZPR\cite{izpr} & $O(t\log{t})$ & $O(\nkeys)$ & $O(1)$ & $O(1)$ \\
+        NIZKPCS\cite{composite} & $O(\nkeys\log\nkeys)$ & N/A & $O(\nkeys)$ & $O(\nkeys)$ & $\tikzcmark$ & $\tikzcmark$ & $\tikzxmark$ \\
         \hline
-        \Sys(\textbf{Ours}) & $O(\nkeys)$ & $O(\nkeys)$ & $O(1)$ & $O(1)$ \\
+        gOTzilla\cite{gotzilla} & $O(\nkeys)$ & $O(\nkeys)$ & $O(\nkeys)$ & $O(\log{\nkeys})$ & $\tikzcmark$ & $\tikzxmark$ & $\tikzxmark$ \\
+        \hline
+        IZPR\cite{izpr} & $O(t\log{t})$ & $O(\nkeys)$ & $O(1)$ & $O(1)$ & $\tikzcmark$ & $\tikzcmark$ & $\tikzcmark$ \\
+        \hline
+        \Sys(\textbf{Ours}) & $O(\nkeys)$ & $O(\nkeys)$ & $O(1)$ & $O(1)$ & $\tikzcmark$ & $\tikzcmark$ & $\tikzxmark$ \\
         \hline
     \end{tabular}
-    \caption[Comparison of this work with prior PoA schemes]{Comparison of this work with prior PoA schemes. $\pi_\mathsf{input}$ is the verifier processes the public inputs before validating the proof; $\pi_\mathsf{proof}$ is the verifier verifies the proof sent by the prover. Notation: $\nkeys$ is the number of keys that the exchange wants to prove. For IZPR\cite{izpr}, $t$ is the throughput of the blockchain (number of addresses which have changed since the last proof).\label{tab:poa}}
-\end{table}
+}
+    \caption{Comparison of this work with prior PoA schemes. $\pi_\mathsf{input}$ is the verifier processes the public inputs before validating the proof; $\pi_\mathsf{proof}$ is the verifier verifies the proof sent by the prover. \textbf{Hashed}: whether the scheme is compatible with hashed keys. \textbf{NI}: non-interactive. Notation: $\nkeys$ is the size of the anonymity set that the exchange wants to prove. For IZPR\cite{izpr}, $t$ is the throughput of the blockchain (number of addresses which have changed since the last proof).\label{tab:poa}}
+\end{table*}
 
-\begin{table}[t]
+\begin{table*}[t]
 \centering
-    \begin{tabular}{|c|c|c|c|c|c|} 
+\resizebox{\textwidth}{!}{
+    \begin{tabular}{|c|c|c|c|c|c|c|} 
         \hline
-        \multirow{2}{*}{\textbf{Scheme}} & \multirow{2}{*}{\textbf{Proving time}} & \multicolumn{2}{c|}{\textbf{Verifying time}} & \multicolumn{2}{c|}{\textbf{Proof size}} \\
+        \multirow{2}{*}{\textbf{Scheme}} & \multirow{2}{*}{\textbf{Proving time}} & \multicolumn{2}{c|}{\textbf{Verifying time}} & \multicolumn{2}{c|}{\textbf{Proof size}} & \multirow{2}{*}{\textbf{Incremental}} \\
         \cline{3-6}
-        & & $\pi_\mathsf{users}$ & $\pi_\mathsf{liabilities}$ & $\pi_\mathsf{users}$ & $\pi_\mathsf{liabilities}$ \\
+        & & $\pi_\mathsf{users}$ & $\pi_\mathsf{liabilities}$ & $\pi_\mathsf{users}$ & $\pi_\mathsf{liabilities}$ & \\
         \hline
-        Provisions\cite{provisions} & $O(\nusers)$ & $O(1)$ & $O(\nusers)$ & $O(1)$ & $O(\nusers)$ \\
+        Provisions\cite{provisions} & $O(\nusers)$ & $O(1)$ & $O(\nusers)$ & $O(1)$ & $O(\nusers)$ & $\tikzxmark$ \\
         \hline
-        DAPOL+\cite{dapol} & $O(\nusers\log{\nusers})$ & $O(\log{\nusers})$ & $O(1)$ & $O(\log{\nusers})$ & $O(1)$ \\
+        DAPOL+\cite{dapol} & $O(\nusers\log{\nusers})$ & $O(\log{\nusers})$ & $O(1)$ & $O(\log{\nusers})$ & $O(1)$ & $\tikzxmark$ \\
         \hline
-        SPPPOL\cite{spp} & $O(\log_{\lambda}{\nusers})$ & $O(\log_{\lambda}{\nusers})$ & $O(1)$ & $O(\log_{\lambda}{\nusers})$ & $O(1)$ \\
+        SPPPOL\cite{spp} & $O(\log_{\lambda}{\nusers})$ & $O(\log_{\lambda}{\nusers})$ & $O(1)$ & $O(\log_{\lambda}{\nusers})$ & $O(1)$ & $\tikzxmark$ \\
         \hline
-        Notus\cite{notus} & $O(\nusers\log{\nusers})$ & $O(1)$ & $O(1)$ & $O(1)$ & $O(1)$ \\
+        Notus\cite{notus} & $O(\nusers\log{\nusers})$ & $O(1)$ & $O(1)$ & $O(1)$ & $O(1)$ & $\tikzcmark$ \\
         \hline
-        \Sys(\textbf{Ours}) & $O(k\cdot{\nusers})$ & $O(1)$ & $O(k)$ & $O(1)$ & $O(k)$ \\
+        \Sys(\textbf{Ours}) & $O(k\cdot{\nusers})$ & $O(1)$ & $O(k)$ & $O(1)$ & $O(k)$ & $\tikzxmark$ \\
         \hline
     \end{tabular}
-    \caption[Comparison of this work with prior PoL schemes]{Comparison of this work with prior PoL schemes. Notation: $\nusers$ is the number of users, $k$ is the number of bits of the range proof. For SPPPOL \cite{spp}, $\lambda$ is the arity of the Verkle Tree it uses.\label{tab:pol}}
-\end{table}
+}
+    \caption{Comparison of this work with prior PoL schemes. Notation: $\nusers$ is the number of users, $k$ is the number of bits of the range proof. For SPPPOL \cite{spp}, $\lambda$ is the arity of the Verkle Tree it uses.\label{tab:pol}}
+\end{table*}
