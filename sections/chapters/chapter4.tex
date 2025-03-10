@@ -25,7 +25,11 @@ This leads to our key observation: we do not need to map \textit{values} from \s
 
 In plain English, the prover either: (1) puts a 0 in the selector vector; or (2a) puts a 1 in the selection vector \textit{and} (2b) knows the private key of the given public key. (1) and (2a) are a PoK of a representation for Pedersen commitments in \bls while (2b) is a Schnorr PoK of a discrete logarithm in \secp---both well studied $\Sigma$-protocols~\cite{damgard10,sigma}. The fact that (1) and (2a) are in \bls while (2b) is in \secp is not problematic because the disjunction ($\lor$) and conjunction ($\land$) operations for composing $\Sigma$-protocols are based only on how challenge values are constructed and both groups (\secp and \bls) can encode a large $t$-bit challenge (\eg $t=254$) into their exponent groups. 
 
-As this protocol is repeated for each key, it is not succinct and will be linear in proof size and verifier time. However once the selector array is proven correct, the exchange can re-use it every time it does a proof of solvency until it updates its keys. The full details are provided in Protocol~\ref{alg:boot}.
+\FloatBarrier
+\input{sections/proofs/08-hashed}
+\FloatBarrier
+
+As this protocol is repeated for each key, it is not succinct and will be linear in proof size and verifier time. However once the selector array is proven correct, the exchange can re-use it every time it does a proof of solvency until it updates its keys. The full details are provided in Protocol~\ref{alg:boot}. One may note that \bootstrap requires the prover to interact with its elliptic curve private and public keys, which brings security concerns. In fact, it is possible to add an extension for \bootstrap that supports hashed keys using the techniques from~\cite{composite}. More precisely, the proof we want to prove becomes two statements: (i) the knowledge of the private key (ii) the hash value of the public key is the claimed value. With the help of the schemes in~\cite{composite}, we can prove these two statements in one sigma protocol, which is discussed in Protocol~\ref{alg:hashed}.
 
 \input{sections/proofs/02-bootstrap}
 

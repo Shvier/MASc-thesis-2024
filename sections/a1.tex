@@ -1,6 +1,0 @@
-\chapter{The Extension for Hashed Keys}
-\label{sec:hashedkeys}
-
-In \bootstrap, we showed how to prove the knowledge of a private key and publish the corresponding selector value through the OR proof. However, it is ideal to allow the prover and the verifier to directly interact with hashed keys for simplicity and security. Agrawal~\etal~\cite{composite} introduced a way to prove an algebraic statement and a non-algebraic statement. In the context of proof of assets, the algebraic statement is the knowledge of the private key, and the non-algebraic statement is the correctness of the hash value of the public key. Note that the protocol in Agrawal~\etal~\cite{composite} is also a sigma protocol, which means it is natural to have \Sys support hashed keys as well. We describe the new \bootstrap with such extension in Protocol~\ref{alg:hashed}.
-
-\input{sections/proofs/08-hashed.tex}
