@@ -10,13 +10,11 @@ Once the \bootstrap output is provided, \poa takes it as input, along with the c
 
 \subsection{The \bootstrap Proof}
 
-Before presenting our \bootstrap proof, we quickly discuss a few approaches that helped us develop it. A highly relevant $\Sigma$-protocol from the literature, COPZ, proves that two commitments in two different groups (\eg \secp and \bls) commit to the same value~\cite{chase22}. The paper cites proof of assets as a use-case but does not work out a protocol. COPZ allows an exchange to `map' private keys from \secp to \bls. Two places this mapping could occur would be at the very start or the very end of the assets proof. At the end, it might look like this: an existing proof of assets protocol (\eg Provisions~\cite{provisions}) could be run to create a commitment to the total assets in \secp, then COPZ can be used to prove the same commitment in \bls, and finally this can be `glued' to a succinct proof of liabilities in \bls. However this does not leverage the fact that \bls might help make 
+Before presenting our \bootstrap proof, we quickly discuss a few approaches that helped us develop it. A highly relevant $\Sigma$-protocol from the literature, COPZ, proves that two commitments in two different groups (\eg \secp and \bls) commit to the same value~\cite{chase22}. The paper cites proof of assets as a use-case but does not work out a protocol. COPZ allows an exchange to `map' private keys from \secp to \bls. Two places this mapping could occur would be at the very start or the very end of the assets proof. At the end, it might look like this: an existing proof of assets protocol (\eg Provisions~\cite{provisions}) could be run to create a commitment to the total assets in \secp, then COPZ can be used to prove the same commitment in \bls, and finally this can be `glued' to a succinct proof of liabilities in \bls. However this does not leverage the fact that \bls might help make the assets proof succinct.
 
 \FloatBarrier
 \input{sections/proofs/01-map}
 \FloatBarrier
-
-the assets proof succinct.
 
 Alternatively, the exchange can map all their keys at the start. There is a roadblock: the exchange can only map keys they know the secret key for and the exchange cannot reveal which keys they know and which they do not. Assume there is a protocol that would allow the exchange to output a sparse vector of \bls private key values (sorted by index of known ETH public keys) containing the key value when they know it, and recording a 0 if they do not. We designed such a protocol only to realize that the key values in \bls are actually never used, we only use the fact that knowledge of them is proven (which is covered by the ability to produce the value in \bls) and the fact that unclaimed keys are zeroed-out. 
 
