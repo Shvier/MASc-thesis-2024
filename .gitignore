@@ -12,3 +12,10 @@ main.bcf
 main.out
 main.run.xml
 main.fls
+*.log
+*.nav
+*.out
+*.aux
+*.snm
+*.gz
+*.toc
