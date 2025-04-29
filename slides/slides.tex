@@ -66,7 +66,8 @@
 
   \begin{frame}{Zk-SNARKs}
     \textbf{Succinctness:} small proof size and short verifier time \\
-    \textbf{Non-interactive:} Fiat-Shamir transformation
+    % \textbf{Non-interactive:} Fiat-Shamir transformation
+    \vspace{1em}
     \visible<2->{
       \begin{block}{Building a zk-SNARK}
         commitment scheme + interactive oracle proof $\Rightarrow$ zk-SNARK
@@ -87,6 +88,7 @@
   \subsection{Commitment Scheme}
   \begin{frame}{Important Commitment Schemes}
     \begin{itemize}
+      \item Pedersen commitments: integer $g^xh^r$ where $g$ and $h$ are generators of a group and no one knows the discrete relation between them
       \item Polynomial commitments: univariate polynomial $f(X)$
       \item Multilinear commitments: multivariate polynomial $f(X_1,X_2,\dots,X_n)$
       \item Vector commitments: vector $\overrightarrow{v}=(v_1,v_2,\dots,v_n)$
@@ -503,7 +505,7 @@
         \item $\gb^{s_i}=\gb^1$ (in \bls)
         \item the knowledge of $\mathsf{sk}_i$ (in \secp)
       \end{itemize}
-      \item the selector $s_i$ is 0
+      \item The selector $s_i$ is 0
       \begin{itemize}
         \item $\gb^{s_i}=\gb^0$ (in \bls)
       \end{itemize}
@@ -615,13 +617,13 @@
       \item Applications
       \begin{itemize}
         \item In blockchain: zkRollup, zkBridge, zkEVM
-        \item In other fields: fight disinformation~\footnote{\url{https://rdi.berkeley.edu/zk-learning/assets/Lecture2-2023.pdf}}
+        \item In other fields: zkML, zk program analysis, fight disinformation~\footnote{\url{https://rdi.berkeley.edu/zk-learning/assets/Lecture2-2023.pdf}}
       \end{itemize}
       \item Limitations
         \begin{itemize}
           \item Cost
           \item Performance
-          \item Complexity
+          \item Complication
         \end{itemize}
       \item Further reading
         \begin{itemize}
